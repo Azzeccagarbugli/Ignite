@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/homepage.dart';
+import 'package:flare_splash_screen/flare_splash_screen.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -9,45 +10,31 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((loc) {
-      print('latitudine ${loc.latitude} - longitudine ${loc.longitude}');
-      Navigator.pushReplacement((context),
-          MaterialPageRoute(builder: (context) {
-        return Homepage(
-          position: LatLng(loc.latitude, loc.longitude),
-        );
-      }));
-    });
-  }
-
+  LatLng _curloc;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Coppola puzza',
-          style: TextStyle(
-            fontFamily: 'Product Sans',
-          ),
-        ),
-        backgroundColor: Colors.green[700],
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/cop.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: null,
+      home: SplashScreen.navigate(
+        name: 'assets/general/intro.flr',
+        next: (context) {
+          return Homepage(position: this._curloc);
+        },
+        loopAnimation: '1',
+        until: () => this.getPosition(),
+        endAnimation: '1',
       ),
     );
+  }
+
+  Future<dynamic> getPosition() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _curloc = LatLng(position.latitude, position.longitude);
+    });
   }
 }

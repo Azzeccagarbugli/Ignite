@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:async';
-import 'package:geolocator/geolocator.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class Homepage extends StatefulWidget {
   Homepage({@required this.position});
@@ -11,36 +11,61 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  GoogleMapController mapController;
+  GoogleMapController _mapController;
+  String _mapStyle;
+
+  @override
+  void initState() {
+    super.initState();
+    rootBundle.loadString('assets/general/map_style.json').then((string) {
+      _mapStyle = string;
+    });
+  }
 
   void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+    _mapController = controller;
+    _mapController.setMapStyle(_mapStyle);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Coppola puzza',
-          style: TextStyle(
-            fontFamily: 'Product Sans',
-          ),
-        ),
-        backgroundColor: Colors.green[700],
-      ),
+      extendBody: true,
       body: GoogleMap(
         indoorViewEnabled: true,
         zoomGesturesEnabled: true,
         myLocationEnabled: true,
-        myLocationButtonEnabled: true,
+        myLocationButtonEnabled: false,
         onMapCreated: _onMapCreated,
-        compassEnabled: true,
+        compassEnabled: false,
         initialCameraPosition: CameraPosition(
           target: widget.position,
-          zoom: 11.0,
+          zoom: 14.0,
         ),
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+        backgroundColor: Colors.transparent,
+        index: 1,
+        animationDuration: Duration(milliseconds: 500),
+        buttonBackgroundColor: Colors.white,
+        items: <Icon>[
+          Icon(
+            Icons.terrain,
+            size: 35,
+            color: Colors.red[800],
+          ),
+          Icon(
+            Icons.add,
+            size: 35,
+            color: Colors.red[800],
+          ),
+          Icon(
+            Icons.supervisor_account,
+            size: 35,
+            color: Colors.red[800],
+          ),
+        ],
+        onTap: (index) {},
       ),
     );
   }
