@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class Homepage extends StatefulWidget {
@@ -39,6 +40,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setNavigationBarColor(Colors.white);
     return Scaffold(
       extendBody: true,
       body: GoogleMap(
