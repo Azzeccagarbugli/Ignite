@@ -5,7 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 
 class Homepage extends StatefulWidget {
   Homepage({@required this.position});
-  LatLng position;
+  final LatLng position;
   @override
   _HomepageState createState() => _HomepageState();
 }
@@ -27,6 +27,16 @@ class _HomepageState extends State<Homepage> {
     _mapController.setMapStyle(_mapStyle);
   }
 
+  void _animateCameraOnMe() {
+    _mapController.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        bearing: 0,
+        target: LatLng(widget.position.latitude, widget.position.longitude),
+        zoom: 17.0,
+      ),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,12 +47,25 @@ class _HomepageState extends State<Homepage> {
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
         onMapCreated: _onMapCreated,
-        compassEnabled: false,
+        compassEnabled: true,
         initialCameraPosition: CameraPosition(
           target: widget.position,
           zoom: 14.0,
         ),
       ),
+      floatingActionButton: Container(
+        child: SafeArea(
+          minimum: const EdgeInsets.only(top: 150.0),
+          child: FloatingActionButton.extended(
+            onPressed: _animateCameraOnMe,
+            elevation: 30,
+            shape: new CircleBorder(),
+            backgroundColor: Colors.red[800],
+            label: Icon(Icons.gps_fixed),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
         index: 1,
