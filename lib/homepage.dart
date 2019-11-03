@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:slimy_card/slimy_card.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart';
+import 'package:ignite/components/hydrant_card.dart';
 
 class Homepage extends StatefulWidget {
   Homepage({@required this.position});
@@ -15,15 +15,8 @@ class _HomepageState extends State<Homepage> {
   GoogleMapController _mapController;
   String _mapStyle;
   Set<Marker> _markerSet = Set();
-
-  Marker resultMarker = Marker(
-      markerId: MarkerId(
-        "Primo idrante",
-      ),
-      position: LatLng(0, 0),
-      onTap: () {
-        // Show slimy card
-      });
+  double _zoomCameraOnMe = 18.0;
+  Marker resultMarker;
 
   @override
   void initState() {
@@ -50,30 +43,53 @@ class _HomepageState extends State<Homepage> {
       CameraPosition(
         bearing: 0,
         target: LatLng(widget.position.latitude, widget.position.longitude),
-        zoom: 15.0,
+        zoom: _zoomCameraOnMe,
       ),
     ));
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarDividerColor: Colors.white,
+    ));
+
+    resultMarker = Marker(
+      markerId: MarkerId(
+        "Primo idrante",
+      ),
+      position: LatLng(0, 0),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HydrantCard()),
+        );
+      },
+    );
+
     return Scaffold(
       extendBody: true,
-      body: Stack(children: <Widget>[
-        GoogleMap(
-          indoorViewEnabled: true,
-          zoomGesturesEnabled: true,
-          myLocationEnabled: true,
-          myLocationButtonEnabled: false,
-          onMapCreated: _onMapCreated,
-          markers: _markerSet,
-          compassEnabled: true,
-          initialCameraPosition: CameraPosition(
-            target: widget.position,
-            zoom: 15.0,
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            mapToolbarEnabled: false,
+            indoorViewEnabled: true,
+            zoomGesturesEnabled: true,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            onMapCreated: _onMapCreated,
+            markers: _markerSet,
+            initialCameraPosition: CameraPosition(
+              target: widget.position,
+              zoom: _zoomCameraOnMe,
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
       floatingActionButton: Container(
         child: SafeArea(
           minimum: const EdgeInsets.only(top: 150.0),

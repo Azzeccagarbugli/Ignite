@@ -3,14 +3,6 @@ import 'package:flutter/services.dart';
 import 'loading_screen.dart';
 
 void main() {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.white,
-    systemNavigationBarIconBrightness: Brightness.dark,
-    systemNavigationBarDividerColor: Colors.white,
-  ));
-
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp],
   );
