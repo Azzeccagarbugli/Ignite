@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
-import 'package:ignite/homepage.dart';
 import 'package:flutter/services.dart';
+
+import 'homepage.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
@@ -6,12 +9,13 @@ import 'package:ignite/components/hydrant_card.dart';
 
 class Homepage extends StatefulWidget {
   Homepage({@required this.position});
-  final LatLng position;
+  LatLng position;
   @override
   _HomepageState createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
+  StreamSubscription<Position> _positionStream;
   GoogleMapController _mapController;
   String _mapStyle;
   Set<Marker> _markerSet = Set();
@@ -23,6 +27,17 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     rootBundle.loadString('assets/general/map_style.json').then((string) {
       _mapStyle = string;
+    });
+    this.setupPositionStream();
+  }
+
+  void setupPositionStream() {
+    _positionStream = Geolocator()
+        .getPositionStream(
+      LocationOptions(accuracy: LocationAccuracy.best, timeInterval: 1000),
+    )
+        .listen((pos) {
+      widget.position = LatLng(pos.latitude, pos.longitude);
     });
   }
 

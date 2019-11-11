@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'loading_screen.dart';
+import 'package:ignite/views/loading_screen.dart';
 
 void main() {
-  SystemChrome.setPreferredOrientations(
-    [DeviceOrientation.portraitUp],
-  );
-
   runApp(Ignite());
 }
 
