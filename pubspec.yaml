@@ -27,7 +27,7 @@ flutter:
   assets:
     - assets/general/intro.flr
     - assets/general/map_style.json
-    - assets/images/
+    - assets/images/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -41,8 +41,8 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Product Sans
+    - family: Rubik
       fonts:
-        - asset: assets/fonts/Product Sans Regular.ttf
+        - asset: assets/fonts/Rubik-Regular.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -57,28 +57,6 @@ class _FirstScreenState extends State<FirstScreen> {
     return FlutterLogin(
       title: 'Ignite',
       logo: 'assets/images/logo.png',
-      /*theme: LoginTheme(
-        titleStyle: TextStyle(
-          fontFamily: 'Product Sans',
-        ),
-        bodyStyle: TextStyle(
-          fontFamily: 'Product Sans',
-        ),
-        textFieldStyle: TextStyle(
-          fontFamily: 'Product Sans',
-        ),
-        buttonStyle: TextStyle(
-          fontFamily: 'Product Sans',
-        ),
-        inputTheme: InputDecorationTheme(
-          errorStyle: TextStyle(
-            fontFamily: 'Product Sans',
-          ),
-          labelStyle: TextStyle(
-            fontFamily: 'Product Sans',
-          ),
-        ),
-      ),*/
       messages: LoginMessages(
         usernameHint: 'Email',
         passwordHint: 'Password',

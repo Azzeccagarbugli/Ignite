@@ -12,6 +12,7 @@ class Ignite extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.red[600],
         accentColor: Colors.red,
+        fontFamily: 'Rubik',
       ),
       home: FirstScreen(),
     );
