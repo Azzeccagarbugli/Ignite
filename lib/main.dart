@@ -10,9 +10,8 @@ class Ignite extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'Product Sans',
         primaryColor: Colors.red[600],
-        accentColor: Colors.white,
+        accentColor: Colors.red,
       ),
       home: FirstScreen(),
     );
