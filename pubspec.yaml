@@ -16,7 +16,6 @@ dependencies:
   curved_navigation_bar: ^0.3.1
   firebase_auth: ^0.14.0+9
   firebase_database: ^3.1.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

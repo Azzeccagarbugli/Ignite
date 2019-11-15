@@ -25,7 +25,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   void printMail() async {
     FirebaseUser utente = await _auth.currentUser();
-    print('${utente.email} - ');
+    if (utente != null) {
+      print('${utente.email} - ');
+    }
   }
 
   @override
