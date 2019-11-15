@@ -11,7 +11,7 @@ class Ignite extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.red[600],
-        accentColor: Colors.red,
+        accentColor: Colors.grey[700],
         fontFamily: 'Rubik',
       ),
       home: FirstScreen(),
