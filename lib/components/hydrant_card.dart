@@ -22,17 +22,17 @@ class _HydrantCardState extends State<HydrantCard> {
           Icon(
             Icons.terrain,
             size: 35,
-            color: Colors.red[800],
+            color: Theme.of(context).primaryColor,
           ),
           Icon(
             Icons.add,
             size: 35,
-            color: Colors.red[800],
+            color: Theme.of(context).primaryColor,
           ),
           Icon(
             Icons.supervisor_account,
             size: 35,
-            color: Colors.red[800],
+            color: Theme.of(context).primaryColor,
           ),
         ],
         onTap: (index) {

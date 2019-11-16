@@ -109,9 +109,9 @@ class _FirstScreenState extends State<FirstScreen>
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.red[600],
+      systemNavigationBarColor: Theme.of(context).primaryColor,
       systemNavigationBarIconBrightness: Brightness.light,
-      systemNavigationBarDividerColor: Colors.red[600],
+      systemNavigationBarDividerColor: Theme.of(context).primaryColor,
     ));
 
     return Scaffold(

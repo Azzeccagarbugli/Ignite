@@ -20,7 +20,7 @@ class FabLoginScreen extends StatelessWidget {
           child: icon,
           elevation: 3.0,
           backgroundColor: Colors.white,
-          foregroundColor: Colors.red[600],
+          foregroundColor: Theme.of(context).primaryColor,
         ),
       ),
     );

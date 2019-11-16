@@ -42,7 +42,7 @@ class _FaqScreenState extends State<FaqScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red[600],
+      backgroundColor: Theme.of(context).primaryColor,
       body: ListView(
         children: <Widget>[
           Header(

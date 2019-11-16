@@ -34,14 +34,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.red[600],
+      systemNavigationBarColor: Theme.of(context).primaryColor,
       systemNavigationBarIconBrightness: Brightness.light,
-      systemNavigationBarDividerColor: Colors.red[600],
+      systemNavigationBarDividerColor: Theme.of(context).primaryColor,
     ));
     return MaterialApp(
       home: SplashScreen.navigate(
         name: 'assets/general/intro.flr',
-        backgroundColor: Colors.red[600],
+        backgroundColor: Theme.of(context).primaryColor,
         next: (context) {
           return Homepage(position: this._curloc);
         },
