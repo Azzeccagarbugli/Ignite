@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ignite/views/loading_screen.dart';
 
 class FabLoginScreen extends StatelessWidget {
   final Icon icon;

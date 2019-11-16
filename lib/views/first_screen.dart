@@ -95,6 +95,14 @@ class _FirstScreenState extends State<FirstScreen>
     return null;
   }
 
+  Future<void> _signInAnonymously() async {
+    try {
+      await _auth.signInAnonymously();
+    } catch (e) {
+      return e;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -153,7 +161,13 @@ class _FirstScreenState extends State<FirstScreen>
               alignment: Alignment.bottomRight,
               heroTag: 'incognito_btn',
               icon: Icon(Icons.visibility_off),
-              onPressed: () {},
+              onPressed: () {
+                _signInAnonymously();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) {
+                  return LoadingScreen();
+                }));
+              },
             ),
           ),
         ],
