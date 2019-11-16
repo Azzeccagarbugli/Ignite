@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ignite/views/faq.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/components/fab_first_screen.dart';
 
@@ -148,11 +149,19 @@ class _FirstScreenState extends State<FirstScreen>
           ),
           FadeTransition(
             opacity: animation,
-            child: FabLoginScreen(
-              alignment: Alignment.bottomLeft,
-              heroTag: 'faq_btn',
-              icon: Icon(Icons.question_answer),
-              onPressed: () {},
+            child: Hero(
+              tag: 'icon_faq',
+              child: FabLoginScreen(
+                alignment: Alignment.bottomLeft,
+                icon: Icon(
+                  Icons.question_answer,
+                ),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return FaqScreen();
+                  }));
+                },
+              ),
             ),
           ),
           FadeTransition(
@@ -160,7 +169,9 @@ class _FirstScreenState extends State<FirstScreen>
             child: FabLoginScreen(
               alignment: Alignment.bottomRight,
               heroTag: 'incognito_btn',
-              icon: Icon(Icons.visibility_off),
+              icon: Icon(
+                Icons.visibility_off,
+              ),
               onPressed: () {
                 _signInAnonymously();
                 Navigator.pushReplacement(context,

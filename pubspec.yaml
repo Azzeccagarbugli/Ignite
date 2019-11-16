@@ -16,6 +16,8 @@ dependencies:
   curved_navigation_bar: ^0.3.1
   firebase_auth: ^0.14.0+9
   firebase_database: ^3.1.0
+  expandable: ^3.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -25,6 +27,7 @@ flutter:
 
   assets:
     - assets/general/intro.flr
+    - assets/general/faq.json
     - assets/general/map_style.json
     - assets/images/logo.png
     - assets/images/icon.png
@@ -41,8 +44,8 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Rubik
+    - family: Nunito
       fonts:
-        - asset: assets/fonts/Rubik-Regular.ttf
+        - asset: assets/fonts/Nunito-Regular.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
