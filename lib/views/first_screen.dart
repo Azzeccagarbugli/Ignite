@@ -19,12 +19,14 @@ class _FirstScreenState extends State<FirstScreen>
   AnimationController controller;
   Animation<double> animation;
 
+  int animationTime = 1200;
+
   @override
   initState() {
     super.initState();
     controller = AnimationController(
-      duration: const Duration(
-        milliseconds: 1500,
+      duration: Duration(
+        milliseconds: animationTime,
       ),
       vsync: this,
     );
@@ -76,6 +78,23 @@ class _FirstScreenState extends State<FirstScreen>
     return null;
   }
 
+  Future<String> _recoverPassword(String currentEmail) async {
+    try {
+      await _auth.sendPasswordResetEmail(
+        email: currentEmail,
+      );
+    } catch (e) {
+      switch (e.code) {
+        case 'ERROR_INVALID_EMAIL':
+          return 'Email non valida';
+        case 'ERROR_USER_NOT_FOUND':
+          return 'Email inesistente';
+      }
+      return e.message;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -94,6 +113,7 @@ class _FirstScreenState extends State<FirstScreen>
           FlutterLogin(
             title: 'Ignite',
             logo: 'assets/images/logo.png',
+            onRecoverPassword: _recoverPassword,
             messages: LoginMessages(
               usernameHint: 'Email',
               passwordHint: 'Password',
@@ -101,7 +121,7 @@ class _FirstScreenState extends State<FirstScreen>
               loginButton: 'LOG IN',
               signupButton: 'REGISTRATI',
               forgotPasswordButton: 'Password dimenticata?',
-              recoverPasswordButton: 'AIUTO',
+              recoverPasswordButton: 'RECUPERA',
               goBackButton: 'INDIETRO',
               confirmPasswordError:
                   'Le due password inserite non corrispondono!',
