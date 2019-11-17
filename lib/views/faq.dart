@@ -1,11 +1,11 @@
-import 'package:expandable/expandable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/components/faq_panels.dart';
+import 'package:ignite/models/app_state.dart';
+import 'package:ignite/widgets/faq_panels.dart';
 import 'dart:convert';
-
-import 'package:ignite/components/header.dart';
+import 'package:provider/provider.dart';
+import 'package:ignite/widgets/header.dart';
 
 class FAQ {
   String question;
@@ -43,7 +43,7 @@ class _FaqScreenState extends State<FaqScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Provider.of<AppState>(context).getTheme().primaryColor,
       body: ListView(
         scrollDirection: Axis.vertical,
         children: <Widget>[

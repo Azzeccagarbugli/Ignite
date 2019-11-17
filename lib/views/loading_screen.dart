@@ -4,7 +4,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/services.dart';
-
+import 'package:ignite/models/app_state.dart';
+import 'package:provider/provider.dart';
 import 'homepage.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -34,17 +35,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Theme.of(context).primaryColor,
+      systemNavigationBarColor:
+          Provider.of<AppState>(context).getTheme().primaryColor,
       systemNavigationBarIconBrightness: Brightness.light,
-      systemNavigationBarDividerColor: Theme.of(context).primaryColor,
+      systemNavigationBarDividerColor:
+          Provider.of<AppState>(context).getTheme().primaryColor,
     ));
     return MaterialApp(
       home: SplashScreen.navigate(
+        next: (context) => Homepage(position: this._curloc),
         name: 'assets/general/intro.flr',
-        backgroundColor: Theme.of(context).primaryColor,
-        next: (context) {
-          return Homepage(position: this._curloc);
-        },
+        backgroundColor: Provider.of<AppState>(context).getTheme().primaryColor,
         loopAnimation: '1',
         until: () => this.getPosition(),
         endAnimation: '1',

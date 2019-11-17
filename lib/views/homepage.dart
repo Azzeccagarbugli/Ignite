@@ -5,7 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/components/hydrant_card.dart';
+import 'package:ignite/models/app_state.dart';
+import 'package:ignite/widgets/hydrant_card.dart';
+import 'package:provider/provider.dart';
 
 class Homepage extends StatefulWidget {
   LatLng position;
@@ -17,7 +19,6 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   StreamSubscription<Position> _positionStream;
   GoogleMapController _mapController;
-  String _mapStyle;
   Set<Marker> _markerSet = Set();
   double _zoomCameraOnMe = 18.0;
   Marker resultMarker;
@@ -25,9 +26,6 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    rootBundle.loadString('assets/general/map_style.json').then((string) {
-      _mapStyle = string;
-    });
     this.setupPositionStream();
   }
 
@@ -48,9 +46,11 @@ class _HomepageState extends State<Homepage> {
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
-    _mapController.setMapStyle(_mapStyle);
-    this._addMarker();
+    setState(() {
+      _mapController = controller;
+      _mapController.setMapStyle(Provider.of<AppState>(context).getMapStyle());
+      this._addMarker();
+    });
   }
 
   void _animateCameraOnMe() {
@@ -67,10 +67,12 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-      systemNavigationBarDividerColor: Colors.white,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor:
+          Provider.of<AppState>(context).getTheme().bottomAppBarColor,
+      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarDividerColor:
+          Provider.of<AppState>(context).getTheme().bottomAppBarColor,
     ));
 
     resultMarker = Marker(
@@ -87,7 +89,6 @@ class _HomepageState extends State<Homepage> {
     );
 
     return Scaffold(
-      extendBody: true,
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -103,46 +104,86 @@ class _HomepageState extends State<Homepage> {
               zoom: _zoomCameraOnMe,
             ),
           ),
+          Padding(
+            padding: EdgeInsets.only(top: 50.0, right: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    MapButton(
+                      function: _animateCameraOnMe,
+                      icon: Icons.gps_fixed,
+                    ),
+                    /* MapButton(
+                      icon: Icons.autorenew,
+                      function: () {
+                        Provider.of<AppState>(context).toggleTheme();
+                        setState(() {
+                          _mapController.setMapStyle(
+                              Provider.of<AppState>(context).getMapStyle());
+                        });
+                      },
+                    ),*/
+                  ],
+                ),
+              ],
+            ),
+          )
         ],
       ),
-      floatingActionButton: Container(
-        child: SafeArea(
-          minimum: const EdgeInsets.only(top: 150.0),
-          child: FloatingActionButton.extended(
-            onPressed: _animateCameraOnMe,
-            elevation: 30,
-            shape: new CircleBorder(),
-            backgroundColor: Theme.of(context).primaryColor,
-            label: Icon(Icons.gps_fixed),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
         index: 1,
+        color: Provider.of<AppState>(context).getTheme().bottomAppBarColor,
         animationDuration: Duration(
           milliseconds: 500,
         ),
-        buttonBackgroundColor: Colors.white,
+        buttonBackgroundColor:
+            Provider.of<AppState>(context).getTheme().bottomAppBarColor,
         items: <Icon>[
           Icon(
             Icons.terrain,
             size: 35,
-            color: Theme.of(context).primaryColor,
+            color: Provider.of<AppState>(context).getTheme().buttonColor,
           ),
           Icon(
             Icons.add,
             size: 35,
-            color: Theme.of(context).primaryColor,
+            color: Provider.of<AppState>(context).getTheme().buttonColor,
           ),
           Icon(
             Icons.supervisor_account,
             size: 35,
-            color: Theme.of(context).primaryColor,
+            color: Provider.of<AppState>(context).getTheme().buttonColor,
           ),
         ],
         onTap: (index) {},
+      ),
+    );
+  }
+}
+
+class MapButton extends StatelessWidget {
+  MapButton({@required this.function, @required this.icon});
+  IconData icon;
+  Function function;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: SafeArea(
+        child: FloatingActionButton.extended(
+          onPressed: function,
+          elevation: 30,
+          shape: new CircleBorder(),
+          backgroundColor:
+              Provider.of<AppState>(context).getTheme().bottomAppBarColor,
+          label: Icon(
+            icon,
+            color: Provider.of<AppState>(context).getTheme().buttonColor,
+          ),
+        ),
       ),
     );
   }

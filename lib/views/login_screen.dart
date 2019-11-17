@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ignite/views/faq.dart';
-import 'package:ignite/views/introduction_tutorial.dart';
+import 'package:ignite/models/app_state.dart';
+import 'package:ignite/widgets/anonimous_button.dart';
+import 'package:ignite/widgets/faq_button.dart';
 import 'package:ignite/views/loading_screen.dart';
-import 'package:ignite/components/fab_first_screen.dart';
+import 'package:provider/provider.dart';
 
-class FirstScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _FirstScreenState createState() => _FirstScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _FirstScreenState extends State<FirstScreen>
+class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -110,9 +111,11 @@ class _FirstScreenState extends State<FirstScreen>
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Theme.of(context).primaryColor,
+      systemNavigationBarColor:
+          Provider.of<AppState>(context).getTheme().primaryColor,
       systemNavigationBarIconBrightness: Brightness.light,
-      systemNavigationBarDividerColor: Theme.of(context).primaryColor,
+      systemNavigationBarDividerColor:
+          Provider.of<AppState>(context).getTheme().primaryColor,
     ));
 
     return Scaffold(
@@ -124,21 +127,7 @@ class _FirstScreenState extends State<FirstScreen>
             title: 'Ignite',
             logo: 'assets/images/logo.png',
             onRecoverPassword: _recoverPassword,
-            messages: LoginMessages(
-              usernameHint: 'Email',
-              passwordHint: 'Password',
-              confirmPasswordHint: 'Conferma la password',
-              loginButton: 'LOGIN',
-              signupButton: 'REGISTRATI',
-              forgotPasswordButton: 'Password dimenticata?',
-              recoverPasswordButton: 'RECUPERA',
-              goBackButton: 'INDIETRO',
-              confirmPasswordError:
-                  'Le due password inserite non corrispondono!',
-              recoverPasswordDescription:
-                  'Procedura per il recupero della password',
-              recoverPasswordSuccess: 'Password recuperata con successo',
-            ),
+            messages: buildLoginMessages(),
             onLogin: _authUser,
             onSignup: _newUser,
             onSubmitAnimationCompleted: () {
@@ -148,42 +137,29 @@ class _FirstScreenState extends State<FirstScreen>
               }));
             },
           ),
-          FadeTransition(
-            opacity: animation,
-            child: Hero(
-              tag: 'icon_faq',
-              child: FabLoginScreen(
-                alignment: Alignment.bottomLeft,
-                icon: Icon(
-                  Icons.question_answer,
-                ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return FaqScreen();
-                  }));
-                },
-              ),
-            ),
-          ),
-          FadeTransition(
-            opacity: animation,
-            child: FabLoginScreen(
-              alignment: Alignment.bottomRight,
-              heroTag: 'incognito_btn',
-              icon: Icon(
-                Icons.visibility_off,
-              ),
-              onPressed: () {
-                _signInAnonymously();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) {
-                  return IntroductionTutorial();
-                }));
-              },
-            ),
+          FaqButton(animation: animation),
+          AnonimousButton(
+            animation: animation,
+            anonimousFunction: _signInAnonymously(),
           ),
         ],
       ),
+    );
+  }
+
+  LoginMessages buildLoginMessages() {
+    return LoginMessages(
+      usernameHint: 'Email',
+      passwordHint: 'Password',
+      confirmPasswordHint: 'Conferma la password',
+      loginButton: 'LOGIN',
+      signupButton: 'REGISTRATI',
+      forgotPasswordButton: 'Password dimenticata?',
+      recoverPasswordButton: 'RECUPERA',
+      goBackButton: 'INDIETRO',
+      confirmPasswordError: 'Le due password inserite non corrispondono!',
+      recoverPasswordDescription: 'Procedura per il recupero della password',
+      recoverPasswordSuccess: 'Password recuperata con successo',
     );
   }
 }

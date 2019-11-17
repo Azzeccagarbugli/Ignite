@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
+import 'package:ignite/models/app_state.dart';
 import 'package:ignite/views/faq.dart';
+import 'package:provider/provider.dart';
 
 class FAQPanel extends StatelessWidget {
   final List<FAQ> listFaqs;
@@ -36,7 +38,9 @@ class FAQPanel extends StatelessWidget {
                           child: Text(
                             listFaqs[index].question,
                             style: TextStyle(
-                              color: Colors.red[600],
+                              color: Provider.of<AppState>(context)
+                                  .getTheme()
+                                  .accentColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 20.0,
                             ),
