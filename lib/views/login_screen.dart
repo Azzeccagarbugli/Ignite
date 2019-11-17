@@ -4,9 +4,11 @@ import 'package:flutter_login/flutter_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:ignite/widgets/anonimous_button.dart';
+import 'package:ignite/widgets/fab_first_screen.dart';
 import 'package:ignite/widgets/faq_button.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -112,10 +114,10 @@ class _LoginScreenState extends State<LoginScreen>
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
       systemNavigationBarColor:
-          Provider.of<AppState>(context).getTheme().primaryColor,
+          ThemeProvider.themeOf(context).data.primaryColor,
       systemNavigationBarIconBrightness: Brightness.light,
       systemNavigationBarDividerColor:
-          Provider.of<AppState>(context).getTheme().primaryColor,
+          ThemeProvider.themeOf(context).data.primaryColor,
     ));
 
     return Scaffold(
@@ -124,6 +126,13 @@ class _LoginScreenState extends State<LoginScreen>
       body: Stack(
         children: <Widget>[
           FlutterLogin(
+            theme: LoginTheme(
+              primaryColor: ThemeProvider.themeOf(context).data.primaryColor,
+              accentColor: ThemeProvider.themeOf(context).data.accentColor,
+              titleStyle: TextStyle(
+                color: Colors.white,
+              ),
+            ),
             title: 'Ignite',
             logo: 'assets/images/logo.png',
             onRecoverPassword: _recoverPassword,
@@ -137,10 +146,18 @@ class _LoginScreenState extends State<LoginScreen>
               }));
             },
           ),
-          FaqButton(animation: animation),
+          FaqButton(
+            animation: animation,
+            align: Alignment.bottomLeft,
+          ),
           AnonimousButton(
             animation: animation,
             anonimousFunction: _signInAnonymously(),
+            align: Alignment.bottomRight,
+          ),
+          ThemeButton(
+            align: Alignment.bottomCenter,
+            animation: animation,
           ),
         ],
       ),
@@ -160,6 +177,30 @@ class _LoginScreenState extends State<LoginScreen>
       confirmPasswordError: 'Le due password inserite non corrispondono!',
       recoverPasswordDescription: 'Procedura per il recupero della password',
       recoverPasswordSuccess: 'Password recuperata con successo',
+    );
+  }
+}
+
+class ThemeButton extends StatelessWidget {
+  final Animation<double> animation;
+  final Alignment align;
+  ThemeButton({@required this.animation, @required this.align});
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: animation,
+      child: FabLoginScreen(
+        alignment: align,
+        heroTag: 'button',
+        icon: Icon(
+          Icons.autorenew,
+          color: ThemeProvider.themeOf(context).data.primaryColor,
+        ),
+        onPressed: () {
+          ThemeProvider.controllerOf(context).nextTheme();
+        },
+      ),
     );
   }
 }

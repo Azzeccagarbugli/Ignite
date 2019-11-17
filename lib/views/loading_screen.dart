@@ -6,6 +6,7 @@ import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'homepage.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -36,16 +37,16 @@ class _LoadingScreenState extends State<LoadingScreen> {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
       systemNavigationBarColor:
-          Provider.of<AppState>(context).getTheme().primaryColor,
+          ThemeProvider.themeOf(context).data.primaryColor,
       systemNavigationBarIconBrightness: Brightness.light,
       systemNavigationBarDividerColor:
-          Provider.of<AppState>(context).getTheme().primaryColor,
+          ThemeProvider.themeOf(context).data.primaryColor,
     ));
     return MaterialApp(
       home: SplashScreen.navigate(
         next: (context) => Homepage(position: this._curloc),
         name: 'assets/general/intro.flr',
-        backgroundColor: Provider.of<AppState>(context).getTheme().primaryColor,
+        backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
         loopAnimation: '1',
         until: () => this.getPosition(),
         endAnimation: '1',

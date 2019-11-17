@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class IntroductionTutorial extends StatelessWidget {
   const IntroductionTutorial({Key key}) : super(key: key);
@@ -87,7 +88,7 @@ class IntroductionTutorial extends StatelessWidget {
       showSkipButton: true,
       skipFlex: 0,
       nextFlex: 0,
-      globalBackgroundColor: Colors.red[600],
+      globalBackgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
       skip: const Text(
         'Salta',
         style: TextStyle(

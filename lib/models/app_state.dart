@@ -3,17 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
 class AppState extends ChangeNotifier {
-  AppState() {
-    appTheme = _darkTheme();
-    loadStyle();
-  }
   FirebaseUser currentUser;
-  ThemeData appTheme;
-  bool _isDark;
   String mapStyle;
 
-  ThemeData _mainTheme() {
-    _isDark = false;
+  ThemeData mainTheme() {
     return ThemeData(
       primaryColor: Colors.red[600],
       accentColor: Colors.grey[500],
@@ -23,8 +16,7 @@ class AppState extends ChangeNotifier {
     );
   }
 
-  ThemeData _darkTheme() {
-    _isDark = true;
+  ThemeData darkTheme() {
     return ThemeData(
       primaryColor: Colors.grey[900],
       accentColor: Colors.grey[700],
@@ -34,11 +26,7 @@ class AppState extends ChangeNotifier {
     );
   }
 
-  ThemeData getTheme() {
-    return appTheme;
-  }
-
-  void loadStyle() {
+  /*void loadStyle() {
     if (_isDark) {
       rootBundle
           .loadString('assets/general/map_style_dark.json')
@@ -58,10 +46,9 @@ class AppState extends ChangeNotifier {
     appTheme = _isDark ? _mainTheme() : _darkTheme();
     loadStyle();
     notifyListeners();
-  }
+  }*/
 
   String getMapStyle() {
-    loadStyle();
     return mapStyle;
   }
 }

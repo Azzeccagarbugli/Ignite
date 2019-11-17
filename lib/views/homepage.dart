@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:ignite/widgets/hydrant_card.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class Homepage extends StatefulWidget {
   LatLng position;
@@ -69,10 +70,10 @@ class _HomepageState extends State<Homepage> {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
       systemNavigationBarColor:
-          Provider.of<AppState>(context).getTheme().bottomAppBarColor,
+          ThemeProvider.themeOf(context).data.bottomAppBarColor,
       systemNavigationBarIconBrightness: Brightness.light,
       systemNavigationBarDividerColor:
-          Provider.of<AppState>(context).getTheme().bottomAppBarColor,
+          ThemeProvider.themeOf(context).data.bottomAppBarColor,
     ));
 
     resultMarker = Marker(
@@ -108,7 +109,7 @@ class _HomepageState extends State<Homepage> {
           Padding(
             padding: const EdgeInsets.only(
               top: 30.0,
-              right: 5.0,
+              right: 15.0,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -119,19 +120,15 @@ class _HomepageState extends State<Homepage> {
                     MapButton(
                       function: _animateCameraOnMe,
                       icon: Icons.gps_fixed,
+                      heroTag: 'GPS',
                     ),
-                    // MapButton(
-                    //   icon: Icons.autorenew,
-                    //   function: () {
-                    //     Provider.of<AppState>(context).toggleTheme();
-                    //     setState(
-                    //       () {
-                    //         _mapController.setMapStyle(
-                    //             Provider.of<AppState>(context).getMapStyle());
-                    //       },
-                    //     );
-                    //   },
-                    // ),
+                    MapButton(
+                      heroTag: 'THEME',
+                      icon: Icons.autorenew,
+                      function: () {
+                        ThemeProvider.controllerOf(context).nextTheme();
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -142,27 +139,27 @@ class _HomepageState extends State<Homepage> {
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
         index: 1,
-        color: Provider.of<AppState>(context).getTheme().bottomAppBarColor,
+        color: ThemeProvider.themeOf(context).data.bottomAppBarColor,
         animationDuration: Duration(
           milliseconds: 500,
         ),
         buttonBackgroundColor:
-            Provider.of<AppState>(context).getTheme().bottomAppBarColor,
+            ThemeProvider.themeOf(context).data.bottomAppBarColor,
         items: <Icon>[
           Icon(
             Icons.terrain,
             size: 35,
-            color: Provider.of<AppState>(context).getTheme().buttonColor,
+            color: ThemeProvider.themeOf(context).data.buttonColor,
           ),
           Icon(
             Icons.add,
             size: 35,
-            color: Provider.of<AppState>(context).getTheme().buttonColor,
+            color: ThemeProvider.themeOf(context).data.buttonColor,
           ),
           Icon(
             Icons.supervisor_account,
             size: 35,
-            color: Provider.of<AppState>(context).getTheme().buttonColor,
+            color: ThemeProvider.themeOf(context).data.buttonColor,
           ),
         ],
         onTap: (index) {},
@@ -174,8 +171,9 @@ class _HomepageState extends State<Homepage> {
 class MapButton extends StatelessWidget {
   final IconData icon;
   final Function function;
-
-  MapButton({@required this.function, @required this.icon});
+  final String heroTag;
+  MapButton(
+      {@required this.function, @required this.icon, @required this.heroTag});
 
   @override
   Widget build(BuildContext context) {
@@ -184,16 +182,17 @@ class MapButton extends StatelessWidget {
         top: 10.0,
       ),
       child: Container(
-        child: FloatingActionButton.extended(
+        child: FloatingActionButton(
+          heroTag: this.heroTag,
           onPressed: function,
           elevation: 30,
           shape: new CircleBorder(),
-          backgroundColor:
-              Provider.of<AppState>(context).getTheme().bottomAppBarColor,
-          label: Icon(
+          child: Icon(
             icon,
-            color: Provider.of<AppState>(context).getTheme().buttonColor,
+            color: ThemeProvider.themeOf(context).data.buttonColor,
           ),
+          backgroundColor:
+              ThemeProvider.themeOf(context).data.bottomAppBarColor,
         ),
       ),
     );

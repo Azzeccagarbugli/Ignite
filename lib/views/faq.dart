@@ -6,6 +6,7 @@ import 'package:ignite/widgets/faq_panels.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:ignite/widgets/header.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class FAQ {
   String question;
@@ -43,7 +44,7 @@ class _FaqScreenState extends State<FaqScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Provider.of<AppState>(context).getTheme().primaryColor,
+      backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
       body: ListView(
         scrollDirection: Axis.vertical,
         children: <Widget>[
