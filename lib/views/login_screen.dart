@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ignite/models/app_state.dart';
 import 'package:ignite/widgets/anonimous_button.dart';
 import 'package:ignite/widgets/fab_first_screen.dart';
 import 'package:ignite/widgets/faq_button.dart';
 import 'package:ignite/views/loading_screen.dart';
-import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -134,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen>
               ),
             ),
             title: 'Ignite',
-            logo: 'assets/images/logo.png',
+            logo: 'assets/images/logo_height.png',
             onRecoverPassword: _recoverPassword,
             messages: buildLoginMessages(),
             onLogin: _authUser,

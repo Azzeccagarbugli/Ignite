@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 
 class AppState extends ChangeNotifier {
   FirebaseUser currentUser;
@@ -11,7 +10,7 @@ class AppState extends ChangeNotifier {
       primaryColor: Colors.red[600],
       accentColor: Colors.grey[500],
       bottomAppBarColor: Colors.red[600],
-      buttonColor: Colors.grey[100],
+      buttonColor: Colors.white,
       fontFamily: 'Nunito',
     );
   }
@@ -20,8 +19,8 @@ class AppState extends ChangeNotifier {
     return ThemeData(
       primaryColor: Colors.grey[900],
       accentColor: Colors.grey[700],
-      bottomAppBarColor: Colors.grey[800],
-      buttonColor: Colors.grey[100],
+      bottomAppBarColor: Colors.grey[900],
+      buttonColor: Colors.white,
       fontFamily: 'Nunito',
     );
   }

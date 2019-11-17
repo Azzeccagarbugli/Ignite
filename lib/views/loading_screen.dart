@@ -4,8 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/models/app_state.dart';
-import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../main.dart';
 import 'homepage.dart';
@@ -53,16 +51,18 @@ class _LoadingScreenState extends State<LoadingScreen> {
         name: 'assets/general/intro.flr',
         backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
         loopAnimation: '1',
-        until: () {
-          this.getPosition();
-          this.loadJson();
-        },
+        until: () => this._doubleFunction(),
         endAnimation: '1',
       ),
     );
   }
 
-  Future<dynamic> getPosition() async {
+  Future _doubleFunction() async {
+    await this._getPosition();
+    await this._loadJson();
+  }
+
+  Future<dynamic> _getPosition() async {
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
@@ -70,7 +70,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     });
   }
 
-  Future<dynamic> loadJson() async {
+  Future<dynamic> _loadJson() async {
     await rootBundle
         .loadString(
             'assets/general/${ThemeProvider.optionsOf<CustomMapStyle>(context).filename}.json')

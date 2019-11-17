@@ -1,10 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/models/app_state.dart';
 import 'package:ignite/widgets/faq_panels.dart';
 import 'dart:convert';
-import 'package:provider/provider.dart';
 import 'package:ignite/widgets/header.dart';
 import 'package:theme_provider/theme_provider.dart';
 
