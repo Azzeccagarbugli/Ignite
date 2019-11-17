@@ -9,51 +9,65 @@ class FAQPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: listFaqs.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            top: 10.0,
-            bottom: 4.0,
-          ),
-          child: Card(
-            clipBehavior: Clip.antiAlias,
-            child: ExpandablePanel(
-              header: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  listFaqs[index].question,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                  ),
+    return SingleChildScrollView(
+      physics: ScrollPhysics(),
+      child: Column(
+        children: <Widget>[
+          ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: listFaqs.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  top: 10.0,
+                  bottom: 4.0,
                 ),
-              ),
-              expanded: Container(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    listFaqs[index].answer,
-                    softWrap: true,
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 16.0,
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: ExpandableNotifier(
+                    child: ScrollOnExpand(
+                      scrollOnExpand: true,
+                      child: ExpandablePanel(
+                        header: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            listFaqs[index].question,
+                            style: TextStyle(
+                              color: Colors.red[600],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ),
+                        expanded: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              listFaqs[index].answer,
+                              softWrap: true,
+                              style: TextStyle(
+                                color: Colors.grey[900],
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        tapHeaderToExpand: true,
+                        hasIcon: true,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              tapHeaderToExpand: true,
-              hasIcon: true,
-            ),
+              );
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

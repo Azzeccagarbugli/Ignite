@@ -8,8 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:ignite/components/hydrant_card.dart';
 
 class Homepage extends StatefulWidget {
-  Homepage({@required this.position});
   LatLng position;
+  Homepage({@required this.position});
   @override
   _HomepageState createState() => _HomepageState();
 }
@@ -121,7 +121,9 @@ class _HomepageState extends State<Homepage> {
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
         index: 1,
-        animationDuration: Duration(milliseconds: 500),
+        animationDuration: Duration(
+          milliseconds: 500,
+        ),
         buttonBackgroundColor: Colors.white,
         items: <Icon>[
           Icon(

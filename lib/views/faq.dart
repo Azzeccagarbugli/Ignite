@@ -1,3 +1,4 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +45,7 @@ class _FaqScreenState extends State<FaqScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: ListView(
+        scrollDirection: Axis.vertical,
         children: <Widget>[
           Header(
             title: 'F.A.Q',

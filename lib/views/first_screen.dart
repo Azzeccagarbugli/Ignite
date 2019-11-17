@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ignite/views/faq.dart';
+import 'package:ignite/views/introduction_tutorial.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/components/fab_first_screen.dart';
 
@@ -127,7 +128,7 @@ class _FirstScreenState extends State<FirstScreen>
               usernameHint: 'Email',
               passwordHint: 'Password',
               confirmPasswordHint: 'Conferma la password',
-              loginButton: 'LOG IN',
+              loginButton: 'LOGIN',
               signupButton: 'REGISTRATI',
               forgotPasswordButton: 'Password dimenticata?',
               recoverPasswordButton: 'RECUPERA',
@@ -176,7 +177,7 @@ class _FirstScreenState extends State<FirstScreen>
                 _signInAnonymously();
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) {
-                  return LoadingScreen();
+                  return IntroductionTutorial();
                 }));
               },
             ),
