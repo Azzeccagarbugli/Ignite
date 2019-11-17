@@ -8,10 +8,12 @@ class AnonimousButton extends StatelessWidget {
   final Animation<double> animation;
   final Future<void> anonimousFunction;
   final Alignment align;
-  AnonimousButton(
-      {@required this.animation,
-      @required this.anonimousFunction,
-      @required this.align});
+
+  AnonimousButton({
+    @required this.animation,
+    @required this.anonimousFunction,
+    @required this.align,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +28,7 @@ class AnonimousButton extends StatelessWidget {
         ),
         onPressed: () {
           anonimousFunction;
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
             return IntroductionTutorial();
           }));
         },

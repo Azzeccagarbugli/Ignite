@@ -39,7 +39,7 @@ class FAQPanel extends StatelessWidget {
                             style: TextStyle(
                               color: ThemeProvider.themeOf(context)
                                   .data
-                                  .accentColor,
+                                  .primaryColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 20.0,
                             ),

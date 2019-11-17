@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
+import '../main.dart';
 import 'homepage.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
   LatLng _curloc;
+  String _mapStyle;
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -44,11 +46,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
     ));
     return MaterialApp(
       home: SplashScreen.navigate(
-        next: (context) => Homepage(position: this._curloc),
+        next: (context) => Homepage(
+          position: this._curloc,
+          jsonStyle: this._mapStyle,
+        ),
         name: 'assets/general/intro.flr',
         backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
         loopAnimation: '1',
-        until: () => this.getPosition(),
+        until: () {
+          this.getPosition();
+          this.loadJson();
+        },
         endAnimation: '1',
       ),
     );
@@ -59,6 +67,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _curloc = LatLng(position.latitude, position.longitude);
+    });
+  }
+
+  Future<dynamic> loadJson() async {
+    await rootBundle
+        .loadString(
+            'assets/general/${ThemeProvider.optionsOf<CustomMapStyle>(context).filename}.json')
+        .then((string) {
+      _mapStyle = string;
     });
   }
 }

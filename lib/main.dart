@@ -20,30 +20,44 @@ class Ignite extends StatelessWidget {
 }
 
 class App extends StatelessWidget {
-  const App({
-    Key key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return ThemeProvider(
+      saveThemesOnChange: true,
+      loadThemeOnInit: true,
       themes: [
         AppTheme(
           id: "main",
           description: "Tema principale",
           data: Provider.of<AppState>(context).mainTheme(),
+          options: CustomMapStyle(
+            filename: 'map_style_main',
+          ),
         ),
         AppTheme(
           id: "dark",
           description: "Tema scuro",
           data: Provider.of<AppState>(context).darkTheme(),
+          options: CustomMapStyle(
+            filename: 'map_style_dark',
+          ),
         ),
       ],
       child: ThemeConsumer(
         child: MaterialApp(
+          theme: ThemeData(
+            fontFamily: 'Nunito',
+          ),
           home: LoginScreen(),
         ),
       ),
     );
   }
+}
+
+class CustomMapStyle implements AppThemeOptions {
+  final String filename;
+  CustomMapStyle({
+    @required this.filename,
+  });
 }

@@ -9,7 +9,9 @@ class IntroductionTutorial extends StatelessWidget {
 
   void _onIntroEnd(context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => LoadingScreen()),
+      MaterialPageRoute(
+        builder: (context) => LoadingScreen(),
+      ),
     );
   }
 

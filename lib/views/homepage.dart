@@ -5,14 +5,23 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
+import 'package:ignite/main.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:ignite/widgets/hydrant_card.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import 'loading_screen.dart';
+
 class Homepage extends StatefulWidget {
+  String jsonStyle;
   LatLng position;
-  Homepage({@required this.position});
+
+  Homepage({
+    @required this.position,
+    @required this.jsonStyle,
+  });
+
   @override
   _HomepageState createState() => _HomepageState();
 }
@@ -49,7 +58,7 @@ class _HomepageState extends State<Homepage> {
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
       _mapController = controller;
-      _mapController.setMapStyle(Provider.of<AppState>(context).getMapStyle());
+      _mapController.setMapStyle(widget.jsonStyle);
       this._addMarker();
     });
   }
@@ -127,6 +136,11 @@ class _HomepageState extends State<Homepage> {
                       icon: Icons.autorenew,
                       function: () {
                         ThemeProvider.controllerOf(context).nextTheme();
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => LoadingScreen(),
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -172,8 +186,12 @@ class MapButton extends StatelessWidget {
   final IconData icon;
   final Function function;
   final String heroTag;
-  MapButton(
-      {@required this.function, @required this.icon, @required this.heroTag});
+
+  MapButton({
+    @required this.function,
+    @required this.icon,
+    @required this.heroTag,
+  });
 
   @override
   Widget build(BuildContext context) {
