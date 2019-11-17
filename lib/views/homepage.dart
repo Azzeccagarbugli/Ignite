@@ -89,6 +89,7 @@ class _HomepageState extends State<Homepage> {
     );
 
     return Scaffold(
+      extendBody: true,
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -105,7 +106,10 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 50.0, right: 10.0),
+            padding: const EdgeInsets.only(
+              top: 30.0,
+              right: 5.0,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -116,16 +120,18 @@ class _HomepageState extends State<Homepage> {
                       function: _animateCameraOnMe,
                       icon: Icons.gps_fixed,
                     ),
-                    /* MapButton(
-                      icon: Icons.autorenew,
-                      function: () {
-                        Provider.of<AppState>(context).toggleTheme();
-                        setState(() {
-                          _mapController.setMapStyle(
-                              Provider.of<AppState>(context).getMapStyle());
-                        });
-                      },
-                    ),*/
+                    // MapButton(
+                    //   icon: Icons.autorenew,
+                    //   function: () {
+                    //     Provider.of<AppState>(context).toggleTheme();
+                    //     setState(
+                    //       () {
+                    //         _mapController.setMapStyle(
+                    //             Provider.of<AppState>(context).getMapStyle());
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
               ],
@@ -166,13 +172,18 @@ class _HomepageState extends State<Homepage> {
 }
 
 class MapButton extends StatelessWidget {
+  final IconData icon;
+  final Function function;
+
   MapButton({@required this.function, @required this.icon});
-  IconData icon;
-  Function function;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SafeArea(
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 10.0,
+      ),
+      child: Container(
         child: FloatingActionButton.extended(
           onPressed: function,
           elevation: 30,

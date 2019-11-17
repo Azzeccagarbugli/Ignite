@@ -4,10 +4,11 @@ import 'package:ignite/views/introduction_tutorial.dart';
 import 'fab_first_screen.dart';
 
 class AnonimousButton extends StatelessWidget {
-  AnonimousButton({this.animation, this.anonimousFunction});
-
   final Animation<double> animation;
   final Future<void> anonimousFunction;
+
+  AnonimousButton({this.animation, this.anonimousFunction});
+
   @override
   Widget build(BuildContext context) {
     return FadeTransition(

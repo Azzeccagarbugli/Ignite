@@ -84,7 +84,6 @@ class IntroductionTutorial extends StatelessWidget {
         ),
       ],
       onDone: () => _onIntroEnd(context),
-      onSkip: () => _onIntroEnd(context), // You can override onSkip callback
       showSkipButton: true,
       skipFlex: 0,
       nextFlex: 0,
