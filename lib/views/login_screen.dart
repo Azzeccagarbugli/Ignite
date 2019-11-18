@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ignite/widgets/anonimous_button.dart';
+import 'package:provider/provider.dart';
+import 'package:ignite/models/app_state.dart';
 import 'package:ignite/widgets/fab_first_screen.dart';
-import 'package:ignite/widgets/faq_button.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -15,10 +14,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  AuthResult result;
-
   AnimationController controller;
   Animation<double> animation;
 
@@ -50,9 +45,8 @@ class _LoginScreenState extends State<LoginScreen>
 
   Future<String> _authUser(LoginData login) async {
     try {
-      result = await _auth.signInWithEmailAndPassword(
-          email: login.name, password: login.password);
-      controller.reverse();
+      await Provider.of<AppState>(context)
+          .authMailPassword(login.name, login.password);
     } catch (e) {
       switch (e.code) {
         case 'ERROR_USER_NOT_FOUND':
@@ -66,9 +60,8 @@ class _LoginScreenState extends State<LoginScreen>
 
   Future<String> _newUser(LoginData login) async {
     try {
-      result = await _auth.createUserWithEmailAndPassword(
-          email: login.name, password: login.password);
-      controller.reverse();
+      await Provider.of<AppState>(context)
+          .newMailPassword(login.name, login.password);
     } catch (e) {
       switch (e.code) {
         case 'ERROR_INVALID_EMAIL':
@@ -76,16 +69,13 @@ class _LoginScreenState extends State<LoginScreen>
         case 'ERROR_EMAIL_ALREADY_IN_USE':
           return 'Email già utilizzata';
       }
-      return e.message;
     }
     return null;
   }
 
   Future<String> _recoverPassword(String currentEmail) async {
     try {
-      await _auth.sendPasswordResetEmail(
-        email: currentEmail,
-      );
+      Provider.of<AppState>(context).recoverPassword(currentEmail);
     } catch (e) {
       switch (e.code) {
         case 'ERROR_INVALID_EMAIL':
@@ -96,14 +86,6 @@ class _LoginScreenState extends State<LoginScreen>
       return e.message;
     }
     return null;
-  }
-
-  Future<void> _signInAnonymously() async {
-    try {
-      await _auth.signInAnonymously();
-    } catch (e) {
-      return e;
-    }
   }
 
   @override
@@ -138,24 +120,12 @@ class _LoginScreenState extends State<LoginScreen>
             onLogin: _authUser,
             onSignup: _newUser,
             onSubmitAnimationCompleted: () {
+              controller.reverse();
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) {
                 return LoadingScreen();
               }));
             },
-          ),
-          FaqButton(
-            animation: animation,
-            align: Alignment.bottomLeft,
-          ),
-          AnonimousButton(
-            animation: animation,
-            anonimousFunction: _signInAnonymously(),
-            align: Alignment.bottomRight,
-          ),
-          ThemeButton(
-            align: Alignment.bottomCenter,
-            animation: animation,
           ),
         ],
       ),

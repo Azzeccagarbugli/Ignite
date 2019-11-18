@@ -1,9 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ignite/views/faq.dart';
+import 'package:ignite/views/fireman_screen.dart';
+import 'package:ignite/views/loading_screen.dart';
 
 class AppState extends ChangeNotifier {
+  AuthResult result;
   FirebaseUser currentUser;
-  String mapStyle;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Firestore _db = Firestore.instance;
+
+  Future<void> authMailPassword(String mail, String pass) async {
+    try {
+      result =
+          await _auth.signInWithEmailAndPassword(email: mail, password: pass);
+      this.currentUser = result.user;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> newMailPassword(String mail, String pass) async {
+    try {
+      result = await _auth.createUserWithEmailAndPassword(
+          email: mail, password: pass);
+    } catch (e) {
+      throw e;
+    }
+    _db.collection('users').add({
+      'email': mail,
+      'isFireman': false,
+    });
+  }
+
+  Future<void> recoverPassword(String currentEmail) async {
+    try {
+      await _auth.sendPasswordResetEmail(
+        email: currentEmail,
+      );
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<bool> isCurrentUserFireman() async {
+    if (currentUser != null) {
+      QuerySnapshot querySnap = await _db
+          .collection('users')
+          .where('email', isEqualTo: "${currentUser.email}")
+          .getDocuments();
+      return querySnap.documents[0]["isFireman"];
+    } else {
+      return false;
+    }
+  }
 
   ThemeData mainTheme() {
     return ThemeData(
@@ -23,31 +74,5 @@ class AppState extends ChangeNotifier {
       buttonColor: Colors.white,
       fontFamily: 'Nunito',
     );
-  }
-
-  /*void loadStyle() {
-    if (_isDark) {
-      rootBundle
-          .loadString('assets/general/map_style_dark.json')
-          .then((string) {
-        mapStyle = string;
-      });
-    } else {
-      rootBundle
-          .loadString('assets/general/map_style_main.json')
-          .then((string) {
-        mapStyle = string;
-      });
-    }
-  }
-
-  void toggleTheme() {
-    appTheme = _isDark ? _mainTheme() : _darkTheme();
-    loadStyle();
-    notifyListeners();
-  }*/
-
-  String getMapStyle() {
-    return mapStyle;
   }
 }

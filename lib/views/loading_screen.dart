@@ -4,9 +4,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/services.dart';
+import 'package:ignite/models/app_state.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../main.dart';
+import 'fireman_screen.dart';
 import 'homepage.dart';
+import 'package:provider/provider.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -55,6 +58,18 @@ class _LoadingScreenState extends State<LoadingScreen> {
         endAnimation: '1',
       ),
     );
+  }
+
+  Future<void> routeUser(BuildContext context) async {
+    if (await Provider.of<AppState>(context).isCurrentUserFireman()) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return FiremanScreen();
+      }));
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return Homepage();
+      }));
+    }
   }
 
   Future _doubleFunction() async {
