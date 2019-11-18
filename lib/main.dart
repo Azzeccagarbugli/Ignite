@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ignite/models/app_state.dart';
+import 'package:ignite/views/homepage.dart';
 import 'package:ignite/views/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';

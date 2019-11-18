@@ -35,17 +35,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     ));
     return MaterialApp(
       home: SplashScreen.navigate(
-        next: (context) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) {
-            return _isFireman
-                ? FiremanScreen()
-                : Homepage(
-                    position: this._curloc,
-                    jsonStyle: this._mapStyle,
-                  );
-          }));
-        },
+        next: (context) => screenChange(),
         name: 'assets/general/intro.flr',
         backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
         loopAnimation: '1',
@@ -55,19 +45,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
     );
   }
 
-  Widget screenChange() {
-    Widget _temp;
-
+  StatefulWidget screenChange() {
     if (_isFireman) {
-      _temp = FiremanScreen();
+      return FiremanScreen();
     } else {
-      _temp = Homepage(
+      return Homepage(
         position: this._curloc,
         jsonStyle: this._mapStyle,
       );
     }
-
-    return _temp;
   }
 
   Future _untilFunction() async {
@@ -76,8 +62,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
     await this._loadJson();
   }
 
-  Future<dynamic> _getIsFireman() async {
+  Future<bool> _getIsFireman() async {
     _isFireman = await Provider.of<AppState>(context).isCurrentUserFireman();
+    return _isFireman;
   }
 
   Future<dynamic> _getPosition() async {
