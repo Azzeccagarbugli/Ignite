@@ -20,19 +20,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   LatLng _curloc;
   String _mapStyle;
   FirebaseAuth _auth = FirebaseAuth.instance;
-
-  @override
-  void initState() {
-    super.initState();
-    printMail();
-  }
-
-  void printMail() async {
-    FirebaseUser utente = await _auth.currentUser();
-    if (utente != null) {
-      print('${utente.email} - ');
-    }
-  }
+  bool _isFireman;
 
   @override
   Widget build(BuildContext context) {
@@ -47,34 +35,49 @@ class _LoadingScreenState extends State<LoadingScreen> {
     ));
     return MaterialApp(
       home: SplashScreen.navigate(
-        next: (context) => Homepage(
-          position: this._curloc,
-          jsonStyle: this._mapStyle,
-        ),
+        next: (context) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) {
+            return _isFireman
+                ? FiremanScreen()
+                : Homepage(
+                    position: this._curloc,
+                    jsonStyle: this._mapStyle,
+                  );
+          }));
+        },
         name: 'assets/general/intro.flr',
         backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
         loopAnimation: '1',
-        until: () => this._doubleFunction(),
+        until: () => this._untilFunction(),
         endAnimation: '1',
       ),
     );
   }
 
-  Future<void> routeUser(BuildContext context) async {
-    if (await Provider.of<AppState>(context).isCurrentUserFireman()) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return FiremanScreen();
-      }));
+  Widget screenChange() {
+    Widget _temp;
+
+    if (_isFireman) {
+      _temp = FiremanScreen();
     } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return Homepage();
-      }));
+      _temp = Homepage(
+        position: this._curloc,
+        jsonStyle: this._mapStyle,
+      );
     }
+
+    return _temp;
   }
 
-  Future _doubleFunction() async {
+  Future _untilFunction() async {
+    await this._getIsFireman();
     await this._getPosition();
     await this._loadJson();
+  }
+
+  Future<dynamic> _getIsFireman() async {
+    _isFireman = await Provider.of<AppState>(context).isCurrentUserFireman();
   }
 
   Future<dynamic> _getPosition() async {
