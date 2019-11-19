@@ -6,6 +6,7 @@ import 'package:ignite/models/app_state.dart';
 import 'package:ignite/widgets/fab_first_screen.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -47,6 +48,23 @@ class _LoginScreenState extends State<LoginScreen>
     try {
       await Provider.of<AppState>(context)
           .authMailPassword(login.name, login.password);
+    } catch (e) {
+      switch (e.code) {
+        case 'ERROR_USER_NOT_FOUND':
+          return 'Email non corretta';
+        case 'ERROR_WRONG_PASSWORD':
+          return 'Password non corretta';
+      }
+    }
+    return null;
+  }
+
+  Future<void> _authSignInGoogle() async {
+    try {
+      await Provider.of<AppState>(context).signInWithGoogle();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return LoadingScreen();
+      }));
     } catch (e) {
       switch (e.code) {
         case 'ERROR_USER_NOT_FOUND':
@@ -127,6 +145,34 @@ class _LoginScreenState extends State<LoginScreen>
               }));
             },
           ),
+          Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                bottom: 24.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SocialChip(
+                    label: 'Google',
+                    icon: FontAwesomeIcons.google,
+                    function: () {
+                      _authSignInGoogle();
+                    },
+                  ),
+                  SizedBox(
+                    width: 16.0,
+                  ),
+                  SocialChip(
+                    label: 'Facebook',
+                    icon: FontAwesomeIcons.facebookF,
+                    function: () {},
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -145,6 +191,44 @@ class _LoginScreenState extends State<LoginScreen>
       confirmPasswordError: 'Le due password inserite non corrispondono!',
       recoverPasswordDescription: 'Procedura per il recupero della password',
       recoverPasswordSuccess: 'Password recuperata con successo',
+    );
+  }
+}
+
+class SocialChip extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Function function;
+
+  SocialChip({
+    @required this.label,
+    @required this.icon,
+    @required this.function,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionChip(
+      onPressed: function,
+      backgroundColor: Colors.white,
+      elevation: 12,
+      labelPadding: EdgeInsets.all(
+        6.0,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+          20.0,
+        ),
+      ),
+      labelStyle: TextStyle(
+        color: Colors.grey[600],
+        fontFamily: 'Nunito',
+      ),
+      avatar: Icon(
+        icon,
+        color: ThemeProvider.themeOf(context).data.primaryColor,
+      ),
+      label: Text(label),
     );
   }
 }

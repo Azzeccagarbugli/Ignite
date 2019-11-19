@@ -21,6 +21,8 @@ dependencies:
   flutter_svg: ^0.14.4
   theme_provider: ^0.3.1
   cloud_firestore: ^0.12.10
+  font_awesome_flutter: ^8.5.0
+  google_sign_in: ^4.0.14
 
 dev_dependencies:
   flutter_test:

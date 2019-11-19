@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ignite/views/faq.dart';
-import 'package:ignite/views/fireman_screen.dart';
-import 'package:ignite/views/loading_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AppState extends ChangeNotifier {
   AuthResult result;
   FirebaseUser currentUser;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
   final Firestore _db = Firestore.instance;
 
   Future<void> authMailPassword(String mail, String pass) async {
@@ -32,6 +31,23 @@ class AppState extends ChangeNotifier {
       'email': mail,
       'isFireman': false,
     });
+  }
+
+  Future<void> signInWithGoogle() async {
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    try {
+      result = await _auth.signInWithCredential(credential);
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> recoverPassword(String currentEmail) async {

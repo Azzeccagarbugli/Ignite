@@ -1,4 +1,4 @@
-package com.example.ignite
+package com.github.azzeccagarbugli.ignite
 
 import android.os.Bundle
 import io.flutter.app.FlutterActivity
