@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ignite/models/app_state.dart';
-import 'package:ignite/views/homepage.dart';
 import 'package:ignite/views/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -31,16 +30,18 @@ class App extends StatelessWidget {
           id: "main",
           description: "Tema principale",
           data: Provider.of<AppState>(context).mainTheme(),
-          options: CustomMapStyle(
+          options: CustomOptions(
             filename: 'map_style_main',
+            brightness: Brightness.dark,
           ),
         ),
         AppTheme(
           id: "dark",
           description: "Tema scuro",
           data: Provider.of<AppState>(context).darkTheme(),
-          options: CustomMapStyle(
+          options: CustomOptions(
             filename: 'map_style_dark',
+            brightness: Brightness.light,
           ),
         ),
       ],
@@ -56,9 +57,11 @@ class App extends StatelessWidget {
   }
 }
 
-class CustomMapStyle implements AppThemeOptions {
+class CustomOptions implements AppThemeOptions {
   final String filename;
-  CustomMapStyle({
+  final Brightness brightness;
+  CustomOptions({
     @required this.filename,
+    @required this.brightness,
   });
 }

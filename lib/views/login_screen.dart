@@ -13,35 +13,22 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with TickerProviderStateMixin {
-  AnimationController controller;
-  Animation<double> animation;
-
-  int animationTime = 1200;
+class _LoginScreenState extends State<LoginScreen> {
+  double _width = 0;
+  double _opacity = 0;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
-    controller = AnimationController(
-      duration: Duration(
-        milliseconds: animationTime,
-      ),
-      vsync: this,
-    );
-
-    animation = CurvedAnimation(
-      parent: controller,
-      curve: Curves.linear,
-    );
-
-    controller.forward();
+    animationBuilder();
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+  Future animationBuilder() async {
+    await Future.delayed(Duration(milliseconds: 800));
+    setState(() {
+      _width = 122;
+      _opacity = _opacity == 0.0 ? 1.0 : 0.0;
+    });
   }
 
   Future<String> _authUser(LoginData login) async {
@@ -130,6 +117,9 @@ class _LoginScreenState extends State<LoginScreen>
               titleStyle: TextStyle(
                 color: Colors.white,
               ),
+              buttonTheme: LoginButtonTheme(
+                splashColor: ThemeProvider.themeOf(context).data.accentColor,
+              ),
             ),
             title: 'Ignite',
             logo: 'assets/images/logo_height.png',
@@ -138,7 +128,6 @@ class _LoginScreenState extends State<LoginScreen>
             onLogin: _authUser,
             onSignup: _newUser,
             onSubmitAnimationCompleted: () {
-              controller.reverse();
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) {
                 return LoadingScreen();
@@ -151,23 +140,53 @@ class _LoginScreenState extends State<LoginScreen>
               padding: const EdgeInsets.only(
                 bottom: 24.0,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  SocialChip(
-                    label: 'Google',
-                    icon: FontAwesomeIcons.google,
-                    function: () {
-                      _authSignInGoogle();
-                    },
+                  AnimatedOpacity(
+                    duration: Duration(
+                      milliseconds: 1200,
+                    ),
+                    opacity: _opacity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(
+                            'Altrimenti effettua l\'accesso con',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    width: 16.0,
-                  ),
-                  SocialChip(
-                    label: 'Facebook',
-                    icon: FontAwesomeIcons.facebookF,
-                    function: () {},
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SocialChip(
+                        label: 'Google',
+                        icon: FontAwesomeIcons.google,
+                        function: () {
+                          _authSignInGoogle();
+                        },
+                        width: _width,
+                        opacity: _opacity,
+                      ),
+                      SizedBox(
+                        width: 8.0,
+                      ),
+                      SocialChip(
+                        label: 'Facebook',
+                        icon: FontAwesomeIcons.facebookF,
+                        function: () {},
+                        width: _width,
+                        opacity: _opacity,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -199,36 +218,60 @@ class SocialChip extends StatelessWidget {
   final String label;
   final IconData icon;
   final Function function;
+  final double width;
+  final double opacity;
 
   SocialChip({
     @required this.label,
     @required this.icon,
     @required this.function,
+    @required this.width,
+    @required this.opacity,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ActionChip(
-      onPressed: function,
-      backgroundColor: Colors.white,
-      elevation: 12,
-      labelPadding: EdgeInsets.all(
-        6.0,
+    return AnimatedContainer(
+      duration: Duration(
+        milliseconds: 700,
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          20.0,
+      width: width,
+      child: ActionChip(
+        onPressed: function,
+        backgroundColor: Colors.white,
+        elevation: 12,
+        labelPadding: EdgeInsets.all(
+          6.0,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            20.0,
+          ),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey[600],
+          fontFamily: 'Nunito',
+        ),
+        avatar: AnimatedOpacity(
+          duration: Duration(
+            milliseconds: 1900,
+          ),
+          opacity: opacity,
+          child: Icon(
+            icon,
+            color: ThemeProvider.themeOf(context).data.primaryColor,
+          ),
+        ),
+        label: AnimatedOpacity(
+          duration: Duration(
+            milliseconds: 1900,
+          ),
+          opacity: opacity,
+          child: Text(
+            label,
+          ),
         ),
       ),
-      labelStyle: TextStyle(
-        color: Colors.grey[600],
-        fontFamily: 'Nunito',
-      ),
-      avatar: Icon(
-        icon,
-        color: ThemeProvider.themeOf(context).data.primaryColor,
-      ),
-      label: Text(label),
     );
   }
 }

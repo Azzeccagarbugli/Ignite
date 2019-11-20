@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:ignite/widgets/hydrant_card.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import '../main.dart';
 import 'loading_screen.dart';
 
 class Homepage extends StatefulWidget {
@@ -74,7 +75,8 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
+      statusBarIconBrightness:
+          ThemeProvider.optionsOf<CustomOptions>(context).brightness,
       systemNavigationBarColor:
           ThemeProvider.themeOf(context).data.bottomAppBarColor,
       systemNavigationBarIconBrightness: Brightness.light,

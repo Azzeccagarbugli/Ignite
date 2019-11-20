@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -19,7 +18,6 @@ class LoadingScreen extends StatefulWidget {
 class _LoadingScreenState extends State<LoadingScreen> {
   LatLng _curloc;
   String _mapStyle;
-  FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isFireman;
 
   @override
@@ -78,7 +76,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Future<dynamic> _loadJson() async {
     await rootBundle
         .loadString(
-            'assets/general/${ThemeProvider.optionsOf<CustomMapStyle>(context).filename}.json')
+            'assets/general/${ThemeProvider.optionsOf<CustomOptions>(context).filename}.json')
         .then((string) {
       _mapStyle = string;
     });
