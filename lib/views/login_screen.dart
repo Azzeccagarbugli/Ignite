@@ -24,9 +24,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future animationBuilder() async {
-    await Future.delayed(Duration(milliseconds: 800));
+    await Future.delayed(Duration(
+      milliseconds: 800,
+    ));
     setState(() {
-      _width = 122;
+      _width = _width == 0.0 ? 122.0 : 0.0;
       _opacity = _opacity == 0.0 ? 1.0 : 0.0;
     });
   }
@@ -47,20 +49,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _authSignInGoogle() async {
-    try {
-      await Provider.of<AppState>(context).signInWithGoogle();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return LoadingScreen();
-      }));
-    } catch (e) {
-      switch (e.code) {
-        case 'ERROR_USER_NOT_FOUND':
-          return 'Email non corretta';
-        case 'ERROR_WRONG_PASSWORD':
-          return 'Password non corretta';
-      }
-    }
-    return null;
+    await Provider.of<AppState>(context).signInWithGoogle();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return LoadingScreen();
+    }));
+  }
+
+  Future<void> _authSignInFacebook() async {
+    await Provider.of<AppState>(context).signInWithFacebook();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return LoadingScreen();
+    }));
   }
 
   Future<String> _newUser(LoginData login) async {
@@ -148,6 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     duration: Duration(
                       milliseconds: 1200,
                     ),
+                    curve: Curves.easeInOutCubic,
                     opacity: _opacity,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +182,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       SocialChip(
                         label: 'Facebook',
                         icon: FontAwesomeIcons.facebookF,
-                        function: () {},
+                        function: () {
+                          _authSignInFacebook();
+                        },
                         width: _width,
                         opacity: _opacity,
                       ),
@@ -235,6 +237,7 @@ class SocialChip extends StatelessWidget {
       duration: Duration(
         milliseconds: 700,
       ),
+      curve: Curves.easeInOutCubic,
       width: width,
       child: ActionChip(
         onPressed: function,
@@ -266,6 +269,7 @@ class SocialChip extends StatelessWidget {
           duration: Duration(
             milliseconds: 1900,
           ),
+          curve: Curves.easeInOutCubic,
           opacity: opacity,
           child: Text(
             label,

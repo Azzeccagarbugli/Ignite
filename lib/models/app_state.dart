@@ -1,14 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:http/http.dart' as http;
 
 class AppState extends ChangeNotifier {
   AuthResult result;
   FirebaseUser currentUser;
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
   final Firestore _db = Firestore.instance;
+
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final facebookLogin = FacebookLogin();
 
   Future<void> authMailPassword(String mail, String pass) async {
     try {
@@ -47,6 +54,44 @@ class AppState extends ChangeNotifier {
       result = await _auth.signInWithCredential(credential);
     } catch (e) {
       throw e;
+    }
+
+    _db
+        .collection('users')
+        .where('email', isEqualTo: '${result.user.email}')
+        .getDocuments()
+        .then((snapshot) {
+      if (snapshot.documents.isEmpty) {
+        _db.collection('users').add({
+          'email': result.user.email,
+          'isFireman': false,
+        });
+      } //else {
+      // TODO inserire blocco login screen
+      // }
+    });
+  }
+
+  Future<void> signInWithFacebook() async {
+    final result = await facebookLogin.logIn(['email']);
+
+    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        final FacebookAccessToken accessToken = result.accessToken;
+        final graphResponse = await http.get(
+            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$accessToken');
+        final profile = json.decode(graphResponse.body);
+        print(profile);
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        print('Login cancelled by the user.');
+        break;
+      case FacebookLoginStatus.error:
+        print('Something went wrong with the login process.\n'
+            'Here\'s the error Facebook gave us: ${result.errorMessage}');
+        break;
     }
   }
 
