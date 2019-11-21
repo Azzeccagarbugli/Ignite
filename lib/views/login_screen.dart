@@ -124,6 +124,12 @@ class _LoginScreenState extends State<LoginScreen> {
             logo: 'assets/images/logo_height.png',
             onRecoverPassword: _recoverPassword,
             messages: buildLoginMessages(),
+            emailValidator: (value) {
+              return value.isEmpty ? 'Email inserita non valida' : null;
+            },
+            passwordValidator: (value) {
+              return value.isEmpty ? 'Password inserita non valida' : null;
+            },
             onLogin: _authUser,
             onSignup: _newUser,
             onSubmitAnimationCompleted: () {
