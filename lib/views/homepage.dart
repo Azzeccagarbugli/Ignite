@@ -5,9 +5,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
+import 'package:ignite/models/app_state.dart';
+import 'package:ignite/widgets/homepage_button.dart';
 import 'package:ignite/widgets/hydrant_card.dart';
 import 'package:theme_provider/theme_provider.dart';
-
+import 'package:provider/provider.dart';
 import '../main.dart';
 import 'loading_screen.dart';
 
@@ -125,12 +127,12 @@ class _HomepageState extends State<Homepage> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    MapButton(
+                    HomePageButton(
                       function: _animateCameraOnMe,
                       icon: Icons.gps_fixed,
                       heroTag: 'GPS',
                     ),
-                    MapButton(
+                    HomePageButton(
                       heroTag: 'THEME',
                       icon: Icons.autorenew,
                       function: () {
@@ -140,6 +142,13 @@ class _HomepageState extends State<Homepage> {
                             builder: (context) => LoadingScreen(),
                           ),
                         );
+                      },
+                    ),
+                    HomePageButton(
+                      heroTag: 'LOGOUT',
+                      icon: Icons.backspace,
+                      function: () {
+                        Provider.of<AppState>(context).logOut(context);
                       },
                     ),
                   ],
@@ -176,41 +185,6 @@ class _HomepageState extends State<Homepage> {
           ),
         ],
         onTap: (index) {},
-      ),
-    );
-  }
-}
-
-class MapButton extends StatelessWidget {
-  final IconData icon;
-  final Function function;
-  final String heroTag;
-
-  MapButton({
-    @required this.function,
-    @required this.icon,
-    @required this.heroTag,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 10.0,
-      ),
-      child: Container(
-        child: FloatingActionButton(
-          heroTag: this.heroTag,
-          onPressed: function,
-          elevation: 30,
-          shape: new CircleBorder(),
-          child: Icon(
-            icon,
-            color: ThemeProvider.themeOf(context).data.buttonColor,
-          ),
-          backgroundColor:
-              ThemeProvider.themeOf(context).data.bottomAppBarColor,
-        ),
       ),
     );
   }

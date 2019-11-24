@@ -2,6 +2,8 @@
 # Created by https://www.gitignore.io/api/dart,latex,flutter,android,darteditor,visualstudio,androidstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=dart,latex,flutter,android,darteditor,visualstudio,androidstudio,visualstudiocode
 
+key.properties
+key.jks
 ### Android ###
 # Built application files
 *.apk

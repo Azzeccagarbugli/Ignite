@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:http/http.dart' as http;
+import 'package:ignite/views/login_screen.dart';
 
 class AppState extends ChangeNotifier {
   AuthResult result;
@@ -31,67 +33,59 @@ class AppState extends ChangeNotifier {
     try {
       result = await _auth.createUserWithEmailAndPassword(
           email: mail, password: pass);
+      this.updateUsersCollection(mail, false);
     } catch (e) {
       throw e;
     }
-    _db.collection('users').add({
-      'email': mail,
-      'isFireman': false,
-    });
   }
 
   Future<void> signInWithGoogle() async {
-    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
-
     try {
+      final GoogleSignInAccount googleSignInAccount =
+          await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
       result = await _auth.signInWithCredential(credential);
+      currentUser = result.user;
+      this.updateUsersCollection(currentUser.email, false);
     } catch (e) {
       throw e;
     }
-
-    _db
-        .collection('users')
-        .where('email', isEqualTo: '${result.user.email}')
-        .getDocuments()
-        .then((snapshot) {
-      if (snapshot.documents.isEmpty) {
-        _db.collection('users').add({
-          'email': result.user.email,
-          'isFireman': false,
-        });
-      } //else {
-      // TODO inserire blocco login screen
-      // }
-    });
   }
 
   Future<void> signInWithFacebook() async {
-    final result = await facebookLogin.logIn(['email']);
-
+    final fbResult = await facebookLogin.logIn(['email']);
     facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+    try {
+      switch (fbResult.status) {
+        case FacebookLoginStatus.loggedIn:
+          FacebookAccessToken myToken = fbResult.accessToken;
+          AuthCredential credential =
+              FacebookAuthProvider.getCredential(accessToken: myToken.token);
 
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        final FacebookAccessToken accessToken = result.accessToken;
-        final graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$accessToken');
-        final profile = json.decode(graphResponse.body);
-        print(profile);
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        print('Login cancelled by the user.');
-        break;
-      case FacebookLoginStatus.error:
-        print('Something went wrong with the login process.\n'
-            'Here\'s the error Facebook gave us: ${result.errorMessage}');
-        break;
+          result = await _auth.signInWithCredential(credential);
+          currentUser = result.user;
+          this.updateUsersCollection(currentUser.email, false);
+
+          break;
+        case FacebookLoginStatus.cancelledByUser:
+          throw new AuthException(
+              'CANCELLED_BY_USER', 'Login cancellato dall\'utente');
+          break;
+        case FacebookLoginStatus.error:
+          throw new AuthException(
+              'ERROR',
+              'Something went wrong with the login process.\n'
+                  'Here\'s the error Facebook gave us: ${fbResult.errorMessage}');
+          break;
+      }
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -117,6 +111,23 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  void updateUsersCollection(String mail, bool isFireman) {
+    _db
+        .collection('users')
+        .where('email', isEqualTo: '${mail}')
+        .getDocuments()
+        .then((snapshot) {
+      if (snapshot.documents.isEmpty) {
+        _db.collection('users').add({
+          'email': mail,
+          'isFireman': isFireman,
+        });
+      } //else {
+      // TODO inserire blocco login screen
+      // }
+    });
+  }
+
   ThemeData mainTheme() {
     return ThemeData(
       primaryColor: Colors.red[600],
@@ -135,5 +146,22 @@ class AppState extends ChangeNotifier {
       buttonColor: Colors.white,
       fontFamily: 'Nunito',
     );
+  }
+
+  void logOut(BuildContext context) async {
+    _auth.signOut();
+    print("L'utente si sta disconnettendo");
+    if (await googleSignIn.isSignedIn()) {
+      googleSignIn.signOut();
+      print("L'utente era loggato con Google");
+    }
+    if (await facebookLogin.isLoggedIn) {
+      facebookLogin.logOut();
+      print("L'utente era loggato con Facebook");
+    }
+    currentUser = await _auth.currentUser();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return LoginScreen();
+    }));
   }
 }

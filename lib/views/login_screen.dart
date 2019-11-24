@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:ignite/widgets/social_chip.dart';
 import 'package:provider/provider.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:ignite/widgets/fab_first_screen.dart';
@@ -48,18 +49,70 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  Future<void> _authSignInGoogle() async {
-    await Provider.of<AppState>(context).signInWithGoogle();
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return LoadingScreen();
-    }));
+  Future<String> _authSignInGoogle() async {
+    try {
+      await Provider.of<AppState>(context).signInWithGoogle();
+    } catch (e) {
+      switch (e.code) {
+        case 'ERROR_INVALID_CREDENTIAL':
+          return 'Errore nelle credenziali';
+        case 'ERROR_USER_DISABLED':
+          return 'Utente disabilitato';
+        case 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
+          return 'L\'account esiste gia con diverse credenziali';
+        case 'ERROR_OPERATION_NOT_ALLOWED':
+          return 'Operazione non consentita';
+        case 'ERROR_INVALID_ACTION_CODE':
+          return 'Action code non valido';
+      }
+    }
+    return null;
   }
 
-  Future<void> _authSignInFacebook() async {
+  Future<void> _googleLogin() async {
+    String result = await _authSignInGoogle();
+    if (result == null) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return LoadingScreen();
+      }));
+    } else {
+      showLoginDialog(result);
+    }
+  }
+
+  Future<String> _authSignInFacebook() async {
+    try {
+      await Provider.of<AppState>(context).signInWithFacebook();
+    } catch (e) {
+      switch (e.code) {
+        case 'ERROR_INVALID_CREDENTIAL':
+          return 'Errore nelle credenziali';
+        case 'ERROR_USER_DISABLED':
+          return 'Utente disabilitato';
+        case 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
+          return 'L\'account esiste gia con diverse credenziali';
+        case 'ERROR_OPERATION_NOT_ALLOWED':
+          return 'Operazione non consentita';
+        case 'ERROR_INVALID_ACTION_CODE':
+          return 'Action code non valido';
+        case 'CANCELLED_BY_USER':
+          return e.message;
+        case 'ERROR':
+          return e.message;
+      }
+    }
     await Provider.of<AppState>(context).signInWithFacebook();
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return LoadingScreen();
-    }));
+  }
+
+  Future<void> _fbLogin() async {
+    String result = await _authSignInFacebook();
+    if (result == null) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return LoadingScreen();
+      }));
+    } else {
+      showLoginDialog(result);
+    }
   }
 
   Future<String> _newUser(LoginData login) async {
@@ -90,6 +143,25 @@ class _LoginScreenState extends State<LoginScreen> {
       return e.message;
     }
     return null;
+  }
+
+  Future showLoginDialog(String result) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Errore nell\'autenticazione'),
+            content: Text(result),
+            actions: <Widget>[
+              new FlatButton(
+                child: Text('Chiudi'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
   }
 
   @override
@@ -177,7 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         label: 'Google',
                         icon: FontAwesomeIcons.google,
                         function: () {
-                          _authSignInGoogle();
+                          _googleLogin();
                         },
                         width: _width,
                         opacity: _opacity,
@@ -189,7 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         label: 'Facebook',
                         icon: FontAwesomeIcons.facebookF,
                         function: () {
-                          _authSignInFacebook();
+                          _fbLogin();
                         },
                         width: _width,
                         opacity: _opacity,
@@ -218,94 +290,6 @@ class _LoginScreenState extends State<LoginScreen> {
       confirmPasswordError: 'Le due password inserite non corrispondono!',
       recoverPasswordDescription: 'Procedura per il recupero della password',
       recoverPasswordSuccess: 'Password recuperata con successo',
-    );
-  }
-}
-
-class SocialChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final Function function;
-  final double width;
-  final double opacity;
-
-  SocialChip({
-    @required this.label,
-    @required this.icon,
-    @required this.function,
-    @required this.width,
-    @required this.opacity,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: Duration(
-        milliseconds: 700,
-      ),
-      curve: Curves.easeInOutCubic,
-      width: width,
-      child: ActionChip(
-        onPressed: function,
-        backgroundColor: Colors.white,
-        elevation: 12,
-        labelPadding: EdgeInsets.all(
-          6.0,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            20.0,
-          ),
-        ),
-        labelStyle: TextStyle(
-          color: Colors.grey[600],
-          fontFamily: 'Nunito',
-        ),
-        avatar: AnimatedOpacity(
-          duration: Duration(
-            milliseconds: 1900,
-          ),
-          opacity: opacity,
-          child: Icon(
-            icon,
-            color: ThemeProvider.themeOf(context).data.primaryColor,
-          ),
-        ),
-        label: AnimatedOpacity(
-          duration: Duration(
-            milliseconds: 1900,
-          ),
-          curve: Curves.easeInOutCubic,
-          opacity: opacity,
-          child: Text(
-            label,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ThemeButton extends StatelessWidget {
-  final Animation<double> animation;
-  final Alignment align;
-  ThemeButton({@required this.animation, @required this.align});
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: animation,
-      child: FabLoginScreen(
-        alignment: align,
-        heroTag: 'button',
-        icon: Icon(
-          Icons.autorenew,
-          color: ThemeProvider.themeOf(context).data.primaryColor,
-        ),
-        onPressed: () {
-          ThemeProvider.controllerOf(context).nextTheme();
-        },
-      ),
     );
   }
 }
