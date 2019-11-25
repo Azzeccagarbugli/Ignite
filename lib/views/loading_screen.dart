@@ -7,7 +7,7 @@ import 'package:ignite/models/app_state.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../main.dart';
 import 'fireman_screen.dart';
-import 'homepage.dart';
+import 'citizen_screen.dart';
 import 'package:provider/provider.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -50,7 +50,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         jsonStyle: this._mapStyle,
       );
     } else {
-      return Homepage(
+      return CitizenScreen(
         position: this._curloc,
         jsonStyle: this._mapStyle,
       );
