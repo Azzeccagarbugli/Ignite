@@ -21,7 +21,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    sasso();
     animationBuilder();
+  }
+
+  Future<void> sasso() async {
+    await Provider.of<AppState>(context).accountsLogOut();
   }
 
   Future animationBuilder() async {
@@ -72,9 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _googleLogin() async {
     String result = await _authSignInGoogle();
     if (result == null) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return LoadingScreen();
-      }));
+      this._loadingScreen();
     } else {
       showLoginDialog(result);
     }
@@ -107,9 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _fbLogin() async {
     String result = await _authSignInFacebook();
     if (result == null) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return LoadingScreen();
-      }));
+      this._loadingScreen();
     } else {
       showLoginDialog(result);
     }
@@ -205,10 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
             onLogin: _authUser,
             onSignup: _newUser,
             onSubmitAnimationCompleted: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) {
-                return LoadingScreen();
-              }));
+              this._loadingScreen();
             },
           ),
           Align(
@@ -275,6 +273,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  void _loadingScreen() {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return LoadingScreen();
+    }));
   }
 
   LoginMessages buildLoginMessages() {

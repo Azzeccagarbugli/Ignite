@@ -13,7 +13,7 @@ class _FiremanScreenState extends State<FiremanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Porco porco'),
+        title: Text(Provider.of<AppState>(context).getUser().email),
         backgroundColor: Colors.red,
       ),
       body: Center(

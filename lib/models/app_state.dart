@@ -1,13 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:http/http.dart' as http;
 import 'package:ignite/views/login_screen.dart';
+import 'dart:developer' as dev;
 
 class AppState extends ChangeNotifier {
   AuthResult result;
@@ -60,7 +57,7 @@ class AppState extends ChangeNotifier {
 
   Future<void> signInWithFacebook() async {
     final fbResult = await facebookLogin.logIn(['email']);
-    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+    facebookLogin.loginBehavior = FacebookLoginBehavior.nativeOnly;
     try {
       switch (fbResult.status) {
         case FacebookLoginStatus.loggedIn:
@@ -122,9 +119,7 @@ class AppState extends ChangeNotifier {
           'email': mail,
           'isFireman': isFireman,
         });
-      } //else {
-      // TODO inserire blocco login screen
-      // }
+      }
     });
   }
 
@@ -149,19 +144,26 @@ class AppState extends ChangeNotifier {
   }
 
   void logOut(BuildContext context) async {
-    _auth.signOut();
-    print("L'utente si sta disconnettendo");
-    if (await googleSignIn.isSignedIn()) {
-      googleSignIn.signOut();
-      print("L'utente era loggato con Google");
-    }
-    if (await facebookLogin.isLoggedIn) {
-      facebookLogin.logOut();
-      print("L'utente era loggato con Facebook");
-    }
-    currentUser = await _auth.currentUser();
+    await this.accountsLogOut();
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return LoginScreen();
     }));
+  }
+
+  Future<void> accountsLogOut() async {
+    print("L'utente si sta disconnettendo");
+    print("Utente prima del logout: ${currentUser.email}");
+    await _auth.signOut();
+    print("Fire logout");
+    await googleSignIn.signOut();
+    print("Google logout");
+    await facebookLogin.logOut();
+    currentUser = await _auth.currentUser();
+
+    print("Utente disconnesso");
+  }
+
+  FirebaseUser getUser() {
+    return currentUser;
   }
 }

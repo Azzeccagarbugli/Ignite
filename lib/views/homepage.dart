@@ -100,6 +100,9 @@ class _HomepageState extends State<Homepage> {
     );
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(Provider.of<AppState>(context).getUser().email),
+      ),
       extendBody: true,
       body: Stack(
         children: <Widget>[
