@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "815408715441-vgm9vtcf7k5ucl2bqq4kt71qtah1pq7h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.azzeccagarbugli.ignite",
+            "certificate_hash": "940b2dc319c0e12fbd71cf6d1a87b1ae9ef39f13"
+          }
+        },
+        {
+          "client_id": "815408715441-6c063qfop6tef9so6knu71gs7047bh5i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.azzeccagarbugli.ignite",
+            "certificate_hash": "e08428b73d5369fcb801fe094f93921d6207bdc7"
+          }
+        },
+        {
           "client_id": "815408715441-5t3q3u5cag7di5mrairr1jtdekbt1r4s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
