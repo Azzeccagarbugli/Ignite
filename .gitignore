@@ -906,4 +906,7 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
+# Flutter plugins-dependencies 
+.flutter-plugins-dependencies
+
 # End of https://www.gitignore.io/api/dart,latex,flutter,android,darteditor,visualstudio,androidstudio,visualstudiocode
