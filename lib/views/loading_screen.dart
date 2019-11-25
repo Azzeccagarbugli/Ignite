@@ -45,7 +45,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   StatefulWidget screenChange() {
     if (_isFireman) {
-      return FiremanScreen();
+      return FiremanScreen(
+        position: this._curloc,
+        jsonStyle: this._mapStyle,
+      );
     } else {
       return Homepage(
         position: this._curloc,
