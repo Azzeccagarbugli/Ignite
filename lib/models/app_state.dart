@@ -153,12 +153,11 @@ class AppState extends ChangeNotifier {
   Future<void> accountsLogOut() async {
     print("L'utente si sta disconnettendo");
     print("Utente prima del logout: ${currentUser.email}");
-    await _auth.signOut();
-    print("Fire logout");
-    await googleSignIn.signOut();
-    print("Google logout");
-    await facebookLogin.logOut();
-    currentUser = await _auth.currentUser();
+    await _auth.signOut().then((_) async {
+      googleSignIn.signOut();
+      facebookLogin.logOut();
+      currentUser = await _auth.currentUser();
+    });
 
     print("Utente disconnesso");
   }
