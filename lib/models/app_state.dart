@@ -21,7 +21,7 @@ class AppState extends ChangeNotifier {
       result =
           await _auth.signInWithEmailAndPassword(email: mail, password: pass);
       this.currentUser = result.user;
-      notifyListeners();
+      //   notifyListeners();
     } catch (e) {
       throw e;
     }
@@ -32,7 +32,7 @@ class AppState extends ChangeNotifier {
       result = await _auth.createUserWithEmailAndPassword(
           email: mail, password: pass);
       this.updateUsersCollection(mail, false);
-      notifyListeners();
+      //  notifyListeners();
     } catch (e) {
       throw e;
     }
@@ -52,7 +52,7 @@ class AppState extends ChangeNotifier {
       result = await _auth.signInWithCredential(credential);
       currentUser = result.user;
       this.updateUsersCollection(currentUser.email, false);
-      notifyListeners();
+      //   notifyListeners();
     } catch (e) {
       throw e;
     }
@@ -84,7 +84,7 @@ class AppState extends ChangeNotifier {
                   'Here\'s the error Facebook gave us: ${fbResult.errorMessage}');
           break;
       }
-      notifyListeners();
+      //  notifyListeners();
     } catch (e) {
       throw e;
     }
@@ -95,7 +95,7 @@ class AppState extends ChangeNotifier {
       await _auth.sendPasswordResetEmail(
         email: currentEmail,
       );
-      notifyListeners();
+      //   notifyListeners();
     } catch (e) {
       throw e;
     }
@@ -126,7 +126,7 @@ class AppState extends ChangeNotifier {
         });
       }
     });
-    notifyListeners();
+    // notifyListeners();
   }
 
   ThemeData mainTheme() {
@@ -165,7 +165,7 @@ class AppState extends ChangeNotifier {
       facebookLogin.logOut();
       currentUser = await _auth.currentUser();
     });
-    notifyListeners();
+    // notifyListeners();
 
     print("Utente disconnesso");
   }

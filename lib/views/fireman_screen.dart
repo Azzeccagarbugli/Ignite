@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/models/app_state.dart';
+import 'package:ignite/views/request_approval_screen.dart';
 import 'package:ignite/widgets/homepage_button.dart';
 import 'package:ignite/widgets/hydrant_card.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -159,6 +160,9 @@ class _FiremanScreenState extends State<FiremanScreen> {
       case 2:
         setState(() {
           //  _bodyWidget = _requestsBody();
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return RequestApprovalScreen();
+          }));
         });
         break;
       case 0:
