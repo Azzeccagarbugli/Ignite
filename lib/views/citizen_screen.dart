@@ -9,6 +9,8 @@ import 'package:ignite/models/app_state.dart';
 import 'package:ignite/views/faq.dart';
 import 'package:ignite/widgets/homepage_button.dart';
 import 'package:ignite/widgets/hydrant_card.dart';
+import 'package:ignite/widgets/rounded_button_options.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
@@ -97,53 +99,65 @@ class _CitizenScreenState extends State<CitizenScreen> {
         backgroundColor: Colors.transparent,
         body: Center(
           child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Image(
-                  image: NetworkImage(urlGravatarImage),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(userEmail,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Nunito",
-                    )),
-                SizedBox(
-                  height: 35,
-                ),
-                ButtonTheme(
-                  minWidth: 300.0,
-                  height: 40.0,
-                  buttonColor: ThemeProvider.themeOf(context).data.primaryColor,
-                  child: RaisedButton(
-                    child: Text(
-                      "FAQ",
+            child: Padding(
+              padding: const EdgeInsets.only(top: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Shimmer.fromColors(
+                      baseColor:
+                          ThemeProvider.themeOf(context).data.primaryColor,
+                      highlightColor: Colors.white,
+                      period: Duration(seconds: 1),
+                      child: Image(
+                        image: NetworkImage(urlGravatarImage),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(userEmail,
                       style: TextStyle(
-                        color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         fontFamily: "Nunito",
-                      ),
-                    ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(18.0),
-                        side: BorderSide(
-                            color: ThemeProvider.themeOf(context)
-                                .data
-                                .primaryColor)),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return FaqScreen();
-                      }));
-                    },
+                      )),
+                  SizedBox(
+                    height: 40,
                   ),
-                ),
-              ],
+                  RoundedButtonOptions(
+                      context: context,
+                      text: "FAQ",
+                      function: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return FaqScreen();
+                        }));
+                      }),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  RoundedButtonOptions(
+                    context: context,
+                    text: "Cambio password",
+                    function: () {},
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  RoundedButtonOptions(
+                    context: context,
+                    text: "Cambio immagine profilo",
+                    function: () {},
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

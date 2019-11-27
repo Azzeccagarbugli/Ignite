@@ -27,6 +27,7 @@ dependencies:
   flutter_facebook_login: ^3.0.0
   simple_gravatar: ^1.0.5
   auto_size_text: ^2.1.0
+  shimmer: ^1.0.1
 
 dev_dependencies:
   flutter_test:
