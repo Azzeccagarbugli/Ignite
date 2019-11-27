@@ -6,12 +6,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/models/app_state.dart';
+import 'package:ignite/views/faq.dart';
 import 'package:ignite/widgets/homepage_button.dart';
 import 'package:ignite/widgets/hydrant_card.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
 import 'loading_screen.dart';
+import "package:simple_gravatar/simple_gravatar.dart";
 
 class CitizenScreen extends StatefulWidget {
   String jsonStyle;
@@ -33,12 +35,25 @@ class _CitizenScreenState extends State<CitizenScreen> {
   double _zoomCameraOnMe = 18.0;
   Marker resultMarker;
   Widget _bodyWidget;
+  String userEmail;
+  String urlGravatarImage;
 
   @override
   void initState() {
     super.initState();
     this.setupPositionStream();
     this._bodyWidget = _mapBody();
+  }
+
+  void setGravatarEmailPic() {
+    userEmail = Provider.of<AppState>(context, listen: false).getUser().email;
+    var gravatar = Gravatar(userEmail);
+    urlGravatarImage = gravatar.imageUrl(
+      size: 100,
+      defaultImage: GravatarImage.retro,
+      rating: GravatarRating.pg,
+      fileExtension: true,
+    );
   }
 
   void setupPositionStream() {
@@ -49,6 +64,7 @@ class _CitizenScreenState extends State<CitizenScreen> {
         .listen((pos) {
       widget.position = LatLng(pos.latitude, pos.longitude);
     });
+    setGravatarEmailPic();
   }
 
   void _addMarker() {
@@ -76,19 +92,62 @@ class _CitizenScreenState extends State<CitizenScreen> {
   }
 
   Widget _getProfileSettings() {
-    return Stack(
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            FloatingActionButton(
-              child: Container(
-                height: 200,
-                color: Colors.red,
-              ),
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image(
+                  image: NetworkImage(urlGravatarImage),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Text(userEmail,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Nunito",
+                    )),
+                SizedBox(
+                  height: 35,
+                ),
+                ButtonTheme(
+                  minWidth: 300.0,
+                  height: 40.0,
+                  buttonColor: ThemeProvider.themeOf(context).data.primaryColor,
+                  child: RaisedButton(
+                    child: Text(
+                      "FAQ",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Nunito",
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(18.0),
+                        side: BorderSide(
+                            color: ThemeProvider.themeOf(context)
+                                .data
+                                .primaryColor)),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return FaqScreen();
+                      }));
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ],
+      ),
     );
   }
 
@@ -208,12 +267,21 @@ class _CitizenScreenState extends State<CitizenScreen> {
             ),
           ],
           onTap: (index) {
-              switch (index) {
-                case 0:
-                  setState(() {_bodyWidget = _getProfileSettings();});
-                  break;
-                case 1:
-                  setState(() {_bodyWidget = _mapBody();}); 
+            switch (index) {
+              case 0:
+                setState(() {
+                  _bodyWidget = _getProfileSettings();
+                });
+                break;
+              case 1:
+                setState(() {
+                  _bodyWidget = _mapBody();
+                });
+                break;
+              case 2:
+                setState(() {
+                  _bodyWidget = _getProfileSettings();
+                });
             }
           }),
     );
