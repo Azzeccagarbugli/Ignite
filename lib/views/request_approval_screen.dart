@@ -48,7 +48,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
         child: Container(
           color: ThemeProvider.themeOf(context).data.accentColor,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.0),
+            padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -62,15 +62,15 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
                 SizedBox(height: 10.0),
+                Container(
+                  color: Colors.white,
+                  height: 100.0,
+                ),
                 Text(
                   "Data dell'ultimo controllo: ${lastChecked.day}/${lastChecked.month}/${lastChecked.year}",
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
                 SizedBox(height: 10.0),
-                Container(
-                  color: Colors.white,
-                  height: 100.0,
-                ),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
