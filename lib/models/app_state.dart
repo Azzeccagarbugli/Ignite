@@ -173,4 +173,12 @@ class AppState extends ChangeNotifier {
   FirebaseUser getUser() {
     return currentUser;
   }
+
+  void approveRequest(double lat, double long) async {
+    QuerySnapshot qs = await _db
+        .collection('hydrants')
+        .where('geopoint', isEqualTo: GeoPoint(lat, long))
+        .getDocuments();
+    print(qs.documents[0].documentID);
+  }
 }
