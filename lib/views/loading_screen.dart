@@ -6,9 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../main.dart';
-import 'fireman_screen.dart';
 import 'citizen_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'fireman_screen_views/fireman_screen.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override

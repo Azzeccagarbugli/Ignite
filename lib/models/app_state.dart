@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:ignite/models/hydrant.dart';
+import 'package:ignite/models/request.dart';
+import 'package:ignite/models/user.dart';
 import 'package:ignite/views/login_screen.dart';
-import 'dart:developer' as dev;
 
 class AppState extends ChangeNotifier {
   AuthResult result;
@@ -174,11 +176,91 @@ class AppState extends ChangeNotifier {
     return currentUser;
   }
 
-  void approveRequest(double lat, double long) async {
-    QuerySnapshot qs = await _db
-        .collection('hydrants')
-        .where('geopoint', isEqualTo: GeoPoint(lat, long))
+  Future<List<Request>> getRequests() async {
+    QuerySnapshot qsRequests = await _db.collection('requests').getDocuments();
+    List<Request> requests = new List<Request>();
+
+    for (DocumentSnapshot ds in qsRequests.documents) {
+      //print("lol : ${ds.data['approved_by']}");
+      DocumentReference approvedBy = ds.data['approved_by'];
+      DocumentReference hydrant = ds.data['hydrant'];
+      DocumentReference requestedBy = ds.data['requested_by'];
+      requests.add(Request(ds.documentID, ds.data['approved'], ds.data['open'],
+          approvedBy.documentID, hydrant.documentID, requestedBy.documentID));
+    }
+    // print("Sasso: ${requests.length}");
+    return requests;
+  }
+
+  Future<Request> getRequestByDocumentReference(String ref) async {
+    DocumentSnapshot ds = await _db.collection('requests').document(ref).get();
+    Map<String, dynamic> data = ds.data;
+    return new Request(ref, data['approved'], data["open"], data['approvedBy'],
+        data['hydrant'], data['requestedBy']);
+  }
+
+  Future<Hydrant> getHydrantByDocumentReference(String ref) async {
+    DocumentSnapshot ds = await _db.collection('hydrants').document(ref).get();
+    Map<String, dynamic> data = ds.data;
+    return new Hydrant(
+        ds.documentID,
+        data['attack'][0],
+        data['attack'][1],
+        data['bar'],
+        data['cap'],
+        data['city'],
+        data['geopoint'],
+        data['color'],
+        data['last_check'],
+        data['notes'],
+        data['opening'],
+        data['place'],
+        data['street_number'],
+        data['type'],
+        data['vehicle']);
+  }
+
+  Future<User> getUserByDocumentReference(String ref) async {
+    DocumentSnapshot ds = await _db.collection('users').document(ref).get();
+    Map<String, dynamic> data = ds.data;
+    if (ds.data['isFireman'] == 'true') {
+      return new User(
+          ds.documentID,
+          data['email'],
+          data['birthday'],
+          data['name'],
+          data['surname'],
+          data['residence_street_number'],
+          data['cap'],
+          data['department']);
+    } else {
+      return new User.onlyMail(data['email']);
+    }
+  }
+
+  void approveRequest(Request request) async {
+    QuerySnapshot qsApprove = await _db
+        .collection('users')
+        .where('email', isEqualTo: currentUser.email)
         .getDocuments();
-    print(qs.documents[0].documentID);
+    DocumentReference refApprove = qsApprove.documents[0].reference;
+    await _db
+        .collection('requests')
+        .document(request.getDBReference())
+        .updateData(
+            {'approved': true, 'open': false, 'approved_by': refApprove});
+  }
+
+  void denyRequest(Request request) async {
+    QuerySnapshot qsApprove = await _db
+        .collection('users')
+        .where('email', isEqualTo: currentUser.email)
+        .getDocuments();
+    DocumentReference refApprove = qsApprove.documents[0].reference;
+    await _db
+        .collection('requests')
+        .document(request.getDBReference())
+        .updateData(
+            {'approved': false, 'open': false, 'approved_by': refApprove});
   }
 }
