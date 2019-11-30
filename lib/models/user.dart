@@ -5,7 +5,7 @@ class User {
     this._mail = mail;
     this._isFireman = false;
   }
-  User(String ref, String mail, Timestamp birthday, String name, String surname,
+  User(String ref, String mail, DateTime birthday, String name, String surname,
       String streetnumber, String cap, String department) {
     this._reference = ref;
     this._mail = mail;
@@ -20,7 +20,7 @@ class User {
   String _reference;
   String _mail;
   bool _isFireman;
-  Timestamp _birthday;
+  DateTime _birthday;
   String _name;
   String _surname;
   String _streetNumber;
@@ -35,7 +35,7 @@ class User {
     return _isFireman;
   }
 
-  Timestamp getBirthday() {
+  DateTime getBirthday() {
     return _birthday;
   }
 

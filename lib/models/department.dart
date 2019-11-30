@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Department {
-  Department(String ref, String cap, String city, GeoPoint geopoint,
+  Department(String ref, String cap, String city, double lat, double long,
       String mail, String phonenumber, String streetnumber) {
     this._reference = ref;
     this._cap = cap;
     this._city = city;
-    this._geopoint = geopoint;
+    this._lat = lat;
+    this._long = long;
     this._mail = mail;
     this._phoneNumber = phonenumber;
     this._streetNumber = streetnumber;
@@ -14,7 +15,8 @@ class Department {
   String _reference;
   String _cap;
   String _city;
-  GeoPoint _geopoint;
+  double _lat;
+  double _long;
   String _mail;
   String _phoneNumber;
   String _streetNumber;
@@ -27,8 +29,12 @@ class Department {
     return _city;
   }
 
-  GeoPoint getGeoPoint() {
-    return _geopoint;
+  double getLat() {
+    return _lat;
+  }
+
+  double getLong() {
+    return _long;
   }
 
   String getMail() {

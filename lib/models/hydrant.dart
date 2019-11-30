@@ -8,9 +8,10 @@ class Hydrant {
       String pressure,
       String cap,
       String city,
-      GeoPoint geoPoint,
+      double lat,
+      double long,
       String color,
-      Timestamp lastCheck,
+      DateTime lastCheck,
       String notes,
       String opening,
       String place,
@@ -23,7 +24,8 @@ class Hydrant {
     this._pressure = pressure;
     this._cap = cap;
     this._city = city;
-    this._geoPoint = geoPoint;
+    this._lat = lat;
+    this._long = long;
     this._lastCheck = lastCheck;
     this._notes = notes;
     this._opening = opening;
@@ -40,9 +42,10 @@ class Hydrant {
   String _pressure;
   String _cap;
   String _city;
-  GeoPoint _geoPoint;
+  double _lat;
+  double _long;
   String _color;
-  Timestamp _lastCheck;
+  DateTime _lastCheck;
   String _notes;
   String _opening;
   String _place;
@@ -74,11 +77,15 @@ class Hydrant {
     return _city;
   }
 
-  GeoPoint getGeoPoint() {
-    return _geoPoint;
+  double getLat() {
+    return _lat;
   }
 
-  Timestamp getLastCheck() {
+  double getLong() {
+    return _long;
+  }
+
+  DateTime getLastCheck() {
     return _lastCheck;
   }
 

@@ -69,13 +69,12 @@ class RequestScreenRecap extends StatelessWidget {
               Text(
                   "L'idrante si trova a ${hydrant.getCity()}, ${hydrant.getStreetNumber()} (${hydrant.getCap()})"),
               RequestMap(
-                latitude: hydrant.getGeoPoint().latitude,
-                longitude: hydrant.getGeoPoint().longitude,
+                latitude: hydrant.getLat(),
+                longitude: hydrant.getLong(),
               ),
+              Text("${hydrant.getLat()}° N, ${hydrant.getLong()}° E"),
               Text(
-                  "${hydrant.getGeoPoint().latitude}° N, ${hydrant.getGeoPoint().longitude}° E"),
-              Text(
-                  "Data dell'ultimo controllo: ${hydrant.getLastCheck().toDate().day}/${hydrant.getLastCheck().toDate().month}/${hydrant.getLastCheck().toDate().year}"),
+                  "Data dell'ultimo controllo: ${hydrant.getLastCheck().day}/${hydrant.getLastCheck().month}/${hydrant.getLastCheck().year}"),
               Text(
                   "Primo attacco: ${hydrant.getFirstAttack() == "" ? "Valore non fornito" : hydrant.getFirstAttack()}"),
               Text(

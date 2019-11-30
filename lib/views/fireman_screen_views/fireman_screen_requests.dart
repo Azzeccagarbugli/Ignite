@@ -108,7 +108,7 @@ class RequestCard extends StatelessWidget {
                             Text(
                                 "${snapshot.data.getCity()}, ${snapshot.data.getStreetNumber()} \(${snapshot.data.getCap()}\)"),
                             Text(
-                                "${snapshot.data.getGeoPoint().latitude}° N, ${snapshot.data.getGeoPoint().longitude}° E"),
+                                "${snapshot.data.getLat()}° N, ${snapshot.data.getLong()}° E"),
                           ],
                         );
                     }

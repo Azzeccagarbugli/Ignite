@@ -181,14 +181,12 @@ class AppState extends ChangeNotifier {
     List<Request> requests = new List<Request>();
 
     for (DocumentSnapshot ds in qsRequests.documents) {
-      //print("lol : ${ds.data['approved_by']}");
       DocumentReference approvedBy = ds.data['approved_by'];
       DocumentReference hydrant = ds.data['hydrant'];
       DocumentReference requestedBy = ds.data['requested_by'];
       requests.add(Request(ds.documentID, ds.data['approved'], ds.data['open'],
           approvedBy.documentID, hydrant.documentID, requestedBy.documentID));
     }
-    // print("Sasso: ${requests.length}");
     return requests;
   }
 
@@ -202,6 +200,8 @@ class AppState extends ChangeNotifier {
   Future<Hydrant> getHydrantByDocumentReference(String ref) async {
     DocumentSnapshot ds = await _db.collection('hydrants').document(ref).get();
     Map<String, dynamic> data = ds.data;
+    Timestamp time = data['last_check'];
+    GeoPoint geo = data['geopoint'];
     return new Hydrant(
         ds.documentID,
         data['attack'][0],
@@ -209,9 +209,10 @@ class AppState extends ChangeNotifier {
         data['bar'],
         data['cap'],
         data['city'],
-        data['geopoint'],
+        geo.latitude,
+        geo.longitude,
         data['color'],
-        data['last_check'],
+        time.toDate(),
         data['notes'],
         data['opening'],
         data['place'],
@@ -223,11 +224,12 @@ class AppState extends ChangeNotifier {
   Future<User> getUserByDocumentReference(String ref) async {
     DocumentSnapshot ds = await _db.collection('users').document(ref).get();
     Map<String, dynamic> data = ds.data;
+    Timestamp time = data['birthday'];
     if (ds.data['isFireman'] == 'true') {
       return new User(
           ds.documentID,
           data['email'],
-          data['birthday'],
+          time.toDate(),
           data['name'],
           data['surname'],
           data['residence_street_number'],
