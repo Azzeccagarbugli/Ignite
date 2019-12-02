@@ -20,6 +20,7 @@ class RoundedButtonOptions extends StatelessWidget {
       height: 45.0,
       buttonColor: ThemeProvider.themeOf(context).data.primaryColor,
       child: RaisedButton(
+          elevation: 15,
           child: Text(
             text,
             style: TextStyle(

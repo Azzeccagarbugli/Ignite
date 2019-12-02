@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../main.dart';
-import 'citizen_screen.dart';
+import 'package:ignite/views/citizen_screen_views/citizen_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'fireman_screen_views/fireman_screen.dart';
