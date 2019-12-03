@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/views/fireman_screen_views/fireman_screen_requests.dart';
+import 'package:ignite/widgets/profile_settings_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../../main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -42,6 +43,10 @@ class _FiremanScreenState extends State<FiremanScreen> {
     );
   }
 
+  Widget _profileSettingsBody() {
+    return ProfileSettingsScreen(jsonFaq: 'assets/general/faqFireman.json');
+  }
+
   Widget _requestsBody() {
     return FiremanScreenRequests();
   }
@@ -51,6 +56,11 @@ class _FiremanScreenState extends State<FiremanScreen> {
       case 2:
         setState(() {
           _bodyWidget = _requestsBody();
+        });
+        break;
+      case 3:
+        setState(() {
+          _bodyWidget = _profileSettingsBody();
         });
         break;
       case 0:

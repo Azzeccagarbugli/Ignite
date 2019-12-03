@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
+  final String jsonFaq;
+  ProfileSettingsScreen({@required this.jsonFaq});
+
   @override
   _ProfileSettingsScreenState createState() => _ProfileSettingsScreenState();
 }
@@ -77,7 +80,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       function: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return FaqScreen();
+                          return FaqScreen(jsonPath: widget.jsonFaq);
                         }));
                       }),
                   SizedBox(
@@ -102,7 +105,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                   RoundedButtonOptions(
                     context: context,
                     text: "Disconnettiti",
-                    function: () {},
+                    function: () {
+                      Provider.of<AppState>(context).logOut(context);
+                    },
                   ),
                   SizedBox(height: 20),
                 ],

@@ -30,7 +30,7 @@ class _CitizenScreenState extends State<CitizenScreen> {
   }
 
   Widget _profileSettingsBody() {
-    return ProfileSettingsScreen();
+    return ProfileSettingsScreen(jsonFaq: 'assets/general/faqCitizen.json');
   }
 
   Widget _mapBody() {

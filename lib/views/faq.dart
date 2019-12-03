@@ -24,13 +24,16 @@ class FAQ {
 }
 
 class FaqScreen extends StatefulWidget {
+  final String jsonPath;
+  FaqScreen({@required this.jsonPath});
+  
   @override
   _FaqScreenState createState() => _FaqScreenState();
 }
 
 class _FaqScreenState extends State<FaqScreen> {
   Future<String> uploadAssets() async {
-    return await rootBundle.loadString('assets/general/faq.json');
+    return await rootBundle.loadString(widget.jsonPath);
   }
 
   Future<List<FAQ>> loadFAQ() async {

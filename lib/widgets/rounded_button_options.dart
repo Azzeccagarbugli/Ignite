@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import 'package:theme_provider/theme_provider.dart';
 
 class RoundedButtonOptions extends StatelessWidget {
-  const RoundedButtonOptions(
+  RoundedButtonOptions(
       {Key key,
       @required this.context,
       @required this.text,
@@ -20,7 +20,7 @@ class RoundedButtonOptions extends StatelessWidget {
       height: 45.0,
       buttonColor: ThemeProvider.themeOf(context).data.primaryColor,
       child: RaisedButton(
-          elevation: 15,
+          elevation: 10,
           child: Text(
             text,
             style: TextStyle(
