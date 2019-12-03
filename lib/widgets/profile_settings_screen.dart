@@ -1,12 +1,16 @@
 import "package:flutter/material.dart";
 import 'package:ignite/models/app_state.dart';
 import 'package:ignite/views/faq.dart';
+import 'package:ignite/views/reset_password_bttmsheet.dart';
 import 'package:ignite/widgets/rounded_button_options.dart';
 import 'package:simple_gravatar/simple_gravatar.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
+  final String jsonFaq;
+  ProfileSettingsScreen({@required this.jsonFaq});
+
   @override
   _ProfileSettingsScreenState createState() => _ProfileSettingsScreenState();
 }
@@ -49,7 +53,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         body: Center(
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(top: 30),
+              padding: const EdgeInsets.only(top: 50),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -66,10 +70,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        fontFamily: "Nunito",
                       )),
                   SizedBox(
-                    height: 40,
+                    height: 60,
                   ),
                   RoundedButtonOptions(
                       context: context,
@@ -77,34 +80,77 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       function: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return FaqScreen();
+                          return FaqScreen(jsonPath: widget.jsonFaq);
                         }));
                       }),
                   SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   RoundedButtonOptions(
                     context: context,
                     text: "Cambia password",
-                    function: () {},
+                    function: () {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (context) => AlertDialog(
+                                title: Text(
+                                  "Le verrà inviata un'email in cui potrà cambiare password e verrà disconnesso dal sistema. Procedere?",
+                                  style: TextStyle(),
+                                ),
+                                actions: <Widget>[
+                                  ButtonTheme(
+                                    buttonColor: Colors.green,
+                                    child: RaisedButton(
+                                      elevation: 10,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(18.0),
+                                      ),
+                                      child: Text("Conferma",
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      onPressed: () {
+                                        Provider.of<AppState>(context)
+                                            .recoverPassword(_userEmail);
+                                        Provider.of<AppState>(context)
+                                            .logOut(context);
+                                      },
+                                    ),
+                                  ),
+                                  ButtonTheme(
+                                    buttonColor: Colors.red,
+                                    child: RaisedButton(
+                                      elevation: 10,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(18.0),
+                                      ),
+                                      child: Text(
+                                        "Annulla",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ));
+                    },
                   ),
                   SizedBox(
-                    height: 20,
-                  ),
-                  RoundedButtonOptions(
-                    context: context,
-                    text: "Cambia immagine profilo",
-                    function: () {},
-                  ),
-                  SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   RoundedButtonOptions(
                     context: context,
                     text: "Disconnettiti",
-                    function: () {},
+                    function: () {
+                      Provider.of<AppState>(context).logOut(context);
+                    },
                   ),
-                  SizedBox(height: 20),
                 ],
               ),
             ),

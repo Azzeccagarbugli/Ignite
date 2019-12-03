@@ -40,7 +40,8 @@ flutter:
 
   assets:
     - assets/general/intro.flr
-    - assets/general/faq.json
+    - assets/general/faqFireman.json
+    - assets/general/faqCitizen.json
     - assets/general/map_style_main.json
     - assets/general/map_style_dark.json
     - assets/images/logo.png
