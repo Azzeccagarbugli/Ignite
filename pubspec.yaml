@@ -28,6 +28,8 @@ dependencies:
   simple_gravatar: ^1.0.5
   auto_size_text: ^2.1.0
   shimmer: ^1.0.1
+  flutter_swiper: ^1.1.6
+  pk_skeleton: ^0.0.2
 
 dev_dependencies:
   flutter_test:

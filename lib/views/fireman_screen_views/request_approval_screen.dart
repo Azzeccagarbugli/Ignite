@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
+import 'package:ignite/widgets/request_map.dart';
 import 'dart:async';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -121,43 +122,6 @@ class RequestScreenRecap extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class RequestMap extends StatelessWidget {
-  RequestMap({@required this.latitude, @required this.longitude});
-  Completer<GoogleMapController> _mapsController = Completer();
-
-  void _onMapCreated(GoogleMapController controller) {
-    _mapsController.complete(controller);
-  }
-
-  final double latitude;
-  final double longitude;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      height: 150.0,
-      child: GoogleMap(
-        rotateGesturesEnabled: false,
-        scrollGesturesEnabled: false,
-        tiltGesturesEnabled: false,
-        zoomGesturesEnabled: false,
-        markers: {
-          Marker(
-            markerId: MarkerId('Hydrant'),
-            position: LatLng(latitude, longitude),
-            icon: BitmapDescriptor.defaultMarker,
-          ),
-        },
-        mapType: MapType.satellite,
-        onMapCreated: _onMapCreated,
-        initialCameraPosition:
-            CameraPosition(target: LatLng(latitude, longitude), zoom: 18.0),
       ),
     );
   }
