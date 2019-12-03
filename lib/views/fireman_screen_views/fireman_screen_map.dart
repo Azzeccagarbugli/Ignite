@@ -21,17 +21,6 @@ class FiremanScreenMap extends StatefulWidget {
 
 class _FiremanScreenMapState extends State<FiremanScreenMap> {
   StreamSubscription<Position> _positionStream;
-
-  GoogleMapController _mapController;
-
-  Set<Marker> _markerSet = Set();
-
-  double _zoomCameraOnMe = 18.0;
-
-  Marker resultMarker;
-
-  Widget _bodyWidget;
-
   void setupPositionStream() {
     _positionStream = Geolocator()
         .getPositionStream(
@@ -41,6 +30,14 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       widget.position = LatLng(pos.latitude, pos.longitude);
     });
   }
+
+  GoogleMapController _mapController;
+
+  Set<Marker> _markerSet = Set();
+
+  double _zoomCameraOnMe = 18.0;
+
+  Marker resultMarker;
 
   void _addMarker() {
     setState(() {

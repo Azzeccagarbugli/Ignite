@@ -1,13 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/views/fireman_screen_views/fireman_screen_requests.dart';
-import 'package:ignite/widgets/profile_settings_screen.dart';
+import 'package:ignite/views/profile_settings_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../../main.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../new_request_screen.dart';
 import 'fireman_screen_map.dart';
 
 class FiremanScreen extends StatefulWidget {
@@ -22,13 +25,7 @@ class FiremanScreen extends StatefulWidget {
 }
 
 class _FiremanScreenState extends State<FiremanScreen> {
-  /* StreamSubscription<Position> _positionStream;
-  GoogleMapController _mapController;
-  Set<Marker> _markerSet = Set();
-  double _zoomCameraOnMe = 18.0;
-  Marker resultMarker;*/
   Widget _bodyWidget;
-  final dbFireStore = Firestore.instance;
 
   @override
   void initState() {
@@ -51,8 +48,17 @@ class _FiremanScreenState extends State<FiremanScreen> {
     return FiremanScreenRequests();
   }
 
+  Widget _newHydrantBody() {
+    return NewRequestScreen();
+  }
+
   void _setScaffoldBody(index) {
     switch (index) {
+      case 1:
+        setState(() {
+          _bodyWidget = _newHydrantBody();
+        });
+        break;
       case 2:
         setState(() {
           _bodyWidget = _requestsBody();

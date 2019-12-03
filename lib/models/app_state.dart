@@ -134,7 +134,7 @@ class AppState extends ChangeNotifier {
   ThemeData mainTheme() {
     return ThemeData(
       primaryColor: Colors.red[600],
-      accentColor: Colors.grey[500],
+      accentColor: Colors.grey[200],
       bottomAppBarColor: Colors.red[600],
       buttonColor: Colors.white,
       fontFamily: 'Nunito',
@@ -143,9 +143,9 @@ class AppState extends ChangeNotifier {
 
   ThemeData darkTheme() {
     return ThemeData(
-      primaryColor: Colors.grey[900],
+      primaryColor: Colors.black,
       accentColor: Colors.grey[700],
-      bottomAppBarColor: Colors.grey[900],
+      bottomAppBarColor: Colors.black,
       buttonColor: Colors.white,
       fontFamily: 'Nunito',
     );

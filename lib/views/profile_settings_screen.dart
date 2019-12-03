@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:ignite/models/app_state.dart';
 import 'package:ignite/views/faq.dart';
-import 'package:ignite/views/reset_password_bttmsheet.dart';
+import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/widgets/rounded_button_options.dart';
 import 'package:simple_gravatar/simple_gravatar.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +40,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: ThemeProvider.themeOf(context).data.accentColor,
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
@@ -70,6 +70,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       )),
                   SizedBox(
                     height: 60,
@@ -139,6 +140,20 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                                   )
                                 ],
                               ));
+                    },
+                  ),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  RoundedButtonOptions(
+                    context: context,
+                    text: "Cambia tema",
+                    function: () {
+                      ThemeProvider.controllerOf(context).nextTheme();
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                        return LoadingScreen();
+                      }));
                     },
                   ),
                   SizedBox(

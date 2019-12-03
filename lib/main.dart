@@ -27,21 +27,21 @@ class App extends StatelessWidget {
       loadThemeOnInit: true,
       themes: [
         AppTheme(
-          id: "main",
-          description: "Tema principale",
-          data: Provider.of<AppState>(context).mainTheme(),
-          options: CustomOptions(
-            filename: 'map_style_main',
-            brightness: Brightness.dark,
-          ),
-        ),
-        AppTheme(
           id: "dark",
           description: "Tema scuro",
           data: Provider.of<AppState>(context).darkTheme(),
           options: CustomOptions(
             filename: 'map_style_dark',
             brightness: Brightness.light,
+          ),
+        ),
+        AppTheme(
+          id: "main",
+          description: "Tema principale",
+          data: Provider.of<AppState>(context).mainTheme(),
+          options: CustomOptions(
+            filename: 'map_style_main',
+            brightness: Brightness.dark,
           ),
         ),
       ],
