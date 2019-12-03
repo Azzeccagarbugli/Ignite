@@ -27,7 +27,6 @@ class RoundedButtonOptions extends StatelessWidget {
               color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              fontFamily: "Nunito",
             ),
           ),
           shape: RoundedRectangleBorder(
