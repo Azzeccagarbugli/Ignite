@@ -31,6 +31,7 @@ dependencies:
   flutter_swiper: ^1.1.6
   pk_skeleton: ^0.0.2
   flutter_google_places: ^0.2.3
+  sliding_up_panel: ^0.3.6
 
 dev_dependencies:
   flutter_test:
