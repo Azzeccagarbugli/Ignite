@@ -3,7 +3,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -30,9 +30,9 @@ dependencies:
   shimmer: ^1.0.1
   flutter_swiper: ^1.1.6
   pk_skeleton: ^0.0.2
-  flutter_google_places: ^0.2.3
   sliding_up_panel: ^0.3.6
-
+  place_picker: ^0.9.10
+  datetime_picker_formfield: ^0.4.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

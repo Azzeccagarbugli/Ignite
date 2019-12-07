@@ -265,4 +265,39 @@ class AppState extends ChangeNotifier {
         .updateData(
             {'approved': false, 'open': false, 'approved_by': refApprove});
   }
+
+  void addRequest(Hydrant hydrant, bool isFireman) async {
+    DocumentReference newHydrant = await _db.collection('hydrants').add({
+      'attack': [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
+      'bar': hydrant.getPressure(),
+      'cap': hydrant.getCap(),
+      'city': hydrant.getCity(),
+      'color': hydrant.getColor(),
+      'geopoint': GeoPoint(hydrant.getLat(), hydrant.getLong()),
+      'last_check': hydrant.getLastCheck(),
+      'notes': hydrant.getNotes(),
+      'opening': hydrant.getOpening(),
+      'place': hydrant.getPlace(),
+      'street_number': hydrant.getStreetNumber(),
+      'type': hydrant.getType(),
+      'vehicle': hydrant.getVehicle(),
+    });
+    QuerySnapshot qsReq = await _db
+        .collection('users')
+        .where('email', isEqualTo: currentUser.email)
+        .getDocuments();
+    DocumentReference reqBy = qsReq.documents[0].reference;
+    QuerySnapshot qsApp = await _db
+        .collection('users')
+        .where('email', isEqualTo: 'placeholder')
+        .getDocuments();
+    DocumentReference appBy = qsApp.documents[0].reference;
+    DocumentReference newRequest = await _db.collection('requests').add({
+      'approved': isFireman,
+      'approved_by': appBy,
+      'hydrant': newHydrant,
+      'open': !isFireman,
+      'requested_by': reqBy,
+    });
+  }
 }

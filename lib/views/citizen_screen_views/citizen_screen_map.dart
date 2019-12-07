@@ -86,15 +86,6 @@ class _FiremanScreenMapState extends State<CitizenScreenMap> {
       },
     );
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
-        title: Text(
-          "Mappa degli idranti",
-          textAlign: TextAlign.left,
-          style: TextStyle(color: Colors.white, fontSize: 20.0),
-        ),
-      ),
       body: Stack(
         children: <Widget>[
           GoogleMap(

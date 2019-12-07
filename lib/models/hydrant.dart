@@ -35,8 +35,69 @@ class Hydrant {
     this._vehicle = vehicle;
     this._color = color;
   }
-  String _reference;
 
+  Hydrant.fromCitizen(
+    String cap,
+    String city,
+    double lat,
+    double long,
+    String notes,
+    String place,
+    String streetNumber,
+  ) {
+    this._reference = "";
+    this._firstAttack = "";
+    this._secondAttack = "";
+    this._pressure = "";
+    this._cap = cap;
+    this._city = city;
+    this._lat = lat;
+    this._long = long;
+    this._lastCheck = DateTime.now();
+    this._notes = notes;
+    this._opening = "";
+    this._place = place;
+    this._streetNumber = streetNumber;
+    this._type = "";
+    this._vehicle = "";
+    this._color = "";
+  }
+
+  Hydrant.fromFireman(
+      String firstAttack,
+      String secondAttack,
+      String pressure,
+      String cap,
+      String city,
+      double lat,
+      double long,
+      String color,
+      DateTime lastCheck,
+      String notes,
+      String opening,
+      String place,
+      String streetNumber,
+      String type,
+      String vehicle) {
+    this._reference = "";
+    this._firstAttack = firstAttack;
+    this._secondAttack = secondAttack;
+    this._pressure = pressure;
+    this._cap = cap;
+    this._city = city;
+    this._lat = lat;
+    this._long = long;
+    this._lastCheck = lastCheck;
+    this._notes = notes;
+    this._opening = opening;
+    this._place = place;
+    this._streetNumber = streetNumber;
+    this._type = type;
+    this._vehicle = vehicle;
+    this._color = color;
+  }
+
+  String _reference;
   String _firstAttack;
   String _secondAttack;
   String _pressure;

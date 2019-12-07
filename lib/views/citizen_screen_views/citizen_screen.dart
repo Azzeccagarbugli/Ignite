@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/views/citizen_screen_views/citizen_screen_map.dart';
+import 'package:ignite/views/new_request_screen.dart';
 import 'package:ignite/views/profile_settings_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -38,6 +39,12 @@ class _CitizenScreenState extends State<CitizenScreen> {
         jsonStyle: widget.jsonStyle, position: widget.position);
   }
 
+  Widget _newHydrantBody() {
+    return NewRequestScreen(
+      position: widget.position,
+    );
+  }
+
   void _setScaffoldBody(index) {
     switch (index) {
       case 2:
@@ -48,6 +55,11 @@ class _CitizenScreenState extends State<CitizenScreen> {
       case 0:
         setState(() {
           this._bodyWidget = _mapBody();
+        });
+        break;
+      case 1:
+        setState(() {
+          _bodyWidget = _newHydrantBody();
         });
         break;
     }
@@ -84,8 +96,8 @@ class CitizenCurvedNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
-      backgroundColor: Colors.transparent,
-      index: 1,
+      backgroundColor: ThemeProvider.themeOf(context).data.accentColor,
+      index: 0,
       color: ThemeProvider.themeOf(context).data.bottomAppBarColor,
       animationDuration: Duration(
         milliseconds: 500,

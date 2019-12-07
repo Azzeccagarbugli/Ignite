@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
-import 'package:ignite/models/app_state.dart';
 import 'package:ignite/views/faq.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/widgets/rounded_button_options.dart';
 import 'package:simple_gravatar/simple_gravatar.dart';
+import 'package:ignite/models/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 

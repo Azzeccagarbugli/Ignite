@@ -49,7 +49,9 @@ class _FiremanScreenState extends State<FiremanScreen> {
   }
 
   Widget _newHydrantBody() {
-    return NewRequestScreen();
+    return NewRequestScreen(
+      position: widget.position,
+    );
   }
 
   void _setScaffoldBody(index) {
@@ -91,7 +93,7 @@ class _FiremanScreenState extends State<FiremanScreen> {
     ));
 
     return Scaffold(
-      extendBody: true,
+      extendBody: false,
       body: _bodyWidget,
       bottomNavigationBar: new FiremanCurvedNavigationBar(
         indexFun: (index) {
@@ -109,7 +111,7 @@ class FiremanCurvedNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
       index: 0,
-      backgroundColor: Colors.transparent,
+      backgroundColor: ThemeProvider.themeOf(context).data.accentColor,
       color: ThemeProvider.themeOf(context).data.bottomAppBarColor,
       animationDuration: Duration(
         milliseconds: 500,
