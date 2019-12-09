@@ -7,6 +7,8 @@ import 'package:ignite/models/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import 'login_screen.dart';
+
 class ProfileSettingsScreen extends StatefulWidget {
   final String jsonFaq;
   final String userEmail;
@@ -53,27 +55,48 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         body: Center(
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(top: 50),
+              padding: const EdgeInsets.only(top: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.network(
-                      _urlGravatarImage,
+                  Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Card(
+                            elevation: 10,
+                            shape: CircleBorder(),
+                            clipBehavior: Clip.antiAlias,
+                            child: CircleAvatar(
+                              maxRadius: 45.0,
+                              backgroundImage: NetworkImage(_urlGravatarImage),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Chip(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            label: Text(widget.userEmail,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
-                    height: 20,
-                  ),
-                  Text(widget.userEmail,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      )),
-                  SizedBox(
-                    height: 60,
+                    height: 40,
                   ),
                   RoundedButtonOptions(
                       context: context,
@@ -164,6 +187,10 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     text: "Disconnettiti",
                     function: () {
                       Provider.of<AppState>(context).logOut(context);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
                     },
                   ),
                 ],
