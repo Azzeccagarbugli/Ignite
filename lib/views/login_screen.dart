@@ -21,12 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    sasso();
     animationBuilder();
-  }
-
-  Future<void> sasso() async {
-    await Provider.of<AppState>(context).accountsLogOut();
   }
 
   Future animationBuilder() async {

@@ -16,7 +16,9 @@ import 'fireman_screen_map.dart';
 class FiremanScreen extends StatefulWidget {
   String jsonStyle;
   LatLng position;
+  String userMail;
   FiremanScreen({
+    @required this.userMail,
     @required this.position,
     @required this.jsonStyle,
   });
@@ -41,7 +43,10 @@ class _FiremanScreenState extends State<FiremanScreen> {
   }
 
   Widget _profileSettingsBody() {
-    return ProfileSettingsScreen(jsonFaq: 'assets/general/faqFireman.json');
+    return ProfileSettingsScreen(
+      jsonFaq: 'assets/general/faqFireman.json',
+      userEmail: widget.userMail,
+    );
   }
 
   Widget _requestsBody() {

@@ -9,25 +9,23 @@ import 'package:theme_provider/theme_provider.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
   final String jsonFaq;
-  ProfileSettingsScreen({@required this.jsonFaq});
+  final String userEmail;
+  ProfileSettingsScreen({@required this.userEmail, @required this.jsonFaq});
 
   @override
   _ProfileSettingsScreenState createState() => _ProfileSettingsScreenState();
 }
 
 class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
-  String _userEmail;
   String _urlGravatarImage;
 
   @override
   void initState() {
-    setGravatarEmailPic();
     super.initState();
   }
 
   void setGravatarEmailPic() {
-    _userEmail = Provider.of<AppState>(context, listen: false).getUser().email;
-    var gravatar = Gravatar(_userEmail);
+    var gravatar = Gravatar(widget.userEmail);
     _urlGravatarImage = gravatar.imageUrl(
       size: 100,
       defaultImage: GravatarImage.retro,
@@ -38,6 +36,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    setGravatarEmailPic();
+
     return MaterialApp(
       home: Scaffold(
         backgroundColor: ThemeProvider.themeOf(context).data.accentColor,
@@ -66,7 +66,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  Text(_userEmail,
+                  Text(widget.userEmail,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -113,7 +113,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                                               TextStyle(color: Colors.white)),
                                       onPressed: () {
                                         Provider.of<AppState>(context)
-                                            .recoverPassword(_userEmail);
+                                            .recoverPassword(widget.userEmail);
                                         Provider.of<AppState>(context)
                                             .logOut(context);
                                       },

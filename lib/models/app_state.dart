@@ -10,7 +10,6 @@ import 'package:ignite/views/login_screen.dart';
 
 class AppState extends ChangeNotifier {
   AuthResult result;
-  FirebaseUser currentUser;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
@@ -18,12 +17,24 @@ class AppState extends ChangeNotifier {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final facebookLogin = FacebookLogin();
 
+  Future<FirebaseUser> getUser() async {
+    return await _auth.currentUser();
+  }
+
+  Future<String> getUserMail() async {
+    FirebaseUser user = await this.getUser();
+    String mail = user.email;
+    return mail;
+  }
+
   Future<void> authMailPassword(String mail, String pass) async {
     try {
       result =
           await _auth.signInWithEmailAndPassword(email: mail, password: pass);
-      this.currentUser = result.user;
-      //   notifyListeners();
+      getUser().then((user) {
+        print(user.email);
+      });
+      //notifyListeners();
     } catch (e) {
       throw e;
     }
@@ -33,8 +44,10 @@ class AppState extends ChangeNotifier {
     try {
       result = await _auth.createUserWithEmailAndPassword(
           email: mail, password: pass);
-      this.updateUsersCollection(mail, false);
-      //  notifyListeners();
+      getUser().then((user) {
+        this.updateUsersCollection(user.email, false);
+      });
+      notifyListeners();
     } catch (e) {
       throw e;
     }
@@ -52,9 +65,11 @@ class AppState extends ChangeNotifier {
         idToken: googleSignInAuthentication.idToken,
       );
       result = await _auth.signInWithCredential(credential);
-      currentUser = result.user;
-      this.updateUsersCollection(currentUser.email, false);
-      //   notifyListeners();
+      getUser().then((user) {
+        this.updateUsersCollection(user.email, false);
+      });
+
+      notifyListeners();
     } catch (e) {
       throw e;
     }
@@ -71,8 +86,9 @@ class AppState extends ChangeNotifier {
               FacebookAuthProvider.getCredential(accessToken: myToken.token);
 
           result = await _auth.signInWithCredential(credential);
-          currentUser = result.user;
-          this.updateUsersCollection(currentUser.email, false);
+          getUser().then((user) {
+            this.updateUsersCollection(user.email, false);
+          });
 
           break;
         case FacebookLoginStatus.cancelledByUser:
@@ -86,7 +102,7 @@ class AppState extends ChangeNotifier {
                   'Here\'s the error Facebook gave us: ${fbResult.errorMessage}');
           break;
       }
-      //  notifyListeners();
+      notifyListeners();
     } catch (e) {
       throw e;
     }
@@ -97,28 +113,25 @@ class AppState extends ChangeNotifier {
       await _auth.sendPasswordResetEmail(
         email: currentEmail,
       );
-      //   notifyListeners();
+      notifyListeners();
     } catch (e) {
       throw e;
     }
   }
 
   Future<bool> isCurrentUserFireman() async {
-    if (currentUser != null) {
-      QuerySnapshot querySnap = await _db
-          .collection('users')
-          .where('email', isEqualTo: "${currentUser.email}")
-          .getDocuments();
-      return querySnap.documents[0]["isFireman"];
-    } else {
-      return false;
-    }
+    FirebaseUser user = await this.getUser();
+    QuerySnapshot querySnap = await _db
+        .collection('users')
+        .where('email', isEqualTo: "${user.email}")
+        .getDocuments();
+    return querySnap.documents[0]["isFireman"];
   }
 
   void updateUsersCollection(String mail, bool isFireman) {
     _db
         .collection('users')
-        .where('email', isEqualTo: '${mail}')
+        .where('email', isEqualTo: mail)
         .getDocuments()
         .then((snapshot) {
       if (snapshot.documents.isEmpty) {
@@ -160,20 +173,16 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> accountsLogOut() async {
-    print("L'utente si sta disconnettendo");
-    print("Utente prima del logout: ${currentUser.email}");
-    await _auth.signOut().then((_) async {
-      googleSignIn.signOut();
-      facebookLogin.logOut();
-      currentUser = await _auth.currentUser();
+    getUser().then((currentUser) {
+      print("L'utente si sta disconnettendo");
+      print("Utente prima del logout: ${currentUser.email}");
     });
-    // notifyListeners();
+    await _auth.signOut();
+    await googleSignIn.signOut();
+    await facebookLogin.logOut();
+    notifyListeners();
 
     print("Utente disconnesso");
-  }
-
-  FirebaseUser getUser() {
-    return currentUser;
   }
 
   Future<List<Request>> getRequests() async {
@@ -241,29 +250,34 @@ class AppState extends ChangeNotifier {
   }
 
   void approveRequest(Request request) async {
-    QuerySnapshot qsApprove = await _db
-        .collection('users')
-        .where('email', isEqualTo: currentUser.email)
-        .getDocuments();
-    DocumentReference refApprove = qsApprove.documents[0].reference;
-    await _db
-        .collection('requests')
-        .document(request.getDBReference())
-        .updateData(
-            {'approved': true, 'open': false, 'approved_by': refApprove});
+    getUser().then((currentUser) async {
+      QuerySnapshot qsApprove = await _db
+          .collection('users')
+          .where('email', isEqualTo: currentUser.email)
+          .getDocuments();
+
+      DocumentReference refApprove = qsApprove.documents[0].reference;
+      await _db
+          .collection('requests')
+          .document(request.getDBReference())
+          .updateData(
+              {'approved': true, 'open': false, 'approved_by': refApprove});
+    });
   }
 
   void denyRequest(Request request) async {
-    QuerySnapshot qsApprove = await _db
-        .collection('users')
-        .where('email', isEqualTo: currentUser.email)
-        .getDocuments();
-    DocumentReference refApprove = qsApprove.documents[0].reference;
-    await _db
-        .collection('requests')
-        .document(request.getDBReference())
-        .updateData(
-            {'approved': false, 'open': false, 'approved_by': refApprove});
+    getUser().then((currentUser) async {
+      QuerySnapshot qsApprove = await _db
+          .collection('users')
+          .where('email', isEqualTo: currentUser.email)
+          .getDocuments();
+      DocumentReference refApprove = qsApprove.documents[0].reference;
+      await _db
+          .collection('requests')
+          .document(request.getDBReference())
+          .updateData(
+              {'approved': false, 'open': false, 'approved_by': refApprove});
+    });
   }
 
   void addRequest(Hydrant hydrant, bool isFireman) async {
@@ -282,22 +296,24 @@ class AppState extends ChangeNotifier {
       'type': hydrant.getType(),
       'vehicle': hydrant.getVehicle(),
     });
-    QuerySnapshot qsReq = await _db
-        .collection('users')
-        .where('email', isEqualTo: currentUser.email)
-        .getDocuments();
-    DocumentReference reqBy = qsReq.documents[0].reference;
-    QuerySnapshot qsApp = await _db
-        .collection('users')
-        .where('email', isEqualTo: 'placeholder')
-        .getDocuments();
-    DocumentReference appBy = qsApp.documents[0].reference;
-    DocumentReference newRequest = await _db.collection('requests').add({
-      'approved': isFireman,
-      'approved_by': appBy,
-      'hydrant': newHydrant,
-      'open': !isFireman,
-      'requested_by': reqBy,
+    getUser().then((currentUser) async {
+      QuerySnapshot qsReq = await _db
+          .collection('users')
+          .where('email', isEqualTo: currentUser.email)
+          .getDocuments();
+      DocumentReference reqBy = qsReq.documents[0].reference;
+      QuerySnapshot qsApp = await _db
+          .collection('users')
+          .where('email', isEqualTo: 'placeholder')
+          .getDocuments();
+      DocumentReference appBy = qsApp.documents[0].reference;
+      DocumentReference newRequest = await _db.collection('requests').add({
+        'approved': isFireman,
+        'approved_by': appBy,
+        'hydrant': newHydrant,
+        'open': !isFireman,
+        'requested_by': reqBy,
+      });
     });
   }
 }

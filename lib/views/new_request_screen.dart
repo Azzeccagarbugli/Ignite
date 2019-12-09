@@ -628,10 +628,16 @@ class _RequestFormState extends State<RequestForm> {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             prefixIcon: icon,
             counterStyle: TextStyle(
+              color: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.grey
+                  : Colors.white,
               fontFamily: 'Nunito',
             ),
             hintText: hintText,
             hintStyle: TextStyle(
+              color: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.grey
+                  : Colors.white,
               fontFamily: 'Nunito',
             ),
             enabledBorder: OutlineInputBorder(

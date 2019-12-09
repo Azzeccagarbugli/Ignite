@@ -20,7 +20,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   LatLng _curloc;
   String _mapStyle;
   bool _isFireman;
-
+  String _userMail;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -32,15 +32,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
       systemNavigationBarDividerColor:
           ThemeProvider.themeOf(context).data.primaryColor,
     ));
-    return MaterialApp(
-      home: SplashScreen.navigate(
-        next: (context) => screenChange(),
-        name: 'assets/general/intro.flr',
-        backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
-        loopAnimation: '1',
-        until: () => this._untilFunction(),
-        endAnimation: '1',
-      ),
+    return SplashScreen.navigate(
+      next: (context) => screenChange(),
+      name: 'assets/general/intro.flr',
+      backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
+      loopAnimation: '1',
+      until: () => this._untilFunction(),
+      endAnimation: '1',
     );
   }
 
@@ -49,11 +47,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
       return FiremanScreen(
         position: this._curloc,
         jsonStyle: this._mapStyle,
+        userMail: this._userMail,
       );
     } else {
       return CitizenScreen(
         position: this._curloc,
         jsonStyle: this._mapStyle,
+        userMail: this._userMail,
       );
     }
   }
@@ -62,14 +62,24 @@ class _LoadingScreenState extends State<LoadingScreen> {
     await this._getIsFireman();
     await this._getPosition();
     await this._loadJson();
+    await this._getUserMail();
   }
 
-  Future<bool> _getIsFireman() async {
-    _isFireman = await Provider.of<AppState>(context).isCurrentUserFireman();
-    return _isFireman;
+  void _getUserMail() async {
+    String mail = await Provider.of<AppState>(context).getUserMail();
+    setState(() {
+      _userMail = mail;
+    });
   }
 
-  Future<dynamic> _getPosition() async {
+  void _getIsFireman() async {
+    bool value = await Provider.of<AppState>(context).isCurrentUserFireman();
+    setState(() {
+      _isFireman = value;
+    });
+  }
+
+  void _getPosition() async {
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
@@ -77,7 +87,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     });
   }
 
-  Future<dynamic> _loadJson() async {
+  void _loadJson() async {
     await rootBundle
         .loadString(
             'assets/general/${ThemeProvider.optionsOf<CustomOptions>(context).filename}.json')

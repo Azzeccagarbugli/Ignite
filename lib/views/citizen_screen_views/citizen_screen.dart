@@ -12,7 +12,9 @@ import '../../main.dart';
 class CitizenScreen extends StatefulWidget {
   String jsonStyle;
   LatLng position;
+  String userMail;
   CitizenScreen({
+    @required this.userMail,
     @required this.position,
     @required this.jsonStyle,
   });
@@ -31,7 +33,10 @@ class _CitizenScreenState extends State<CitizenScreen> {
   }
 
   Widget _profileSettingsBody() {
-    return ProfileSettingsScreen(jsonFaq: 'assets/general/faqCitizen.json');
+    return ProfileSettingsScreen(
+      jsonFaq: 'assets/general/faqCitizen.json',
+      userEmail: widget.userMail,
+    );
   }
 
   Widget _mapBody() {
@@ -96,7 +101,7 @@ class CitizenCurvedNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
-      backgroundColor: ThemeProvider.themeOf(context).data.accentColor,
+      backgroundColor: Colors.transparent,
       index: 0,
       color: ThemeProvider.themeOf(context).data.bottomAppBarColor,
       animationDuration: Duration(
