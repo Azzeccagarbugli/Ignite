@@ -6,7 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ignite/widgets/homepage_button.dart';
 import 'package:ignite/widgets/hydrant_card.dart';
-import 'package:theme_provider/theme_provider.dart';
 
 class FiremanScreenMap extends StatefulWidget {
   String jsonStyle;
@@ -21,6 +20,11 @@ class FiremanScreenMap extends StatefulWidget {
 
 class _FiremanScreenMapState extends State<FiremanScreenMap> {
   StreamSubscription<Position> _positionStream;
+  GoogleMapController _mapController;
+  Set<Marker> _markerSet = Set();
+  double _zoomCameraOnMe = 18.0;
+  Marker resultMarker;
+  
   void setupPositionStream() {
     _positionStream = Geolocator()
         .getPositionStream(
@@ -30,14 +34,6 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       widget.position = LatLng(pos.latitude, pos.longitude);
     });
   }
-
-  GoogleMapController _mapController;
-
-  Set<Marker> _markerSet = Set();
-
-  double _zoomCameraOnMe = 18.0;
-
-  Marker resultMarker;
 
   void _addMarker() {
     setState(() {

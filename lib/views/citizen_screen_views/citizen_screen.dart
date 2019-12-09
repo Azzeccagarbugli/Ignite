@@ -111,7 +111,7 @@ class CitizenCurvedNavigationBar extends StatelessWidget {
           ThemeProvider.themeOf(context).data.bottomAppBarColor,
       items: <Icon>[
         Icon(
-          Icons.terrain,
+          Icons.map,
           size: 35,
           color: ThemeProvider.themeOf(context).data.buttonColor,
         ),

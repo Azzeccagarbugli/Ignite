@@ -60,6 +60,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Card(
+                    color: ThemeProvider.themeOf(context).data.backgroundColor,
                     elevation: 10,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -79,24 +80,31 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.all(15),
+                          padding: EdgeInsets.fromLTRB(12, 12, 12, 8),
                           child: Chip(
+                            backgroundColor: ThemeProvider.themeOf(context)
+                                .data
+                                .primaryColor,
                             elevation: 10,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50)),
-                            label: Text(widget.userEmail,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                )),
+                            label: Text(
+                              widget.userEmail,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
                   SizedBox(
-                    height: 40,
+                    height: 35,
                   ),
                   RoundedButtonOptions(
                       context: context,
@@ -108,7 +116,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                         }));
                       }),
                   SizedBox(
-                    height: 25,
+                    height: 20,
                   ),
                   RoundedButtonOptions(
                     context: context,
@@ -118,9 +126,20 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                           context: context,
                           barrierDismissible: true,
                           builder: (context) => AlertDialog(
-                                title: Text(
-                                  "Le verrà inviata un'email in cui potrà cambiare password e verrà disconnesso dal sistema. Procedere?",
-                                  style: TextStyle(),
+                                title: Card(
+                                  elevation: 8,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(15),
+                                    child: Text(
+                                      "Le verrà inviata un'email in cui potrà cambiare password e verrà disconnesso dal sistema. Procedere?",
+                                      style: TextStyle(
+                                        fontFamily: "Nunito",
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 actions: <Widget>[
                                   ButtonTheme(
@@ -166,7 +185,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     },
                   ),
                   SizedBox(
-                    height: 25,
+                    height: 20,
                   ),
                   RoundedButtonOptions(
                     context: context,
@@ -180,7 +199,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     },
                   ),
                   SizedBox(
-                    height: 25,
+                    height: 20,
                   ),
                   RoundedButtonOptions(
                     context: context,

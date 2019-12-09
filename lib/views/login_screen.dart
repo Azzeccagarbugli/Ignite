@@ -4,7 +4,6 @@ import 'package:flutter_login/flutter_login.dart';
 import 'package:ignite/widgets/social_chip.dart';
 import 'package:provider/provider.dart';
 import 'package:ignite/models/app_state.dart';
-import 'package:ignite/widgets/fab_first_screen.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
