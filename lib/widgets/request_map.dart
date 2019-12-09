@@ -16,26 +16,22 @@ class RequestMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      height: 150.0,
-      child: GoogleMap(
-        rotateGesturesEnabled: false,
-        scrollGesturesEnabled: false,
-        tiltGesturesEnabled: false,
-        zoomGesturesEnabled: false,
-        markers: {
-          Marker(
-            markerId: MarkerId('Hydrant'),
-            position: LatLng(latitude, longitude),
-            icon: BitmapDescriptor.defaultMarker,
-          ),
-        },
-        mapType: MapType.satellite,
-        onMapCreated: _onMapCreated,
-        initialCameraPosition:
-            CameraPosition(target: LatLng(latitude, longitude), zoom: 18.0),
-      ),
+    return GoogleMap(
+      rotateGesturesEnabled: false,
+      scrollGesturesEnabled: false,
+      tiltGesturesEnabled: false,
+      zoomGesturesEnabled: false,
+      markers: {
+        Marker(
+          markerId: MarkerId('Hydrant'),
+          position: LatLng(latitude, longitude),
+          icon: BitmapDescriptor.defaultMarker,
+        ),
+      },
+      mapType: MapType.satellite,
+      onMapCreated: _onMapCreated,
+      initialCameraPosition:
+          CameraPosition(target: LatLng(latitude, longitude), zoom: 18.0),
     );
   }
 }

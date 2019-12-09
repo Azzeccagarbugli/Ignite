@@ -156,7 +156,7 @@ class RequestCard extends StatelessWidget {
               Radius.circular(16.0),
             ),
           ),
-          semanticContainer: true,
+          semanticContainer: false,
           elevation: 12.0,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -206,7 +206,7 @@ class RequestCard extends StatelessWidget {
                               ),
                             ),
                             subtitle: Text(
-                              "${snapshot.data.getStreetNumber()} \n${snapshot.data.getCap()}",
+                              "${snapshot.data.getStreetNumber()}",
                               style: TextStyle(
                                 fontFamily: 'Nunito',
                                 fontSize: 16,
@@ -215,33 +215,28 @@ class RequestCard extends StatelessWidget {
                           ),
                           ButtonBarTheme(
                             data: ButtonBarThemeData(
-                              alignment: MainAxisAlignment.end,
+                              alignment: MainAxisAlignment.center,
                             ),
                             child: ButtonBar(
                               children: <Widget>[
                                 ButtonDeclineConfirm(
                                   color: Colors.red,
                                   icon: Icon(
-                                    Icons.thumb_down,
+                                    Icons.info,
                                     color: Colors.white,
                                   ),
-                                  text: "Declina",
-                                  onPressed: () {},
-                                ),
-                                ButtonDeclineConfirm(
-                                  color: Colors.green,
-                                  icon: Icon(
-                                    Icons.thumb_up,
-                                    color: Colors.white,
-                                  ),
-                                  text: "Approva",
-                                  onPressed: () {},
+                                  text: "Vai alla seguente richiesta",
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return RequestApprovalScreen(
+                                          request: this.request);
+                                    }));
+                                  },
                                 ),
                               ],
                             ),
                           ),
-                          // Text(
-                          //     "${snapshot.data.getLat()}° N, ${snapshot.data.getLong()}° E"),
                         ],
                       );
                   }

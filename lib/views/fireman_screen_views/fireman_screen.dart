@@ -93,7 +93,7 @@ class _FiremanScreenState extends State<FiremanScreen> {
     ));
 
     return Scaffold(
-      extendBody: false,
+      extendBody: true,
       body: _bodyWidget,
       bottomNavigationBar: new FiremanCurvedNavigationBar(
         indexFun: (index) {
@@ -111,7 +111,7 @@ class FiremanCurvedNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
       index: 0,
-      backgroundColor: ThemeProvider.themeOf(context).data.accentColor,
+      backgroundColor: Colors.transparent,
       color: ThemeProvider.themeOf(context).data.bottomAppBarColor,
       animationDuration: Duration(
         milliseconds: 500,

@@ -1,8 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/models/app_state.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
+import 'package:ignite/views/fireman_screen_views/fireman_screen_requests.dart';
 import 'package:ignite/widgets/request_map.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -77,56 +79,120 @@ class RequestScreenRecap extends StatelessWidget {
         parallaxOffset: .5,
         panel: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            SizedBox(
-              height: 16.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
               children: <Widget>[
-                Container(
-                  width: 30,
-                  height: 5,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                SizedBox(
+                  height: 16.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 30,
+                      height: 5,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(12.0))),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 16.0,
+                ),
+                Wrap(
+                  children: <Widget>[
+                    Center(
+                      child: Text(
+                        hydrant.getStreetNumber(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 24.0,
+                          fontFamily: 'Nunito',
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 16.0,
                 ),
               ],
-            ),
-            SizedBox(
-              height: 22.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  hydrant.getStreetNumber(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 24.0,
-                    fontFamily: 'Nunito',
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 36.0,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _button("Events", Icons.event, Colors.blue),
-                _button("Events", Icons.event, Colors.red),
-                _button("Events", Icons.event, Colors.amber),
-                _button("Events", Icons.event, Colors.green),
+                _button(hydrant.getCity(), Icons.place),
+                _button(hydrant.getCap(), Icons.map),
+                _button(
+                    hydrant.getPlace().isEmpty
+                        ? 'Nessun riferimento fornito'
+                        : hydrant.getPlace(),
+                    Icons.location_city),
               ],
             ),
             Container(
               padding: const EdgeInsets.only(left: 24.0, right: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[],
+                children: <Widget>[
+                  RowBuilderHydrant(
+                    tag: 'Latitudine',
+                    value: hydrant.getLat().toString(),
+                  ),
+                  RowBuilderHydrant(
+                    tag: 'Longitudine',
+                    value: hydrant.getLong().toString(),
+                  ),
+                  RowBuilderHydrant(
+                    tag: 'Note',
+                    value: hydrant.getNotes(),
+                  ),
+                ],
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ButtonBarTheme(
+                  data: ButtonBarThemeData(
+                    alignment: MainAxisAlignment.center,
+                  ),
+                  child: ButtonBar(
+                    children: <Widget>[
+                      ButtonDeclineConfirm(
+                        color: Colors.red,
+                        icon: Icon(
+                          Icons.thumb_down,
+                          color: Colors.white,
+                        ),
+                        text: "Declina",
+                        onPressed: () {
+                          Provider.of<AppState>(context)
+                              .denyRequest(this.request);
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ButtonDeclineConfirm(
+                        color: Colors.green,
+                        icon: Icon(
+                          Icons.thumb_up,
+                          color: Colors.white,
+                        ),
+                        text: "Approva",
+                        onPressed: () {
+                          Provider.of<AppState>(context)
+                              .approveRequest(this.request);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -199,27 +265,92 @@ class RequestScreenRecap extends StatelessWidget {
     );
   }
 
-  Widget _button(String label, IconData icon, Color color) {
+  Widget _button(String label, IconData icon) {
     return Column(
       children: <Widget>[
         Container(
           padding: const EdgeInsets.all(16.0),
           child: Icon(
             icon,
-            color: Colors.white,
+            color: Colors.red,
+            size: 30,
           ),
-          decoration:
-              BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [
-            BoxShadow(
-              color: Color.fromRGBO(0, 0, 0, 0.15),
-              blurRadius: 8.0,
-            )
-          ]),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.red,
+              width: 2,
+            ),
+          ),
         ),
         SizedBox(
           height: 12.0,
         ),
-        Text(label),
+        Container(
+          width: 72,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'Nunito',
+            ),
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            softWrap: true,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class RowBuilderHydrant extends StatelessWidget {
+  final String value;
+  final String tag;
+
+  RowBuilderHydrant({
+    @required this.value,
+    @required this.tag,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Chip(
+          backgroundColor: Colors.red,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.red),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(6.0),
+              bottomLeft: Radius.circular(6.0),
+            ),
+          ),
+          label: Text(
+            this.tag,
+            style: TextStyle(
+              fontFamily: 'Nunito',
+              color: Colors.white,
+            ),
+          ),
+        ),
+        Chip(
+          backgroundColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.red),
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(6.0),
+              bottomRight: Radius.circular(6.0),
+            ),
+          ),
+          label: Text(
+            this.value,
+            style: TextStyle(
+              fontFamily: 'Nunito',
+              color: Colors.black,
+            ),
+          ),
+        )
       ],
     );
   }

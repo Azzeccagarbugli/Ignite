@@ -41,45 +41,50 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       backgroundColor: ThemeProvider.themeOf(context).data.accentColor,
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            RoundedButtonOptions(
-                context: context,
-                text: "Utilizza la posizione corrente",
-                function: () async {
-                  Position position = await Geolocator().getCurrentPosition(
-                      desiredAccuracy: LocationAccuracy.high);
-                  setState(() {
-                    widget.position =
-                        LatLng(position.latitude, position.longitude);
-                  });
-                }),
-            /* RoundedButtonOptions(
-                context: context,
-                text: "Definisci le coordinate",
-                function: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return CustomLatLngFormDialog(
-                          updatePosition: (lat, lng) {
-                            setState(() {
-                              widget.position = LatLng(lat, lng);
-                            });
-                          },
-                        );
-                      });
-                }),*/
-            Flexible(
-              child: RequestForm(
-                lat: widget.position.latitude,
-                long: widget.position.longitude,
-              ),
+      body: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 52,
+          ),
+          RoundedButtonOptions(
+              context: context,
+              text: "Utilizza la posizione corrente",
+              function: () async {
+                Position position = await Geolocator()
+                    .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+                setState(() {
+                  widget.position =
+                      LatLng(position.latitude, position.longitude);
+                });
+              }),
+          SizedBox(
+            height: 52,
+          ),
+          /* RoundedButtonOptions(
+              context: context,
+              text: "Definisci le coordinate",
+              function: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CustomLatLngFormDialog(
+                        updatePosition: (lat, lng) {
+                          setState(() {
+                            widget.position = LatLng(lat, lng);
+                          });
+                        },
+                      );
+                    });
+              }),*/
+          Flexible(
+            child: RequestForm(
+              lat: widget.position.latitude,
+              long: widget.position.longitude,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -422,6 +427,9 @@ class _RequestFormState extends State<RequestForm> {
               });
             },
           ),
+        ),
+        SizedBox(
+          height: 96,
         ),
       ]);
     }
