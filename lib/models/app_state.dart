@@ -6,7 +6,9 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/models/user.dart';
+import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/views/login_screen.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class AppState extends ChangeNotifier {
   AuthResult result;
@@ -23,8 +25,11 @@ class AppState extends ChangeNotifier {
 
   Future<String> getUserMail() async {
     FirebaseUser user = await this.getUser();
+    if(user == null){
+      return 'null';
+    } else {
     String mail = user.email;
-    return mail;
+    return mail;}
   }
 
   Future<void> authMailPassword(String mail, String pass) async {
@@ -148,6 +153,7 @@ class AppState extends ChangeNotifier {
     return ThemeData(
       primaryColor: Colors.red[600],
       accentColor: Colors.grey[200],
+      backgroundColor: Colors.white,
       bottomAppBarColor: Colors.red[600],
       buttonColor: Colors.white,
       fontFamily: 'Nunito',
@@ -158,11 +164,18 @@ class AppState extends ChangeNotifier {
     return ThemeData(
       primaryColor: Colors.black,
       accentColor: Colors.grey[700],
+      backgroundColor: Colors.grey[400],
       bottomAppBarColor: Colors.black,
       buttonColor: Colors.white,
       fontFamily: 'Nunito',
     );
   }
+
+  void toggleTheme(BuildContext context){    ThemeProvider.controllerOf(context).nextTheme();
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                        return LoadingScreen();
+                      }));}
 
   void logOut(BuildContext context) async {
     await this.accountsLogOut();

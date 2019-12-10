@@ -125,7 +125,7 @@ class FiremanCurvedNavigationBar extends StatelessWidget {
           ThemeProvider.themeOf(context).data.bottomAppBarColor,
       items: <Icon>[
         Icon(
-          Icons.terrain,
+          Icons.map,
           size: 35,
           color: ThemeProvider.themeOf(context).data.buttonColor,
         ),
@@ -140,7 +140,7 @@ class FiremanCurvedNavigationBar extends StatelessWidget {
           color: ThemeProvider.themeOf(context).data.buttonColor,
         ),
         Icon(
-          Icons.info,
+          Icons.person,
           size: 35,
           color: ThemeProvider.themeOf(context).data.buttonColor,
         ),

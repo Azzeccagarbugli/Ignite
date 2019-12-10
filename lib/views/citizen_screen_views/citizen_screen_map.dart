@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ignite/widgets/homepage_button.dart';
 import 'package:ignite/widgets/hydrant_card.dart';
-import 'package:theme_provider/theme_provider.dart';
 
 class CitizenScreenMap extends StatefulWidget {
   String jsonStyle;
@@ -20,16 +19,10 @@ class CitizenScreenMap extends StatefulWidget {
 
 class _FiremanScreenMapState extends State<CitizenScreenMap> {
   StreamSubscription<Position> _positionStream;
-
   GoogleMapController _mapController;
-
   Set<Marker> _markerSet = Set();
-
   double _zoomCameraOnMe = 18.0;
-
   Marker resultMarker;
-
-  Widget _bodyWidget;
 
   void setupPositionStream() {
     _positionStream = Geolocator()
