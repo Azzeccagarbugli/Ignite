@@ -19,29 +19,32 @@ class TopButtonRequest extends StatelessWidget {
       minWidth: 300.0,
       height: 45.0,
       buttonColor: ThemeProvider.themeOf(context).data.primaryColor,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
+      child: Column(
         children: <Widget>[
-          Material(
-            elevation: 12,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18.0),
-            ),
-            child: Container(
-              color: Colors.white,
-              transform: Matrix4.translationValues(0.0, 28.0, 0.0),
+          Container(
+            transform: Matrix4.translationValues(0.0, 46.0, 0.0),
+            child: Card(
+              elevation: 8,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Ottieni informazioni automaticamente",
-                  style: TextStyle(
-                    fontFamily: 'Nunito',
+                padding: const EdgeInsets.only(
+                  top: 12,
+                  bottom: 4,
+                  left: 8,
+                  right: 8,
+                ),
+                child: Container(
+                  child: Text(
+                    "Ottieni le informazioni automaticamente",
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                    ),
                   ),
                 ),
               ),
             ),
           ),
           Container(
+            transform: Matrix4.translationValues(0.0, -28.0, 0.0),
             child: RaisedButton.icon(
               elevation: 10,
               icon: Icon(

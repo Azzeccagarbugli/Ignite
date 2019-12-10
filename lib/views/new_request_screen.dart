@@ -8,6 +8,7 @@ import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/widgets/painter.dart';
 import 'package:ignite/widgets/rounded_button_options.dart';
 import 'package:ignite/widgets/top_button_request.dart';
+import 'package:pk_skeleton/pk_skeleton.dart';
 import 'package:place_picker/place_picker.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:ignite/models/app_state.dart';
@@ -112,10 +113,15 @@ class RequestCircularLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: CircularProgressIndicator(
-      valueColor: new AlwaysStoppedAnimation<Color>(
-          ThemeProvider.themeOf(context).data.primaryColor),
-    ));
+      child: Card(
+          child: ThemeProvider.themeOf(context).id == "main"
+              ? PKCardPageSkeleton(
+                  totalLines: 5,
+                )
+              : PKDarkCardPageSkeleton(
+                  totalLines: 5,
+                )),
+    );
   }
 }
 
@@ -150,8 +156,10 @@ class _RequestFormState extends State<RequestForm> {
   Future<List<Placemark>> getFuturePlacemark() async {
     List<Placemark> list;
     try {
-      list =
-          await Geolocator().placemarkFromCoordinates(widget.lat, widget.long);
+      list = await Geolocator().placemarkFromCoordinates(
+        widget.lat,
+        widget.long,
+      );
     } catch (e) {
       list = null;
     }
