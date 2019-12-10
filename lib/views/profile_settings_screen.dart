@@ -191,11 +191,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     context: context,
                     text: "Cambia tema",
                     function: () {
-                      ThemeProvider.controllerOf(context).nextTheme();
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return LoadingScreen();
-                      }));
+                  Provider.of<AppState>(context).toggleTheme(context);
                     },
                   ),
                   SizedBox(
@@ -206,10 +202,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     text: "Disconnettiti",
                     function: () {
                       Provider.of<AppState>(context).logOut(context);
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
+
                     },
                   ),
                 ],

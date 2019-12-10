@@ -23,6 +23,10 @@ class _LoginScreenState extends State<LoginScreen> {
     animationBuilder();
   }
 
+void clelio() async {
+  String sas = await Provider.of<AppState>(context).getUserMail();
+  print("Sasso: $sas");
+}
   Future animationBuilder() async {
     await Future.delayed(Duration(
       milliseconds: 800,
@@ -161,6 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    clelio();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
