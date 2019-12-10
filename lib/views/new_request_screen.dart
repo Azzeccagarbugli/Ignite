@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/models/hydrant.dart';
@@ -13,6 +14,8 @@ import 'package:ignite/models/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
+
+import '../main.dart';
 
 const apiKey = "AIzaSyDXxmocq4KQWmghOamTeNod-ccg5U1w5M4";
 
@@ -42,10 +45,14 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness:
+          ThemeProvider.optionsOf<CustomOptions>(context).brightness,
+    ));
     return Scaffold(
       extendBody: true,
       resizeToAvoidBottomInset: false,
-      backgroundColor: ThemeProvider.themeOf(context).data.accentColor,
+      resizeToAvoidBottomPadding: false,
       body: CustomPaint(
         willChange: false,
         painter: Painter(
@@ -61,22 +68,28 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
         ),
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 52,
-            ),
-            TopButtonRequest(
-                context: context,
-                text: "Utilizza la posizione corrente",
-                function: () async {
-                  Position position = await Geolocator().getCurrentPosition(
-                      desiredAccuracy: LocationAccuracy.high);
-                  setState(() {
-                    widget.position =
-                        LatLng(position.latitude, position.longitude);
-                  });
-                }),
-            SizedBox(
-              height: 52,
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 46,
+                bottom: 16,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TopButtonRequest(
+                    context: context,
+                    text: "Utilizza la posizione corrente",
+                    function: () async {
+                      Position position = await Geolocator().getCurrentPosition(
+                          desiredAccuracy: LocationAccuracy.high);
+                      setState(() {
+                        widget.position =
+                            LatLng(position.latitude, position.longitude);
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
             Flexible(
               child: RequestForm(
@@ -338,6 +351,14 @@ class _RequestFormState extends State<RequestForm> {
         },
         TextInputType.text,
       ),
+      widget._isFireman
+          ? SizedBox(
+              height: 0,
+              width: 0,
+            )
+          : SizedBox(
+              height: 106,
+            ),
     ]);
     if (widget._isFireman) {
       tiles.addAll([
@@ -508,6 +529,13 @@ class _RequestFormState extends State<RequestForm> {
             child: Chip(
               backgroundColor: Colors.white,
               elevation: 12,
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.only(
+                  topRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
               label: Text(
                 'Ultimo controllo',
                 style: TextStyle(
@@ -540,10 +568,16 @@ class _RequestFormState extends State<RequestForm> {
                         : Colors.white,
                   ),
                   counterStyle: TextStyle(
+                    color: ThemeProvider.themeOf(context).id == "main"
+                        ? Colors.grey
+                        : Colors.white,
                     fontFamily: 'Nunito',
                   ),
                   hintText: 'Inserisci data ultimo controllo',
                   hintStyle: TextStyle(
+                    color: ThemeProvider.themeOf(context).id == "main"
+                        ? Colors.grey
+                        : Colors.white,
                     fontFamily: 'Nunito',
                   ),
                   enabledBorder: OutlineInputBorder(
@@ -586,7 +620,7 @@ class _RequestFormState extends State<RequestForm> {
           ),
         ),
         SizedBox(
-          height: 96,
+          height: 106,
         ),
       ]);
     }
@@ -608,6 +642,13 @@ class _RequestFormState extends State<RequestForm> {
         child: Chip(
           backgroundColor: Colors.white,
           elevation: 12,
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.only(
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+          ),
           label: Text(
             label,
             style: TextStyle(
@@ -620,6 +661,12 @@ class _RequestFormState extends State<RequestForm> {
         borderRadius: BorderRadius.circular(8.0),
         elevation: 12,
         child: TextFormField(
+          style: TextStyle(
+            fontFamily: 'Nunito',
+            color: ThemeProvider.themeOf(context).id == "main"
+                ? Colors.grey
+                : Colors.white,
+          ),
           decoration: InputDecoration(
             filled: true,
             fillColor: ThemeProvider.themeOf(context).id == "main"
@@ -684,7 +731,6 @@ class _RequestFormState extends State<RequestForm> {
                 future: Provider.of<AppState>(context).isCurrentUserFireman(),
                 builder: (context, result) {
                   widget._isFireman = result.data;
-
                   switch (result.connectionState) {
                     case ConnectionState.none:
                       return new RequestCircularLoading();
@@ -693,13 +739,10 @@ class _RequestFormState extends State<RequestForm> {
                       return new RequestCircularLoading();
                     case ConnectionState.done:
                       if (result.hasError) return new RequestCircularLoading();
-
                       return Form(
                         key: _key,
-                        child: GlowingOverscrollIndicator(
-                          color:
-                              ThemeProvider.themeOf(context).data.primaryColor,
-                          axisDirection: AxisDirection.down,
+                        child: ScrollConfiguration(
+                          behavior: RemoveGlow(),
                           child: SingleChildScrollView(
                             child: Column(
                               children: this.buildListTileList(placemark.data),
@@ -751,5 +794,13 @@ class _RequestFormState extends State<RequestForm> {
         },
       ),
     );
+  }
+}
+
+class RemoveGlow extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }
