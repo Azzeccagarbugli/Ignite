@@ -25,11 +25,12 @@ class AppState extends ChangeNotifier {
 
   Future<String> getUserMail() async {
     FirebaseUser user = await this.getUser();
-    if(user == null){
+    if (user == null) {
       return 'null';
     } else {
-    String mail = user.email;
-    return mail;}
+      String mail = user.email;
+      return mail;
+    }
   }
 
   Future<void> authMailPassword(String mail, String pass) async {
@@ -171,11 +172,12 @@ class AppState extends ChangeNotifier {
     );
   }
 
-  void toggleTheme(BuildContext context){    ThemeProvider.controllerOf(context).nextTheme();
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return LoadingScreen();
-                      }));}
+  void toggleTheme(BuildContext context) {
+    ThemeProvider.controllerOf(context).nextTheme();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return LoadingScreen();
+    }));
+  }
 
   void logOut(BuildContext context) async {
     await this.accountsLogOut();

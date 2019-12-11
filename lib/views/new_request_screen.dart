@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/widgets/painter.dart';
+import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/rounded_button_options.dart';
 import 'package:ignite/widgets/top_button_request.dart';
 import 'package:pk_skeleton/pk_skeleton.dart';
@@ -802,13 +803,5 @@ class _RequestFormState extends State<RequestForm> {
         },
       ),
     );
-  }
-}
-
-class RemoveGlow extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
   }
 }

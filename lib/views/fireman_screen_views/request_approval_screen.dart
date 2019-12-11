@@ -5,6 +5,7 @@ import 'package:ignite/models/app_state.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/views/fireman_screen_views/fireman_screen_requests.dart';
+import 'package:ignite/widgets/button_decline_approve.dart';
 import 'package:ignite/widgets/request_map.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';

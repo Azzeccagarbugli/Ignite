@@ -25,9 +25,15 @@ class TopButtonRequest extends StatelessWidget {
             transform: Matrix4.translationValues(0.0, 46.0, 0.0),
             child: Card(
               elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                ),
+              ),
               child: Padding(
                 padding: const EdgeInsets.only(
-                  top: 12,
+                  top: 6,
                   bottom: 4,
                   left: 8,
                   right: 8,
