@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/models/app_state.dart';
+import 'package:ignite/providers/auth_provider.dart';
+import 'package:ignite/providers/db_provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../main.dart';
 import 'package:ignite/views/citizen_screen_views/citizen_screen.dart';
@@ -66,14 +68,16 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void _getUserMail() async {
-    String mail = await Provider.of<AppState>(context).getUserMail();
+    String mail = await Provider.of<AuthProvider>(context).getUserMail();
     setState(() {
       _userMail = mail;
     });
   }
 
   void _getIsFireman() async {
-    bool value = await Provider.of<AppState>(context).isCurrentUserFireman();
+    FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
+    bool value =
+        await Provider.of<DbProvider>(context).isCurrentUserFireman(user);
     setState(() {
       _isFireman = value;
     });

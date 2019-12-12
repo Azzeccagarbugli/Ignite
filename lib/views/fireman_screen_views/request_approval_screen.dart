@@ -1,10 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/models/app_state.dart';
+import 'package:ignite/providers/auth_provider.dart';
+import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
-import 'package:ignite/views/fireman_screen_views/fireman_screen_requests.dart';
 import 'package:ignite/widgets/button_decline_approve.dart';
 import 'package:ignite/widgets/request_map.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -38,7 +38,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
     ));
     return Scaffold(
       body: FutureBuilder<Hydrant>(
-        future: Provider.of<AppState>(context)
+        future: Provider.of<DbProvider>(context)
             .getHydrantByDocumentReference(widget.request.getHydrant()),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
@@ -172,9 +172,13 @@ class RequestScreenRecap extends StatelessWidget {
                           color: Colors.white,
                         ),
                         text: "Declina",
-                        onPressed: () {
-                          Provider.of<AppState>(context)
-                              .denyRequest(this.request);
+                        onPressed: () async {
+                          FirebaseUser user =
+                              await Provider.of<AuthProvider>(context)
+                                  .getUser();
+
+                          Provider.of<DbProvider>(context)
+                              .denyRequest(this.request, user);
                           Navigator.pop(context);
                         },
                       ),
@@ -185,9 +189,12 @@ class RequestScreenRecap extends StatelessWidget {
                           color: Colors.white,
                         ),
                         text: "Approva",
-                        onPressed: () {
-                          Provider.of<AppState>(context)
-                              .approveRequest(this.request);
+                        onPressed: () async {
+                          FirebaseUser user =
+                              await Provider.of<AuthProvider>(context)
+                                  .getUser();
+                          Provider.of<DbProvider>(context)
+                              .approveRequest(this.request, user);
                         },
                       ),
                     ],
@@ -202,67 +209,6 @@ class RequestScreenRecap extends StatelessWidget {
           longitude: hydrant.getLong(),
         ),
       ),
-      // Container(
-      //   color: ThemeProvider.themeOf(context).data.accentColor,
-      //   child: Center(
-      //     child: Column(
-      //       children: <Widget>[
-      //         Text(
-      //             "L'idrante si trova a ${hydrant.getCity()}, ${hydrant.getStreetNumber()} (${hydrant.getCap()})"),
-      //         RequestMap(
-      //           latitude: hydrant.getLat(),
-      //           longitude: hydrant.getLong(),
-      //         ),
-      //         Text("${hydrant.getLat()}° N, ${hydrant.getLong()}° E"),
-      //         Text(
-      //             "Data dell'ultimo controllo: ${hydrant.getLastCheck().day}/${hydrant.getLastCheck().month}/${hydrant.getLastCheck().year}"),
-      //         Text(
-      //             "Primo attacco: ${hydrant.getFirstAttack() == "" ? "Valore non fornito" : hydrant.getFirstAttack()}"),
-      //         Text(
-      //             "Secondo attacco: ${hydrant.getSecondAttack() == "" ? "Valore non fornito" : hydrant.getSecondAttack()}"),
-      //         Text(
-      //             "Note: ${hydrant.getNotes() == "" ? "Valore non fornito" : hydrant.getNotes()}"),
-      //         Text(
-      //             "Apertura: ${hydrant.getOpening() == "" ? "Valore non fornito" : hydrant.getOpening()}"),
-      //         Text(
-      //             "Riferimenti spaziali: ${hydrant.getPlace() == "" ? "Valore non fornito" : hydrant.getPlace()}"),
-      //         Text(
-      //             "Pressione: ${hydrant.getPressure() == "" ? "Valore non fornito" : hydrant.getPressure()}"),
-      //         Text(
-      //             "Tipo: ${hydrant.getType() == "" ? "Valore non fornito" : hydrant.getType()}"),
-      //         Text(
-      //             "Veicolo: ${hydrant.getVehicle() == "" ? "Valore non fornito" : hydrant.getVehicle()}"),
-      //         SizedBox(
-      //           height: 10.0,
-      //         ),
-      //         Row(
-      //           mainAxisAlignment: MainAxisAlignment.center,
-      //           children: <Widget>[
-      //             FlatButton(
-      //               color: ThemeProvider.themeOf(context).data.primaryColor,
-      //               child: Text("Approva richiesta"),
-      //               onPressed: () {
-      //                 Provider.of<AppState>(context).approveRequest(request);
-      //                 Navigator.pop(context);
-      //               },
-      //             ),
-      //             SizedBox(
-      //               width: 10.0,
-      //             ),
-      //             FlatButton(
-      //               color: ThemeProvider.themeOf(context).data.primaryColor,
-      //               child: Text("Declina richiesta"),
-      //               onPressed: () {
-      //                 Provider.of<AppState>(context).denyRequest(request);
-      //                 Navigator.pop(context);
-      //               },
-      //             ),
-      //           ],
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 

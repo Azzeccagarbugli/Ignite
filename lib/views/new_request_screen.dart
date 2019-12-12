@@ -1,18 +1,19 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/models/hydrant.dart';
+import 'package:ignite/providers/auth_provider.dart';
+import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/widgets/painter.dart';
 import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/rounded_button_options.dart';
 import 'package:ignite/widgets/top_button_request.dart';
 import 'package:pk_skeleton/pk_skeleton.dart';
-import 'package:place_picker/place_picker.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:ignite/models/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
@@ -35,14 +36,6 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-  }
-
-  void showPlacePicker() async {
-    LocationResult result = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => PlacePicker(apiKey)));
-    setState(() {
-      widget.position = result.latLng;
-    });
   }
 
   @override
@@ -736,32 +729,50 @@ class _RequestFormState extends State<RequestForm> {
               return new RequestCircularLoading();
             case ConnectionState.done:
               if (placemark.hasError) return new RequestCircularLoading();
-              return FutureBuilder<bool>(
-                future: Provider.of<AppState>(context).isCurrentUserFireman(),
-                builder: (context, result) {
-                  widget._isFireman = result.data;
-                  switch (result.connectionState) {
-                    case ConnectionState.none:
-                      return new RequestCircularLoading();
-                    case ConnectionState.active:
-                    case ConnectionState.waiting:
-                      return new RequestCircularLoading();
-                    case ConnectionState.done:
-                      if (result.hasError) return new RequestCircularLoading();
-                      return Form(
-                        key: _key,
-                        child: ScrollConfiguration(
-                          behavior: RemoveGlow(),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: this.buildListTileList(placemark.data),
-                            ),
-                          ),
-                        ),
-                      );
-                  }
-                },
-              );
+              return FutureBuilder<FirebaseUser>(
+                  future: Provider.of<AuthProvider>(context).getUser(),
+                  builder: (context, user) {
+                    switch (placemark.connectionState) {
+                      case ConnectionState.none:
+                        return new RequestCircularLoading();
+                      case ConnectionState.active:
+                      case ConnectionState.waiting:
+                        return new RequestCircularLoading();
+                      case ConnectionState.done:
+                        if (placemark.hasError)
+                          return new RequestCircularLoading();
+                        return FutureBuilder<bool>(
+                          future: Provider.of<DbProvider>(context)
+                              .isCurrentUserFireman(user.data),
+                          builder: (context, result) {
+                            widget._isFireman = result.data;
+                            switch (result.connectionState) {
+                              case ConnectionState.none:
+                                return new RequestCircularLoading();
+                              case ConnectionState.active:
+                              case ConnectionState.waiting:
+                                return new RequestCircularLoading();
+                              case ConnectionState.done:
+                                if (result.hasError)
+                                  return new RequestCircularLoading();
+                                return Form(
+                                  key: _key,
+                                  child: ScrollConfiguration(
+                                    behavior: RemoveGlow(),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: this
+                                            .buildListTileList(placemark.data),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                            }
+                          },
+                        );
+                        ;
+                    }
+                  });
           }
         },
       ),
@@ -796,8 +807,11 @@ class _RequestFormState extends State<RequestForm> {
                     widget._notes,
                     widget._place,
                     "${widget._street}, ${widget._number}");
-            Provider.of<AppState>(context)
-                .addRequest(newHydrant, widget._isFireman);
+            Provider.of<AuthProvider>(context).getUser().then((user) {
+              Provider.of<DbProvider>(context)
+                  .addRequest(newHydrant, widget._isFireman, user);
+            });
+
             setState(() {});
           }
         },

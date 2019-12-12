@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ignite/widgets/homepage_button.dart';
-import 'package:ignite/widgets/hydrant_card.dart';
 
 class CitizenScreenMap extends StatefulWidget {
   String jsonStyle;
@@ -66,18 +65,6 @@ class _FiremanScreenMapState extends State<CitizenScreenMap> {
 
   @override
   Widget build(BuildContext context) {
-    resultMarker = Marker(
-      markerId: MarkerId(
-        "Primo idrante",
-      ),
-      position: LatLng(0, 0),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HydrantCard()),
-        );
-      },
-    );
     return Scaffold(
       body: Stack(
         children: <Widget>[

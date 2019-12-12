@@ -29,7 +29,6 @@ dependencies:
   auto_size_text: ^2.1.0
   pk_skeleton: ^0.0.2
   sliding_up_panel: ^0.3.6
-  place_picker: ^0.9.10
   datetime_picker_formfield: ^0.4.3
   flutter_staggered_animations: ^0.1.2
 

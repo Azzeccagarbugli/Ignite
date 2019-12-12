@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/widgets/social_chip.dart';
 import 'package:provider/provider.dart';
-import 'package:ignite/models/app_state.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,10 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
     animationBuilder();
   }
 
-void clelio() async {
-  String sas = await Provider.of<AppState>(context).getUserMail();
-  print("Sasso: $sas");
-}
   Future animationBuilder() async {
     await Future.delayed(Duration(
       milliseconds: 800,
@@ -39,7 +35,7 @@ void clelio() async {
 
   Future<String> _authUser(LoginData login) async {
     try {
-      await Provider.of<AppState>(context)
+      await Provider.of<AuthProvider>(context)
           .authMailPassword(login.name, login.password);
     } catch (e) {
       switch (e.code) {
@@ -54,7 +50,7 @@ void clelio() async {
 
   Future<String> _authSignInGoogle() async {
     try {
-      await Provider.of<AppState>(context).signInWithGoogle();
+      await Provider.of<AuthProvider>(context).signInWithGoogle();
     } catch (e) {
       switch (e.code) {
         case 'ERROR_INVALID_CREDENTIAL':
@@ -83,7 +79,7 @@ void clelio() async {
 
   Future<String> _authSignInFacebook() async {
     try {
-      await Provider.of<AppState>(context).signInWithFacebook();
+      await Provider.of<AuthProvider>(context).signInWithFacebook();
     } catch (e) {
       switch (e.code) {
         case 'ERROR_INVALID_CREDENTIAL':
@@ -102,7 +98,6 @@ void clelio() async {
           return e.message;
       }
     }
-    await Provider.of<AppState>(context).signInWithFacebook();
   }
 
   Future<void> _fbLogin() async {
@@ -116,7 +111,7 @@ void clelio() async {
 
   Future<String> _newUser(LoginData login) async {
     try {
-      await Provider.of<AppState>(context)
+      await Provider.of<AuthProvider>(context)
           .newMailPassword(login.name, login.password);
     } catch (e) {
       switch (e.code) {
@@ -131,7 +126,7 @@ void clelio() async {
 
   Future<String> _recoverPassword(String currentEmail) async {
     try {
-      Provider.of<AppState>(context).recoverPassword(currentEmail);
+      Provider.of<AuthProvider>(context).recoverPassword(currentEmail);
     } catch (e) {
       switch (e.code) {
         case 'ERROR_INVALID_EMAIL':
@@ -165,8 +160,6 @@ void clelio() async {
 
   @override
   Widget build(BuildContext context) {
-
-    clelio();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:ignite/models/app_state.dart';
+import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 
@@ -35,7 +35,7 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
               : Colors.grey[700],
         ),
         child: FutureBuilder<List<Request>>(
-          future: Provider.of<AppState>(context).getRequests(),
+          future: Provider.of<DbProvider>(context).getRequests(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -105,7 +105,7 @@ class RequestCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: FutureBuilder<Hydrant>(
-          future: Provider.of<AppState>(context)
+          future: Provider.of<DbProvider>(context)
               .getHydrantByDocumentReference(request.getHydrant()),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
@@ -174,21 +174,6 @@ class RequestCard extends StatelessWidget {
             }
           },
         ),
-      ),
-    );
-  }
-}
-
-class RequestCircularLoading extends StatelessWidget {
-  const RequestCircularLoading({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: PKCardPageSkeleton(
-        totalLines: 5,
       ),
     );
   }

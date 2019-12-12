@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
+import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/views/faq.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/widgets/rounded_button_options.dart';
 import 'package:simple_gravatar/simple_gravatar.dart';
-import 'package:ignite/models/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -154,10 +154,15 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                                           style:
                                               TextStyle(color: Colors.white)),
                                       onPressed: () {
-                                        Provider.of<AppState>(context)
+                                        Provider.of<AuthProvider>(context)
                                             .recoverPassword(widget.userEmail);
-                                        Provider.of<AppState>(context)
+                                        Provider.of<AuthProvider>(context)
                                             .logOut(context);
+                                        Navigator.pushReplacement(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return LoginScreen();
+                                        }));
                                       },
                                     ),
                                   ),
@@ -191,7 +196,11 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     context: context,
                     text: "Cambia tema",
                     function: () {
-                  Provider.of<AppState>(context).toggleTheme(context);
+                      ThemeProvider.controllerOf(context).nextTheme();
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                        return LoadingScreen();
+                      }));
                     },
                   ),
                   SizedBox(
@@ -201,8 +210,11 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     context: context,
                     text: "Disconnettiti",
                     function: () {
-                      Provider.of<AppState>(context).logOut(context);
-
+                      Provider.of<AuthProvider>(context).logOut(context);
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                        return LoginScreen();
+                      }));
                     },
                   ),
                 ],
