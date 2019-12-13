@@ -33,12 +33,6 @@ class NewRequestScreen extends StatefulWidget {
 
 class _NewRequestScreenState extends State<NewRequestScreen> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarIconBrightness:
@@ -46,10 +40,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
     ));
     return Scaffold(
       extendBody: true,
-      resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
       body: CustomPaint(
-        willChange: false,
         painter: Painter(
           first: ThemeProvider.themeOf(context).id == "main"
               ? Colors.red[900]
@@ -108,13 +100,15 @@ class RequestCircularLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-          child: ThemeProvider.themeOf(context).id == "main"
-              ? PKCardPageSkeleton(
-                  totalLines: 5,
-                )
-              : PKDarkCardPageSkeleton(
-                  totalLines: 5,
-                )),
+        color: Colors.transparent,
+        child: ThemeProvider.themeOf(context).id == "main"
+            ? PKCardPageSkeleton(
+                totalLines: 5,
+              )
+            : PKDarkCardPageSkeleton(
+                totalLines: 5,
+              ),
+      ),
     );
   }
 }

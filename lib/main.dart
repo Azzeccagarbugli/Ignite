@@ -15,10 +15,10 @@ class Ignite extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => AuthProvider(),
+          builder: (context) => AuthProvider(),
         ),
         ChangeNotifierProvider(
-          create: (context) => DbProvider(),
+          builder: (context) => DbProvider(),
         ),
       ],
       child: App(),

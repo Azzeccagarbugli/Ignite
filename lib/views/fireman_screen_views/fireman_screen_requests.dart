@@ -21,7 +21,7 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
+      extendBody: false,
       body: CustomPaint(
         painter: Painter(
           first: ThemeProvider.themeOf(context).id == "main"
@@ -103,7 +103,9 @@ class RequestCard extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(
+          vertical: 6,
+        ),
         child: FutureBuilder<Hydrant>(
           future: Provider.of<DbProvider>(context)
               .getHydrantByDocumentReference(request.getHydrant()),
@@ -124,26 +126,48 @@ class RequestCard extends StatelessWidget {
                         height: 124.0,
                         margin: EdgeInsets.only(left: 16.0, right: 8.0),
                         child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(12.0),
+                            ),
+                          ),
                           margin: const EdgeInsets.only(
                             left: 60.0,
                           ),
                           color: ThemeProvider.themeOf(context).id == "main"
                               ? Colors.white
-                              : Colors.grey[700],
-                          elevation: 6,
-                          child: ListTile(
-                            contentPadding: EdgeInsets.only(left: 46.0),
-                            isThreeLine: true,
-                            title: Text(
-                              snapshot.data.getCity(),
+                              : Colors.grey[900],
+                          elevation: 10,
+                          child: Center(
+                            child: ListTile(
+                              contentPadding: EdgeInsets.only(left: 46.0),
+                              isThreeLine: true,
+                              title: Text(
+                                snapshot.data.getCity(),
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  color: ThemeProvider.themeOf(context).id ==
+                                          "main"
+                                      ? Colors.black
+                                      : Colors.white,
+                                ),
+                              ),
+                              subtitle: Text(
+                                "${snapshot.data.getStreetNumber()}\n${snapshot.data.getCap()}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: ThemeProvider.themeOf(context).id ==
+                                          "main"
+                                      ? Colors.grey[600]
+                                      : Colors.grey[100],
+                                ),
+                              ),
                             ),
-                            subtitle: Text(
-                                "${snapshot.data.getStreetNumber()}\n${snapshot.data.getCap()}"),
                           ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
+                        padding: const EdgeInsets.only(left: 14.0),
                         child: Container(
                           margin: new EdgeInsets.symmetric(
                             vertical: 16.0,

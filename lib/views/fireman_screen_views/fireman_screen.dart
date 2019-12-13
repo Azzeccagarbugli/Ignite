@@ -98,7 +98,7 @@ class _FiremanScreenState extends State<FiremanScreen> {
     ));
 
     return Scaffold(
-      extendBody: false,
+      extendBody: true,
       body: _bodyWidget,
       bottomNavigationBar: new FiremanCurvedNavigationBar(
         indexFun: (index) {
