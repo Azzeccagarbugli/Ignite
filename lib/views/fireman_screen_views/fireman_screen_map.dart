@@ -40,51 +40,53 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     });
   }
 
-  void _buildHydrantMarkers(List<Hydrant> hydrants) async {
-    /* List<Hydrant> hydrants =
-        await Provider.of<DbProvider>(context).getApprovedHydrants();*/
-    for (Hydrant h in hydrants) {
-      _markerSet.add(
-        new Marker(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return HydrantScreen(
-                hydrant: h,
-              );
-            }));
-          },
-          markerId: MarkerId(h.getDBReference()),
-          position: LatLng(h.getLat(), h.getLong()),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose),
-        ),
-      );
-    }
+  void _buildHydrantMarkers() async {
+    await Provider.of<DbProvider>(context).getApprovedHydrants().then((value) {
+      for (Hydrant h in value) {
+        _markerSet.add(
+          new Marker(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return HydrantScreen(
+                  hydrant: h,
+                );
+              }));
+            },
+            markerId: MarkerId(h.getDBReference()),
+            position: LatLng(h.getLat(), h.getLong()),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose),
+          ),
+        );
+      }
+    });
   }
 
-  void _buildDepartmentsMarkers(List<Department> deps) async {
-    /* List<Department> deps =
-        await Provider.of<DbProvider>(context).getDepartments();*/
-    for (Department d in deps) {
-      _markerSet.add(
-        new Marker(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return DepartmentScreen(
-                department: d,
-              );
-            }));
-          },
-          markerId: MarkerId(d.getDBReference()),
-          position: LatLng(d.getLat(), d.getLong()),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        ),
-      );
-    }
+  void _buildDepartmentsMarkers() async {
+    await Provider.of<DbProvider>(context).getDepartments().then((value) {
+      for (Department d in value) {
+        _markerSet.add(
+          new Marker(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return DepartmentScreen(
+                  department: d,
+                );
+              }));
+            },
+            markerId: MarkerId(d.getDBReference()),
+            position: LatLng(d.getLat(), d.getLong()),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          ),
+        );
+      }
+    });
   }
 
-  GoogleMap _buildGoogleMap(List<Department> deps, List<Hydrant> hydrants) {
-    /*this._buildDepartmentsMarkers(deps);
-    this._buildHydrantMarkers(hydrants);*/
+  GoogleMap _buildGoogleMap() {
+    this._buildDepartmentsMarkers();
+    this._buildHydrantMarkers();
     return GoogleMap(
       mapToolbarEnabled: false,
       indoorViewEnabled: true,
@@ -132,47 +134,9 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
           FutureBuilder<List<Hydrant>>(
             future: Provider.of<DbProvider>(context).getApprovedHydrants(),
             builder: (context, hydrants) {
-              switch (hydrants.connectionState) {
-                case ConnectionState.none:
-                  return new RequestCircularLoading();
-                case ConnectionState.active:
-                case ConnectionState.waiting:
-                  return new RequestCircularLoading();
-                case ConnectionState.done:
-                  if (hydrants.hasError) return new RequestCircularLoading();
-                  return FutureBuilder<List<Department>>(
-                    future: Provider.of<DbProvider>(context).getDepartments(),
-                    builder: (context, departments) {
-                      switch (departments.connectionState) {
-                        case ConnectionState.none:
-                          return new RequestCircularLoading();
-                        case ConnectionState.active:
-                        case ConnectionState.waiting:
-                          return new RequestCircularLoading();
-                        case ConnectionState.done:
-                          if (departments.hasError)
-                            return new RequestCircularLoading();
-                          return _buildGoogleMap(
-                              departments.data, hydrants.data);
-                      }
-                    },
-                  );
-              }
+              return _buildGoogleMap();
             },
           ),
-          /* GoogleMap(
-            mapToolbarEnabled: false,
-            indoorViewEnabled: true,
-            zoomGesturesEnabled: true,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            onMapCreated: _onMapCreated,
-            markers: _markerSet,
-            initialCameraPosition: CameraPosition(
-              target: widget.position,
-              zoom: _zoomCameraOnMe,
-            ),
-          ),*/
           Padding(
             padding: const EdgeInsets.only(
               top: 30.0,
