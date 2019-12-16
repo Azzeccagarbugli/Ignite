@@ -3,12 +3,10 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
-
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
 import 'package:ignite/widgets/painter.dart';
 import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/request_map.dart';
-import 'package:pk_skeleton/pk_skeleton.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -66,13 +64,12 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                               ),
                             ),
                           );
-                        }
-                      },
+                        } return null;
+                      }, 
                     ),
                   ),
                 );
-            }
-            return null; // unreachable
+            } return null;
           },
         ),
       ),

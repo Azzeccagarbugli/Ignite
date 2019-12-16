@@ -209,7 +209,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                   RoundedButtonOptions(
                     context: context,
                     text: "Disconnettiti",
-                    function: () {
+                    function: () async {
                       Provider.of<AuthProvider>(context).logOut(context);
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) {

@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:ignite/views/loading_screen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ignite/providers/auth_provider.dart';
+import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/views/fireman_screen_views/fireman_screen.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
+import 'citizen_screen_views/citizen_screen.dart';
 
 class IntroductionTutorial extends StatelessWidget {
-  const IntroductionTutorial({Key key}) : super(key: key);
+  IntroductionTutorial(
+      {@required this.isFireman,
+      @required this.curloc,
+      @required this.mapStyle,
+      @required this.userMail});
 
-  void _onIntroEnd(context) {
+  final bool isFireman;
+  final LatLng curloc;
+  final String mapStyle;
+  final String userMail;
+
+  void _onIntroEnd(context) async {
+    Provider.of<DbProvider>(context).setFirstAccessToFalse(
+        await Provider.of<AuthProvider>(context).getUser());
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => LoadingScreen(),
+        builder: (context) => isFireman
+            ? FiremanScreen(
+                position: this.curloc,
+                jsonStyle: this.mapStyle,
+                userMail: this.userMail)
+            : CitizenScreen(
+                position: this.curloc,
+                jsonStyle: this.mapStyle,
+                userMail: this.userMail,
+              ),
       ),
     );
   }
@@ -56,36 +81,60 @@ class IntroductionTutorial extends StatelessWidget {
     );
 
     return IntroductionScreen(
-      pages: [
-        PageViewModel(
-          title: "Benvenuto!",
-          body:
-              "Inizia a mappare gli idranti della tua città per contribuire all'intera comunità nazionale dei Vigili del Fuoco.",
-          image: _buildImage('2'),
-          decoration: pageDecoration,
-        ),
-        PageViewModel(
-          title: "Per un posto migliore",
-          body:
-              "Utilizzando una vasta infrastruttura potremmo in futuro ampliare il sistema a livello mondiale.",
-          image: _buildImage('1'),
-          decoration: pageDecoration,
-        ),
-        PageViewModel(
-          title: "Una community online",
-          body:
-              "Ignite non si limita solamente alla mappatura degli idranti ma può consentirti di aprire ticket online per entrare in contatto diretto con il commando di pompieri della tua città.",
-          image: _buildImage('3'),
-          decoration: pageDecoration,
-        ),
-        PageViewModel(
-          title: "Condividi la tua idea di futuro con noi",
-          body:
-              "Lascia volentiri dei feedback all'interno dei nostri canali social per dirci cosa ne pensi di questa fantastica applicazione!",
-          image: _buildImage('4'),
-          decoration: pageDecoration,
-        ),
-      ],
+      pages: isFireman
+          ? [
+              PageViewModel(
+                title: "Benvenuto!",
+                body:
+                    "Inizia a mappare gli idranti della città per avere a disposizione una mappa interattiva utile nel lavoro di tutti i giorni.",
+                image: _buildImage('2'),
+                decoration: pageDecoration,
+              ),
+              PageViewModel(
+                title: "Lavorare non è mai stato così facile",
+                body:
+                    "Cliccando sul pulsante in alto a destra dello schermo potrai trovare l'idrante più vicino a te in un attimo!",
+                image: _buildImage('1'),
+                decoration: pageDecoration,
+              ),
+              PageViewModel(
+                title: "Richieste dei cittadini",
+                body:
+                    "Anche i cittadini potranno dare una mano ad inserire gli idranti grazie all'app. Non dovrai far altro che controllare, nell'apposita sezione, le richieste inviate e decidere se approvarle o meno.",
+                image: _buildImage('5'),
+                decoration: pageDecoration,
+              ),
+              PageViewModel(
+                title: "Condividi la tua idea di futuro con noi",
+                body:
+                    "Lascia volentiri dei feedback all'interno dei nostri canali social per dirci cosa ne pensi di questa fantastica applicazione!",
+                image: _buildImage('4'),
+                decoration: pageDecoration,
+              ),
+            ]
+          : [
+              PageViewModel(
+                title: "Benvenuto!",
+                body:
+                    "Inizia a mappare gli idranti della tua città per contribuire all'intera comunità nazionale dei Vigili del Fuoco.",
+                image: _buildImage('2'),
+                decoration: pageDecoration,
+              ),
+              PageViewModel(
+                title: "Per un posto migliore",
+                body:
+                    "Utilizzando una vasta infrastruttura potremmo in futuro ampliare il sistema a livello mondiale.",
+                image: _buildImage('1'),
+                decoration: pageDecoration,
+              ),
+              PageViewModel(
+                title: "Condividi la tua idea di futuro con noi",
+                body:
+                    "Lascia volentiri dei feedback all'interno dei nostri canali social per dirci cosa ne pensi di questa fantastica applicazione!",
+                image: _buildImage('4'),
+                decoration: pageDecoration,
+              ),
+            ],
       onDone: () => _onIntroEnd(context),
       showSkipButton: true,
       skipFlex: 0,

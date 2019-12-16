@@ -5,7 +5,6 @@ import 'package:ignite/models/department.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/models/user.dart';
-import 'package:provider/provider.dart';
 
 class DbProvider extends ChangeNotifier {
   final Firestore _db = Firestore.instance;
@@ -16,6 +15,26 @@ class DbProvider extends ChangeNotifier {
         .where('email', isEqualTo: "${curUser.email}")
         .getDocuments();
     return querySnap.documents[0]["isFireman"];
+  }
+
+  Future<bool> isFirstAccess(FirebaseUser curUser) async {
+    QuerySnapshot querySnap = await _db
+        .collection('users')
+        .where('email', isEqualTo: "${curUser.email}")
+        .getDocuments();
+    return querySnap.documents[0]["isFirstAccess"];
+  }
+
+  void setFirstAccessToFalse(FirebaseUser curUser) async {
+    QuerySnapshot querySnap = await _db
+        .collection('users')
+        .where('email', isEqualTo: "${curUser.email}")
+        .getDocuments();
+        querySnap.documents[0].documentID;
+    await _db
+        .collection('users')
+        .document(querySnap.documents[0].documentID)
+        .updateData({'isFirstAccess': false});
   }
 
   Future<List<Request>> getRequests() async {
