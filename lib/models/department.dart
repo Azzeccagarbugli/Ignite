@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Department {
   Department(String ref, String cap, String city, double lat, double long,
       String mail, String phonenumber, String streetnumber) {

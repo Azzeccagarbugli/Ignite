@@ -8,9 +8,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/painter.dart';
 import 'package:ignite/widgets/remove_glow.dart';
-import 'package:ignite/widgets/rounded_button_options.dart';
 import 'package:ignite/widgets/top_button_request.dart';
 import 'package:pk_skeleton/pk_skeleton.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -86,28 +86,6 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class RequestCircularLoading extends StatelessWidget {
-  const RequestCircularLoading({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        color: Colors.transparent,
-        child: ThemeProvider.themeOf(context).id == "main"
-            ? PKCardPageSkeleton(
-                totalLines: 5,
-              )
-            : PKDarkCardPageSkeleton(
-                totalLines: 5,
-              ),
       ),
     );
   }
@@ -717,24 +695,23 @@ class _RequestFormState extends State<RequestForm> {
         builder: (context, placemark) {
           switch (placemark.connectionState) {
             case ConnectionState.none:
-              return new RequestCircularLoading();
+              return new RequestLoading();
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return new RequestCircularLoading();
+              return new RequestLoading();
             case ConnectionState.done:
-              if (placemark.hasError) return new RequestCircularLoading();
+              if (placemark.hasError) return new RequestLoading();
               return FutureBuilder<FirebaseUser>(
                   future: Provider.of<AuthProvider>(context).getUser(),
                   builder: (context, user) {
                     switch (placemark.connectionState) {
                       case ConnectionState.none:
-                        return new RequestCircularLoading();
+                        return new RequestLoading();
                       case ConnectionState.active:
                       case ConnectionState.waiting:
-                        return new RequestCircularLoading();
+                        return new RequestLoading();
                       case ConnectionState.done:
-                        if (placemark.hasError)
-                          return new RequestCircularLoading();
+                        if (placemark.hasError) return new RequestLoading();
                         return FutureBuilder<bool>(
                           future: Provider.of<DbProvider>(context)
                               .isCurrentUserFireman(user.data),
@@ -742,13 +719,13 @@ class _RequestFormState extends State<RequestForm> {
                             widget._isFireman = result.data;
                             switch (result.connectionState) {
                               case ConnectionState.none:
-                                return new RequestCircularLoading();
+                                return new RequestLoading();
                               case ConnectionState.active:
                               case ConnectionState.waiting:
-                                return new RequestCircularLoading();
+                                return new RequestLoading();
                               case ConnectionState.done:
                                 if (result.hasError)
-                                  return new RequestCircularLoading();
+                                  return new RequestLoading();
                                 return Form(
                                   key: _key,
                                   child: ScrollConfiguration(

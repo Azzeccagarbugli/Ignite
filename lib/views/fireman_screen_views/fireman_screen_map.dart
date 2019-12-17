@@ -1,17 +1,24 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:ignite/helper/map_launcher.dart';
 import 'package:ignite/models/department.dart';
+
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/views/department_screen.dart';
-import 'package:ignite/views/hydrant_screen.dart';
+import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
+import 'package:ignite/widgets/button_decline_approve.dart';
+
 import 'package:ignite/widgets/homepage_button.dart';
 import 'package:provider/provider.dart';
-import 'package:theme_provider/theme_provider.dart';
+
+import 'dart:ui' as ui;
 
 class FiremanScreenMap extends StatefulWidget {
   String jsonStyle;
@@ -26,8 +33,11 @@ class FiremanScreenMap extends StatefulWidget {
 
 class _FiremanScreenMapState extends State<FiremanScreenMap> {
   StreamSubscription<Position> _positionStream;
+
   GoogleMapController _mapController;
-  Set<Marker> _markerSet;
+
+  List<Marker> _markerSet;
+
   double _zoomCameraOnMe = 18.0;
 
   void setupPositionStream() {
@@ -40,22 +50,50 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     });
   }
 
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+        .buffer
+        .asUint8List();
+  }
+
   void _buildHydrantMarkers() async {
+    final Uint8List markerIconHydrant =
+        await getBytesFromAsset('assets/images/marker_1.png', 130);
     await Provider.of<DbProvider>(context).getApprovedHydrants().then((value) {
       for (Hydrant h in value) {
         _markerSet.add(
           new Marker(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return HydrantScreen(
+                return RequestScreenRecap(
                   hydrant: h,
+                  buttonBar: Row(children: <Widget>[
+                    ButtonDeclineConfirm(
+                      color: Colors.grey,
+                      icon: Icon(
+                        Icons.navigation,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        MapUtils.openMap(h.getLat(), h.getLong());
+                      },
+                      text: "Ottieni indicazioni",
+                    )
+                  ]),
+                  isHydrant: true,
                 );
               }));
             },
             markerId: MarkerId(h.getDBReference()),
-            position: LatLng(h.getLat(), h.getLong()),
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose),
+            position: LatLng(
+              h.getLat(),
+              h.getLong(),
+            ),
+            icon: BitmapDescriptor.fromBytes(markerIconHydrant),
           ),
         );
       }
@@ -63,6 +101,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   void _buildDepartmentsMarkers() async {
+    final Uint8List markerIconDepartment =
+        await getBytesFromAsset('assets/images/marker_2.png', 130);
     await Provider.of<DbProvider>(context).getDepartments().then((value) {
       for (Department d in value) {
         _markerSet.add(
@@ -75,12 +115,21 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
               }));
             },
             markerId: MarkerId(d.getDBReference()),
-            position: LatLng(d.getLat(), d.getLong()),
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            position: LatLng(
+              d.getLat(),
+              d.getLong(),
+            ),
+            icon: BitmapDescriptor.fromBytes(markerIconDepartment),
           ),
         );
       }
+    });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    setState(() {
+      _mapController = controller;
+      _mapController.setMapStyle(widget.jsonStyle);
     });
   }
 
@@ -94,19 +143,12 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
       onMapCreated: _onMapCreated,
-      markers: _markerSet,
+      markers: _markerSet.toSet(),
       initialCameraPosition: CameraPosition(
         target: widget.position,
         zoom: _zoomCameraOnMe,
       ),
     );
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      _mapController = controller;
-      _mapController.setMapStyle(widget.jsonStyle);
-    });
   }
 
   void _animateCameraOnMe() {
@@ -123,7 +165,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   void initState() {
     super.initState();
     this.setupPositionStream();
-    _markerSet = Set<Marker>();
+    _markerSet = List<Marker>();
   }
 
   @override
@@ -168,21 +210,5 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
         ],
       ),
     );
-  }
-}
-
-class RequestCircularLoading extends StatelessWidget {
-  const RequestCircularLoading({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: CircularProgressIndicator(
-      valueColor: new AlwaysStoppedAnimation<Color>(
-        ThemeProvider.themeOf(context).data.primaryColor,
-      ),
-    ));
   }
 }

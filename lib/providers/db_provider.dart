@@ -5,7 +5,6 @@ import 'package:ignite/models/department.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/models/user.dart';
-import 'package:provider/provider.dart';
 
 class DbProvider extends ChangeNotifier {
   final Firestore _db = Firestore.instance;

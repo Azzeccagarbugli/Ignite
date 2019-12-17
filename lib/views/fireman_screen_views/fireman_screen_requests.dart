@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
-
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
+import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/painter.dart';
 import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/request_map.dart';
-import 'package:pk_skeleton/pk_skeleton.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -39,36 +38,23 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return new RequestCircularLoading();
+                return new RequestLoading();
               case ConnectionState.active:
               case ConnectionState.waiting:
-                return new RequestCircularLoading();
+                return new RequestLoading();
               case ConnectionState.done:
-                if (snapshot.hasError) return new RequestCircularLoading();
+                if (snapshot.hasError) return new RequestLoading();
                 return ScrollConfiguration(
                   behavior: RemoveGlow(),
-                  child: AnimationLimiter(
-                    child: new ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        if (snapshot.data[index].getOpen()) {
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(
-                              milliseconds: 800,
-                            ),
-                            child: SlideAnimation(
-                              verticalOffset: 50.0,
-                              child: FadeInAnimation(
-                                child: new RequestCard(
-                                  request: snapshot.data[index],
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                  child: new ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      if (snapshot.data[index].getOpen()) {
+                        return new RequestCard(
+                          request: snapshot.data[index],
+                        );
+                      }
+                    },
                   ),
                 );
             }
@@ -112,10 +98,10 @@ class RequestCard extends StatelessWidget {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return new RequestCircularLoading();
+                return new RequestLoading();
               case ConnectionState.active:
               case ConnectionState.waiting:
-                return new RequestCircularLoading();
+                return new RequestLoading();
               case ConnectionState.done:
                 if (snapshot.hasError)
                   return new Text("Errore nel recupero dei dati");
@@ -185,6 +171,7 @@ class RequestCard extends StatelessWidget {
                               child: RequestMap(
                                 latitude: snapshot.data.getLat(),
                                 longitude: snapshot.data.getLong(),
+                                isHydrant: true,
                               ),
                             ),
                           ),

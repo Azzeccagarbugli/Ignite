@@ -30,7 +30,7 @@ dependencies:
   pk_skeleton: ^0.0.2
   sliding_up_panel: ^0.3.6
   datetime_picker_formfield: ^0.4.3
-  flutter_staggered_animations: ^0.1.2
+  url_launcher: ^5.4.1
 
 dev_dependencies:
   flutter_test:
@@ -45,6 +45,8 @@ flutter:
     - assets/general/faqCitizen.json
     - assets/general/map_style_main.json
     - assets/general/map_style_dark.json
+    - assets/images/marker_1.png
+    - assets/images/marker_2.png
     - assets/images/logo.png
     - assets/images/logo_height.png
     - assets/images/icon.png

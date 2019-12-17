@@ -1,11 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/widgets/button_decline_approve.dart';
+import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/request_map.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -43,15 +47,17 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return new RequestCircularLoading();
+              return new RequestLoading();
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return new RequestCircularLoading();
+              return new RequestLoading();
             case ConnectionState.done:
-              if (snapshot.hasError) return new RequestCircularLoading();
+              if (snapshot.hasError) return new RequestLoading();
               return new RequestScreenRecap(
-                request: widget.request,
                 hydrant: snapshot.data,
+                buttonBar: ButtonAppBarDeclineConfirm(
+                  request: widget.request,
+                ),
               );
           }
           return null;
@@ -62,14 +68,21 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
 }
 
 class RequestScreenRecap extends StatelessWidget {
-  final Request request;
   final Hydrant hydrant;
+  final Widget buttonBar;
+  final bool isHydrant;
+
   RequestScreenRecap({
-    @required this.hydrant,
-    @required this.request,
+    this.hydrant,
+    this.buttonBar,
+    this.isHydrant,
   });
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: SlidingUpPanel(
         borderRadius: BorderRadius.only(
@@ -163,42 +176,7 @@ class RequestScreenRecap extends StatelessWidget {
                   data: ButtonBarThemeData(
                     alignment: MainAxisAlignment.center,
                   ),
-                  child: ButtonBar(
-                    children: <Widget>[
-                      ButtonDeclineConfirm(
-                        color: Colors.red,
-                        icon: Icon(
-                          Icons.thumb_down,
-                          color: Colors.white,
-                        ),
-                        text: "Declina",
-                        onPressed: () async {
-                          FirebaseUser user =
-                              await Provider.of<AuthProvider>(context)
-                                  .getUser();
-
-                          Provider.of<DbProvider>(context)
-                              .denyRequest(this.request, user);
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ButtonDeclineConfirm(
-                        color: Colors.green,
-                        icon: Icon(
-                          Icons.thumb_up,
-                          color: Colors.white,
-                        ),
-                        text: "Approva",
-                        onPressed: () async {
-                          FirebaseUser user =
-                              await Provider.of<AuthProvider>(context)
-                                  .getUser();
-                          Provider.of<DbProvider>(context)
-                              .approveRequest(this.request, user);
-                        },
-                      ),
-                    ],
-                  ),
+                  child: buttonBar,
                 ),
               ],
             ),
@@ -207,6 +185,7 @@ class RequestScreenRecap extends StatelessWidget {
         body: RequestMap(
           latitude: hydrant.getLat(),
           longitude: hydrant.getLong(),
+          isHydrant: isHydrant,
         ),
       ),
     );
@@ -245,6 +224,50 @@ class RequestScreenRecap extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             softWrap: true,
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class ButtonAppBarDeclineConfirm extends StatelessWidget {
+  final Request request;
+
+  ButtonAppBarDeclineConfirm({
+    @required this.request,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ButtonBar(
+      children: <Widget>[
+        ButtonDeclineConfirm(
+          color: Colors.red,
+          icon: Icon(
+            Icons.thumb_down,
+            color: Colors.white,
+          ),
+          text: "Declina",
+          onPressed: () async {
+            FirebaseUser user =
+                await Provider.of<AuthProvider>(context).getUser();
+
+            Provider.of<DbProvider>(context).denyRequest(this.request, user);
+            Navigator.pop(context);
+          },
+        ),
+        ButtonDeclineConfirm(
+          color: Colors.green,
+          icon: Icon(
+            Icons.thumb_up,
+            color: Colors.white,
+          ),
+          text: "Approva",
+          onPressed: () async {
+            FirebaseUser user =
+                await Provider.of<AuthProvider>(context).getUser();
+            Provider.of<DbProvider>(context).approveRequest(this.request, user);
+          },
         ),
       ],
     );
@@ -300,21 +323,5 @@ class RowBuilderHydrant extends StatelessWidget {
         )
       ],
     );
-  }
-}
-
-class RequestCircularLoading extends StatelessWidget {
-  const RequestCircularLoading({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: CircularProgressIndicator(
-      valueColor: new AlwaysStoppedAnimation<Color>(
-        ThemeProvider.themeOf(context).data.primaryColor,
-      ),
-    ));
   }
 }

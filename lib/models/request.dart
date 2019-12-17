@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Request {
   Request(String ref, bool approved, bool open, String approvedBy,
       String hydrant, String requestedBy) {
