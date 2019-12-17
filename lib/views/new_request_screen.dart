@@ -9,16 +9,12 @@ import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
-import 'package:ignite/widgets/painter.dart';
 import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/top_button_request.dart';
-import 'package:pk_skeleton/pk_skeleton.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
-
-import '../main.dart';
 
 const apiKey = "AIzaSyDXxmocq4KQWmghOamTeNod-ccg5U1w5M4";
 
@@ -35,57 +31,45 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarIconBrightness:
-          ThemeProvider.optionsOf<CustomOptions>(context).brightness,
+      statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
       extendBody: true,
-      resizeToAvoidBottomPadding: false,
-      body: CustomPaint(
-        painter: Painter(
-          first: ThemeProvider.themeOf(context).id == "main"
-              ? Colors.red[900]
-              : Colors.grey[850],
-          second: ThemeProvider.themeOf(context).id == "main"
-              ? Colors.red[400]
-              : Colors.grey[900],
-          background: ThemeProvider.themeOf(context).id == "main"
-              ? Colors.white
-              : Colors.grey[700],
-        ),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 46,
-                bottom: 16,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  TopButtonRequest(
-                    context: context,
-                    text: "Utilizza la posizione corrente",
-                    function: () async {
-                      Position position = await Geolocator().getCurrentPosition(
-                          desiredAccuracy: LocationAccuracy.high);
-                      setState(() {
-                        widget.position =
-                            LatLng(position.latitude, position.longitude);
-                      });
-                    },
-                  ),
-                ],
-              ),
+      backgroundColor: ThemeProvider.themeOf(context).id == "main"
+          ? Colors.red[900]
+          : Colors.grey[700],
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 46,
+              bottom: 16,
             ),
-            Flexible(
-              child: RequestForm(
-                lat: widget.position.latitude,
-                long: widget.position.longitude,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TopButtonRequest(
+                  context: context,
+                  text: "Utilizza la posizione corrente",
+                  function: () async {
+                    Position position = await Geolocator().getCurrentPosition(
+                        desiredAccuracy: LocationAccuracy.high);
+                    setState(() {
+                      widget.position =
+                          LatLng(position.latitude, position.longitude);
+                    });
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Flexible(
+            child: RequestForm(
+              lat: widget.position.latitude,
+              long: widget.position.longitude,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -686,6 +670,7 @@ class _RequestFormState extends State<RequestForm> {
 
   final _key = GlobalKey<FormState>();
   final TextEditingController textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -741,51 +726,60 @@ class _RequestFormState extends State<RequestForm> {
                             }
                           },
                         );
-                        ;
                     }
                   });
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.done),
-        backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
-        onPressed: () {
-          if (_key.currentState.validate()) {
-            _key.currentState.save();
-            Hydrant newHydrant = widget._isFireman
-                ? Hydrant.fromFireman(
-                    widget._firstAttack,
-                    widget._secondAttack,
-                    widget._pressure,
-                    widget._cap,
-                    widget._city,
-                    widget.lat,
-                    widget.long,
-                    widget._color,
-                    widget._lastCheck,
-                    widget._notes,
-                    widget._opening,
-                    widget._place,
-                    "${widget._street}, ${widget._number}",
-                    widget._type,
-                    widget._vehicle)
-                : Hydrant.fromCitizen(
-                    widget._cap,
-                    widget._city,
-                    widget.lat,
-                    widget.long,
-                    widget._notes,
-                    widget._place,
-                    "${widget._street}, ${widget._number}");
-            Provider.of<AuthProvider>(context).getUser().then((user) {
-              Provider.of<DbProvider>(context)
-                  .addRequest(newHydrant, widget._isFireman, user);
-            });
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80.0),
+        child: FloatingActionButton(
+          child: Icon(
+            Icons.done,
+          ),
+          backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
+          onPressed: () {
+            if (_key.currentState.validate()) {
+              _key.currentState.save();
+              Hydrant newHydrant = widget._isFireman
+                  ? Hydrant.fromFireman(
+                      widget._firstAttack,
+                      widget._secondAttack,
+                      widget._pressure,
+                      widget._cap,
+                      widget._city,
+                      widget.lat,
+                      widget.long,
+                      widget._color,
+                      widget._lastCheck,
+                      widget._notes,
+                      widget._opening,
+                      widget._place,
+                      "${widget._street}, ${widget._number}",
+                      widget._type,
+                      widget._vehicle,
+                    )
+                  : Hydrant.fromCitizen(
+                      widget._cap,
+                      widget._city,
+                      widget.lat,
+                      widget.long,
+                      widget._notes,
+                      widget._place,
+                      "${widget._street}, ${widget._number}",
+                    );
+              Provider.of<AuthProvider>(context).getUser().then((user) {
+                Provider.of<DbProvider>(context).addRequest(
+                  newHydrant,
+                  widget._isFireman,
+                  user,
+                );
+              });
 
-            setState(() {});
-          }
-        },
+              setState(() {});
+            }
+          },
+        ),
       ),
     );
   }
