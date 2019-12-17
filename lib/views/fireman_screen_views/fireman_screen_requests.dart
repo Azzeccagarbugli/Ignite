@@ -46,6 +46,7 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                 if (snapshot.hasError) return new RequestLoading();
                 return ScrollConfiguration(
                   behavior: RemoveGlow(),
+<<<<<<< HEAD
                   child: new ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
@@ -55,10 +56,33 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                         );
                       }
                     },
+=======
+                  child: AnimationLimiter(
+                    child: new ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        if (snapshot.data[index].getOpen()) {
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(
+                              milliseconds: 800,
+                            ),
+                            child: SlideAnimation(
+                              verticalOffset: 50.0,
+                              child: FadeInAnimation(
+                                child: new RequestCard(
+                                  request: snapshot.data[index],
+                                ),
+                              ),
+                            ),
+                          );
+                        } return null;
+                      }, 
+                    ),
+>>>>>>> c757fee5e4c705e46b30d9824c11ac0faf070561
                   ),
                 );
-            }
-            return null; // unreachable
+            } return null;
           },
         ),
       ),

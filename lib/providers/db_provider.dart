@@ -17,6 +17,26 @@ class DbProvider extends ChangeNotifier {
     return querySnap.documents[0]["isFireman"];
   }
 
+  Future<bool> isFirstAccess(FirebaseUser curUser) async {
+    QuerySnapshot querySnap = await _db
+        .collection('users')
+        .where('email', isEqualTo: "${curUser.email}")
+        .getDocuments();
+    return querySnap.documents[0]["isFirstAccess"];
+  }
+
+  void setFirstAccessToFalse(FirebaseUser curUser) async {
+    QuerySnapshot querySnap = await _db
+        .collection('users')
+        .where('email', isEqualTo: "${curUser.email}")
+        .getDocuments();
+        querySnap.documents[0].documentID;
+    await _db
+        .collection('users')
+        .document(querySnap.documents[0].documentID)
+        .updateData({'isFirstAccess': false});
+  }
+
   Future<List<Request>> getRequests() async {
     QuerySnapshot qsRequests = await _db.collection('requests').getDocuments();
     List<Request> requests = new List<Request>();

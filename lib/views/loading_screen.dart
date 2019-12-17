@@ -6,11 +6,11 @@ import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/views/introduction_tutorial.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../main.dart';
 import 'package:ignite/views/citizen_screen_views/citizen_screen.dart';
 import 'package:provider/provider.dart';
-
 import 'fireman_screen_views/fireman_screen.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -22,6 +22,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   LatLng _curloc;
   String _mapStyle;
   bool _isFireman;
+  bool _isFirstAccess;
   String _userMail;
   @override
   Widget build(BuildContext context) {
@@ -44,8 +45,22 @@ class _LoadingScreenState extends State<LoadingScreen> {
     );
   }
 
-  StatefulWidget screenChange() {
-    if (_isFireman) {
+  Widget screenChange() {
+    if (_isFirstAccess && _isFireman) {
+      return IntroductionTutorial(
+        isFireman: this._isFireman,
+        curloc: this._curloc,
+        mapStyle: this._mapStyle,
+        userMail: this._userMail,
+      );
+    } else if (_isFirstAccess && !_isFireman) {
+      return IntroductionTutorial(
+        isFireman: _isFireman,
+        curloc: this._curloc,
+        mapStyle: this._mapStyle,
+        userMail: this._userMail,
+      );
+    } else if (_isFireman) {
       return FiremanScreen(
         position: this._curloc,
         jsonStyle: this._mapStyle,
@@ -62,6 +77,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   Future _untilFunction() async {
     await this._getIsFireman();
+    await this._getIsFirstAccess();
     await this._getPosition();
     await this._loadJson();
     await this._getUserMail();
@@ -80,6 +96,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
         await Provider.of<DbProvider>(context).isCurrentUserFireman(user);
     setState(() {
       _isFireman = value;
+    });
+  }
+
+  void _getIsFirstAccess() async {
+    FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
+    bool value = await Provider.of<DbProvider>(context).isFirstAccess(user);
+    setState(() {
+      _isFirstAccess = value;
     });
   }
 

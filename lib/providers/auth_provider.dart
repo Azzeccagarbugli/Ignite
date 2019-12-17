@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:provider/provider.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -143,6 +142,7 @@ class AuthProvider extends ChangeNotifier {
         _db.collection('users').add({
           'email': mail,
           'isFireman': isFireman,
+          'isFirstAccess': true,
         });
       }
     });

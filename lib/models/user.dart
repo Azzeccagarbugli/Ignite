@@ -4,12 +4,14 @@ class User {
   User.onlyMail(String mail) {
     this._mail = mail;
     this._isFireman = false;
+    this._isFirstAccess = true;
   }
   User(String ref, String mail, DateTime birthday, String name, String surname,
       String streetnumber, String cap, String department) {
     this._reference = ref;
     this._mail = mail;
     this._isFireman = true;
+    this._isFirstAccess = true;
     this._birthday = birthday;
     this._name = name;
     this._surname = surname;
@@ -20,6 +22,7 @@ class User {
   String _reference;
   String _mail;
   bool _isFireman;
+  bool _isFirstAccess;
   DateTime _birthday;
   String _name;
   String _surname;
@@ -33,6 +36,10 @@ class User {
 
   bool isFireman() {
     return _isFireman;
+  }
+
+  bool isFirstAccess() {
+    return _isFirstAccess;
   }
 
   DateTime getBirthday() {
