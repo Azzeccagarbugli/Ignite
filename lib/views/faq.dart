@@ -26,7 +26,7 @@ class FAQ {
 class FaqScreen extends StatefulWidget {
   final String jsonPath;
   FaqScreen({@required this.jsonPath});
-  
+
   @override
   _FaqScreenState createState() => _FaqScreenState();
 }

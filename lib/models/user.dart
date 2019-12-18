@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class User {
   User.onlyMail(String mail) {
     this._mail = mail;

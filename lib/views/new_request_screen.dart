@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -552,7 +553,6 @@ class _RequestFormState extends State<RequestForm> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                keyboardType: TextInputType.numberWithOptions(),
                 format: DateFormat("dd-MM-yyyy"),
                 onShowPicker: (context, value) {
                   return showDatePicker(
@@ -619,6 +619,7 @@ class _RequestFormState extends State<RequestForm> {
         borderRadius: BorderRadius.circular(8.0),
         elevation: 12,
         child: TextFormField(
+          textAlignVertical: TextAlignVertical.center,
           style: TextStyle(
             fontFamily: 'Nunito',
             color: ThemeProvider.themeOf(context).id == "main"
@@ -630,7 +631,10 @@ class _RequestFormState extends State<RequestForm> {
             fillColor: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.white
                 : Colors.grey[850],
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 15,
+            ),
             prefixIcon: icon,
             counterStyle: TextStyle(
               color: ThemeProvider.themeOf(context).id == "main"
@@ -775,8 +779,40 @@ class _RequestFormState extends State<RequestForm> {
                   user,
                 );
               });
-
+              Flushbar(
+                flushbarStyle: FlushbarStyle.GROUNDED,
+                flushbarPosition: FlushbarPosition.TOP,
+                title: "Idrante registrato",
+                shouldIconPulse: true,
+                message:
+                    "L'idrante è stato inserito correttamente e sarà possibile visulizzarlo nella mappa a breve",
+                icon: Icon(
+                  Icons.check_circle,
+                  size: 28.0,
+                  color: Colors.greenAccent,
+                ),
+                duration: Duration(
+                  seconds: 4,
+                ),
+              )..show(context);
               setState(() {});
+            } else {
+              Flushbar(
+                flushbarStyle: FlushbarStyle.GROUNDED,
+                flushbarPosition: FlushbarPosition.TOP,
+                title: "Compila tutti i campi!",
+                shouldIconPulse: true,
+                message:
+                    "Si prega di compilare tutti i campi affinchè la registazione di un nuovo idrante abbia esito positivo",
+                icon: Icon(
+                  Icons.warning,
+                  size: 28.0,
+                  color: Colors.redAccent,
+                ),
+                duration: Duration(
+                  seconds: 4,
+                ),
+              )..show(context);
             }
           },
         ),

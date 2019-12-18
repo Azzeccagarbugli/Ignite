@@ -6,7 +6,9 @@ import 'package:theme_provider/theme_provider.dart';
 class FAQPanel extends StatelessWidget {
   final List<FAQ> listFaqs;
 
-  FAQPanel({@required this.listFaqs});
+  FAQPanel({
+    @required this.listFaqs,
+  });
 
   @override
   Widget build(BuildContext context) {
