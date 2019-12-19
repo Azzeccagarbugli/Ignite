@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
@@ -11,6 +11,7 @@ import 'package:ignite/models/request.dart';
 import 'package:ignite/widgets/button_decline_approve.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/request_map.dart';
+
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,6 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
       systemNavigationBarColor: ThemeProvider.themeOf(context).id == 'main'
           ? Colors.white
@@ -77,6 +77,10 @@ class RequestScreenRecap extends StatelessWidget {
     this.buttonBar,
     this.isHydrant,
   });
+
+  String loadStreetView(String lat, String long) {
+    return '''<iframe src="https://www.google.com/maps/embed?pb=!4v1576715393094!6m8!1m7!1slfj4EVxdvzSo-ORFGMIFEw!2m2!1d${lat}!2d${long}!3f261.8805582127632!4f-17.964646645842123!5f0.7820865974627469" width="600" height="450" frameborder="0" style="border:0;"></iframe>''';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,25 +153,32 @@ class RequestScreenRecap extends StatelessWidget {
                     Icons.location_city),
               ],
             ),
-            Container(
+            Padding(
               padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  RowBuilderHydrant(
-                    tag: 'Latitudine',
-                    value: hydrant.getLat().toString(),
-                  ),
-                  RowBuilderHydrant(
-                    tag: 'Longitudine',
-                    value: hydrant.getLong().toString(),
-                  ),
-                  RowBuilderHydrant(
-                    tag: 'Note',
-                    value: hydrant.getNotes(),
-                  ),
-                ],
+              child: HtmlWidget(
+                loadStreetView(
+                  hydrant.getLat().toString(),
+                  hydrant.getLong().toString(),
+                ),
+                webView: true,
               ),
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: <Widget>[
+              //     RowBuilderHydrant(
+              //       tag: 'Latitudine',
+              //       value: hydrant.getLat().toString(),
+              //     ),
+              //     RowBuilderHydrant(
+              //       tag: 'Longitudine',
+              //       value: hydrant.getLong().toString(),
+              //     ),
+              //     RowBuilderHydrant(
+              //       tag: 'Note',
+              //       value: hydrant.getNotes(),
+              //     ),
+              //   ],
+              // ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
