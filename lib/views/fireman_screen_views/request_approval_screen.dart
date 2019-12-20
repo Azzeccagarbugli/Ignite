@@ -1,15 +1,13 @@
-import 'dart:typed_data';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/widgets/button_decline_approve.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
+import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/request_map.dart';
 
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -78,10 +76,6 @@ class RequestScreenRecap extends StatelessWidget {
     this.isHydrant,
   });
 
-  String loadStreetView(String lat, String long) {
-    return '''<iframe src="https://www.google.com/maps/embed?pb=!4v1576715393094!6m8!1m7!1slfj4EVxdvzSo-ORFGMIFEw!2m2!1d${lat}!2d${long}!3f261.8805582127632!4f-17.964646645842123!5f0.7820865974627469" width="600" height="450" frameborder="0" style="border:0;"></iframe>''';
-  }
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -95,14 +89,14 @@ class RequestScreenRecap extends StatelessWidget {
         ),
         parallaxEnabled: true,
         parallaxOffset: .5,
+        maxHeight: MediaQuery.of(context).size.height,
         panel: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Column(
               children: <Widget>[
                 SizedBox(
-                  height: 16.0,
+                  height: 32.0,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -141,44 +135,78 @@ class RequestScreenRecap extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(
+              height: 16.0,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _button(hydrant.getCity(), Icons.place),
                 _button(hydrant.getCap(), Icons.map),
-                _button(
-                    hydrant.getPlace().isEmpty
-                        ? 'Nessun riferimento fornito'
-                        : hydrant.getPlace(),
-                    Icons.location_city),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-              child: HtmlWidget(
-                loadStreetView(
-                  hydrant.getLat().toString(),
-                  hydrant.getLong().toString(),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
                 ),
-                webView: true,
+                child: ScrollConfiguration(
+                  behavior: RemoveGlow(),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      RowBuilderHydrant(
+                        tag: 'Latitudine',
+                        value: hydrant.getLat().toString(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Longitudine',
+                        value: hydrant.getLong().toString(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Dati spaziali',
+                        value: hydrant.getPlace(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Note',
+                        value: hydrant.getNotes(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Primo attacco',
+                        value: hydrant.getFirstAttack(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Secondo attacco',
+                        value: hydrant.getSecondAttack(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Pressione',
+                        value: hydrant.getPressure(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Apertura',
+                        value: hydrant.getVehicle(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Tipo',
+                        value: hydrant.getType(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Colore',
+                        value: hydrant.getColor(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Veicolo',
+                        value: hydrant.getVehicle(),
+                      ),
+                      RowBuilderHydrant(
+                        tag: 'Ultimo controllo',
+                        value: hydrant.getLastCheck().toIso8601String(),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              // Column(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: <Widget>[
-              //     RowBuilderHydrant(
-              //       tag: 'Latitudine',
-              //       value: hydrant.getLat().toString(),
-              //     ),
-              //     RowBuilderHydrant(
-              //       tag: 'Longitudine',
-              //       value: hydrant.getLong().toString(),
-              //     ),
-              //     RowBuilderHydrant(
-              //       tag: 'Note',
-              //       value: hydrant.getNotes(),
-              //     ),
-              //   ],
-              // ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

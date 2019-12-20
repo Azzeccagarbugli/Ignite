@@ -71,19 +71,28 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return RequestScreenRecap(
                   hydrant: h,
-                  buttonBar: Row(children: <Widget>[
-                    ButtonDeclineConfirm(
-                      color: Colors.grey,
+                  buttonBar: Container(
+                    color: Colors.red[600],
+                    width: MediaQuery.of(context).size.width,
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        MapUtils.openMap(
+                          h.getLat(),
+                          h.getLong(),
+                        );
+                      },
                       icon: Icon(
                         Icons.navigation,
                         color: Colors.white,
                       ),
-                      onPressed: () {
-                        MapUtils.openMap(h.getLat(), h.getLong());
-                      },
-                      text: "Ottieni indicazioni",
-                    )
-                  ]),
+                      label: Text(
+                        "Ottieni indicazioni",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
                   isHydrant: true,
                 );
               }));
