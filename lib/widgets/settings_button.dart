@@ -25,7 +25,7 @@ class SettingsButton extends StatelessWidget {
             vertical: 3,
           ),
           child: Card(
-            elevation: 6,
+            elevation: ThemeProvider.themeOf(context).id == "main" ? 12 : 5,
             color: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.white
                 : Colors.black,
