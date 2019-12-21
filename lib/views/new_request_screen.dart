@@ -560,6 +560,7 @@ class _RequestFormState extends State<RequestForm> {
                     firstDate: DateTime(2000),
                     initialDate: value ?? DateTime.now(),
                     lastDate: DateTime.now(),
+                    locale: Locale('it'),
                   );
                 },
                 validator: (value) {

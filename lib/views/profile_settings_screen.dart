@@ -249,7 +249,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                         ),
                         SettingsButton(
                           icon: Icon(
-                            Icons.device_unknown,
+                            Icons.exit_to_app,
                             color: Colors.white,
                           ),
                           title: "Logout",
