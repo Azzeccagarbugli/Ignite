@@ -30,7 +30,7 @@ class DbProvider extends ChangeNotifier {
         .collection('users')
         .where('email', isEqualTo: "${curUser.email}")
         .getDocuments();
-        querySnap.documents[0].documentID;
+    querySnap.documents[0].documentID;
     await _db
         .collection('users')
         .document(querySnap.documents[0].documentID)
@@ -45,8 +45,14 @@ class DbProvider extends ChangeNotifier {
       DocumentReference approvedBy = ds.data['approved_by'];
       DocumentReference hydrant = ds.data['hydrant'];
       DocumentReference requestedBy = ds.data['requested_by'];
-      requests.add(Request(ds.documentID, ds.data['approved'], ds.data['open'],
-          approvedBy.documentID, hydrant.documentID, requestedBy.documentID));
+      requests.add(Request(
+        ds.documentID,
+        ds.data['approved'],
+        ds.data['open'],
+        approvedBy.documentID,
+        hydrant.documentID,
+        requestedBy.documentID,
+      ));
     }
     return requests;
   }

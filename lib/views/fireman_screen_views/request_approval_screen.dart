@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/providers/auth_provider.dart';
@@ -292,20 +293,39 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
                 await Provider.of<AuthProvider>(context).getUser();
 
             Provider.of<DbProvider>(context).denyRequest(this.request, user);
+            Flushbar(
+              flushbarStyle: FlushbarStyle.GROUNDED,
+              flushbarPosition: FlushbarPosition.TOP,
+              title: "Idrante non approvato",
+              shouldIconPulse: true,
+              message:
+                  "La richiesta dell'idrante è stata eliminata con successo",
+              icon: Icon(
+                Icons.warning,
+                size: 28.0,
+                color: Colors.redAccent,
+              ),
+              duration: Duration(
+                seconds: 4,
+              ),
+            )..show(context);
             Navigator.pop(context);
           },
         ),
         ButtonDeclineConfirm(
           color: Colors.green,
           icon: Icon(
-            Icons.thumb_up,
+            Icons.check_circle,
             color: Colors.white,
           ),
-          text: "Approva",
+          text: "Inserisci più valori",
           onPressed: () async {
             FirebaseUser user =
                 await Provider.of<AuthProvider>(context).getUser();
-            Provider.of<DbProvider>(context).approveRequest(this.request, user);
+            Provider.of<DbProvider>(context).approveRequest(
+              this.request,
+              user,
+            );
           },
         ),
       ],

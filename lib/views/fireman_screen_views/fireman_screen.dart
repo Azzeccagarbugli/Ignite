@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
@@ -111,7 +108,7 @@ class _FiremanScreenState extends State<FiremanScreen> {
 
 class FiremanCurvedNavigationBar extends StatelessWidget {
   FiremanCurvedNavigationBar({@required this.indexFun});
-  Function indexFun;
+  final Function indexFun;
   @override
   Widget build(BuildContext context) {
     return CurvedNavigationBar(

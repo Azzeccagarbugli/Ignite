@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
@@ -49,11 +48,10 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                   child: new ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
-                      if (snapshot.data[index].getOpen()) {
+                      if (snapshot.data[index].getOpen())
                         return new RequestCard(
                           request: snapshot.data[index],
                         );
-                      }
                     },
                   ),
                 );
@@ -130,6 +128,7 @@ class RequestCard extends StatelessWidget {
                               isThreeLine: true,
                               title: Text(
                                 snapshot.data.getCity(),
+                                maxLines: 1,
                                 style: TextStyle(
                                   fontSize: 28,
                                   color: ThemeProvider.themeOf(context).id ==
@@ -153,7 +152,7 @@ class RequestCard extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 14.0),
+                        padding: const EdgeInsets.only(left: 4.0),
                         child: Container(
                           margin: new EdgeInsets.symmetric(
                             vertical: 16.0,
@@ -166,12 +165,22 @@ class RequestCard extends StatelessWidget {
                             ),
                             child: Container(
                               alignment: FractionalOffset.centerLeft,
-                              height: 92,
-                              width: 92,
-                              child: RequestMap(
-                                latitude: snapshot.data.getLat(),
-                                longitude: snapshot.data.getLong(),
-                                isHydrant: true,
+                              child: CircleAvatar(
+                                radius: 60,
+                                backgroundColor:
+                                    ThemeProvider.themeOf(context).id == "main"
+                                        ? Colors.red
+                                        : Colors.grey[800],
+                                child: Text(
+                                  snapshot.data
+                                      .getCity()
+                                      .substring(0, 2)
+                                      .toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 36,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
