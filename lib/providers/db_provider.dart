@@ -45,27 +45,48 @@ class DbProvider extends ChangeNotifier {
       DocumentReference approvedBy = ds.data['approved_by'];
       DocumentReference hydrant = ds.data['hydrant'];
       DocumentReference requestedBy = ds.data['requested_by'];
-      requests.add(Request(
+      Request newRequest = Request(
         ds.documentID,
         ds.data['approved'],
         ds.data['open'],
-        approvedBy.documentID,
+        (approvedBy == null) ? null : approvedBy.documentID,
         hydrant.documentID,
         requestedBy.documentID,
-      ));
+      );
+      requests.add(newRequest);
+      // print(newRequest.toString());
     }
     return requests;
   }
 
+  Future<List<Request>> getPendingRequests() async {
+    List<Request> requests = await this.getRequests();
+    List<Request> pending = new List<Request>();
+    for (Request re in requests) {
+      if (re.getOpen() && !re.getApproved()) {
+        pending.add(re);
+      }
+    }
+    return pending;
+  }
+
+  Future<List<Request>> getApprovedRequests() async {
+    List<Request> requests = await this.getRequests();
+    List<Request> approved = new List<Request>();
+    for (Request re in requests) {
+      if (!re.getOpen() && re.getApproved()) {
+        approved.add(re);
+      }
+    }
+    return approved;
+  }
+
   Future<List<Hydrant>> getApprovedHydrants() async {
     List<Hydrant> hydrants = new List<Hydrant>();
-    List<Request> requests = await getRequests();
+    List<Request> requests = await getApprovedRequests();
     for (Request r in requests) {
-      if ((!r.getOpen()) && (r.getApproved())) {
-        Hydrant newHydrant =
-            await getHydrantByDocumentReference(r.getHydrant());
-        hydrants.add(newHydrant);
-      }
+      Hydrant newHydrant = await getHydrantByDocumentReference(r.getHydrant());
+      hydrants.add(newHydrant);
     }
     return hydrants;
   }
@@ -195,17 +216,17 @@ class DbProvider extends ChangeNotifier {
         .where('email', isEqualTo: curUser.email)
         .getDocuments();
     DocumentReference reqBy = qsReq.documents[0].reference;
-    QuerySnapshot qsApp = await _db
-        .collection('users')
-        .where('email', isEqualTo: 'placeholder')
-        .getDocuments();
-    DocumentReference appBy = qsApp.documents[0].reference;
     DocumentReference newRequest = await _db.collection('requests').add({
       'approved': isFireman,
-      'approved_by': appBy,
       'hydrant': newHydrant,
       'open': !isFireman,
       'requested_by': reqBy,
     });
+    if (isFireman) {
+      await _db
+          .collection('requests')
+          .document(newRequest.documentID)
+          .updateData({'approved_by': reqBy});
+    }
   }
 }

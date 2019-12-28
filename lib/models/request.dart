@@ -38,4 +38,8 @@ class Request {
   bool getOpen() {
     return _open;
   }
+
+  String toString() {
+    return "\n--------------------\nDETTAGLIO RICHIESTA\nRiferimento:{$_reference}\nApprovato:{$_approved}\nAperto:{$_open}\nApprovato da:{$_approvedBy}\nIdrante associato:${_hydrant}\nRichiesto da{$_requestedBy}\n--------------------\n";
+  }
 }

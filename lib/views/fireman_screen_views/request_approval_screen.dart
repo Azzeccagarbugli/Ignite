@@ -308,7 +308,7 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
               duration: Duration(
                 seconds: 4,
               ),
-            )..show(context);
+            ).show(context);
             Navigator.pop(context);
           },
         ),
@@ -326,6 +326,23 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
               this.request,
               user,
             );
+            Flushbar(
+              flushbarStyle: FlushbarStyle.GROUNDED,
+              flushbarPosition: FlushbarPosition.TOP,
+              title: "Idrante approvato",
+              shouldIconPulse: true,
+              message:
+                  "La richiesta dell'idrante è stata approvata con successo",
+              icon: Icon(
+                Icons.done,
+                size: 28.0,
+                color: Colors.greenAccent,
+              ),
+              duration: Duration(
+                seconds: 4,
+              ),
+            ).show(context);
+            Navigator.pop(context);
           },
         ),
       ],

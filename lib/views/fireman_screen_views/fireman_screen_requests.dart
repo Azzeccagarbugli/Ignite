@@ -33,7 +33,7 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
               : Colors.grey[700],
         ),
         child: FutureBuilder<List<Request>>(
-          future: Provider.of<DbProvider>(context).getRequests(),
+          future: Provider.of<DbProvider>(context).getPendingRequests(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -48,10 +48,11 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                   child: new ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
-                      if (snapshot.data[index].getOpen())
-                        return new RequestCard(
-                          request: snapshot.data[index],
-                        );
+                      return new RequestCard(
+                        request: snapshot.data[index],
+                      );
+
+                      return null;
                     },
                   ),
                 );
