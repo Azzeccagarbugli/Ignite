@@ -43,6 +43,59 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                 return new RequestLoading();
               case ConnectionState.done:
                 if (snapshot.hasError) return new RequestLoading();
+                if (snapshot.data.isEmpty)
+                  return new Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      child: Card(
+                        color: ThemeProvider.themeOf(context).id == "main"
+                            ? Colors.white
+                            : Colors.grey[900],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(12.0),
+                          ),
+                        ),
+                        elevation: 8,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                child: Icon(
+                                  Icons.info,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              isThreeLine: true,
+                              title: Text(
+                                'Nessuna richiesta presente',
+                                style: TextStyle(
+                                  color: ThemeProvider.themeOf(context).id ==
+                                          "main"
+                                      ? Colors.grey[850]
+                                      : Colors.white,
+                                ),
+                              ),
+                              subtitle: Text(
+                                'Al momento non è presente alcuna richiesta all\'interno di Ignite',
+                                style: TextStyle(
+                                  color: ThemeProvider.themeOf(context).id ==
+                                          "main"
+                                      ? Colors.grey[650]
+                                      : Colors.grey[100],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                ;
                 return ScrollConfiguration(
                   behavior: RemoveGlow(),
                   child: new ListView.builder(
@@ -51,8 +104,6 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                       return new RequestCard(
                         request: snapshot.data[index],
                       );
-
-                      return null;
                     },
                   ),
                 );
