@@ -70,10 +70,10 @@ class _RequestMapState extends State<RequestMap> {
       });
     });
     return GoogleMap(
-      rotateGesturesEnabled: false,
-      scrollGesturesEnabled: false,
+      rotateGesturesEnabled: true,
+      scrollGesturesEnabled: true,
       tiltGesturesEnabled: false,
-      zoomGesturesEnabled: false,
+      zoomGesturesEnabled: true,
       markers: {
         Marker(
           markerId: MarkerId('Marker'),

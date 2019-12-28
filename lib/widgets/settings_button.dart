@@ -26,6 +26,11 @@ class SettingsButton extends StatelessWidget {
           ),
           child: Card(
             elevation: ThemeProvider.themeOf(context).id == "main" ? 12 : 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(12.0),
+              ),
+            ),
             color: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.white
                 : Colors.black,
