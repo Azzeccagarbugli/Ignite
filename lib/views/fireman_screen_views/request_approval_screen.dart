@@ -10,6 +10,7 @@ import 'package:ignite/widgets/button_decline_approve.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/request_map.dart';
+import 'package:ignite/widgets/row_marker_details.dart';
 
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -162,51 +163,51 @@ class RequestScreenRecap extends StatelessWidget {
                   child: ListView(
                     shrinkWrap: true,
                     children: <Widget>[
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Latitudine',
                         value: hydrant.getLat().toString(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Longitudine',
                         value: hydrant.getLong().toString(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Dati spaziali',
                         value: hydrant.getPlace(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Note',
                         value: hydrant.getNotes(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Primo attacco',
                         value: hydrant.getFirstAttack(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Secondo attacco',
                         value: hydrant.getSecondAttack(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Pressione',
                         value: hydrant.getPressure(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Apertura',
                         value: hydrant.getVehicle(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Tipo',
                         value: hydrant.getType(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Colore',
                         value: hydrant.getColor(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Veicolo',
                         value: hydrant.getVehicle(),
                       ),
-                      RowBuilderHydrant(
+                      RowMarkerDetails(
                         tag: 'Ultimo controllo',
                         value: hydrant.getLastCheck().toIso8601String(),
                       ),
@@ -358,72 +359,6 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-      ],
-    );
-  }
-}
-
-class RowBuilderHydrant extends StatelessWidget {
-  final String value;
-  final String tag;
-
-  RowBuilderHydrant({
-    @required this.value,
-    @required this.tag,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Chip(
-          backgroundColor: ThemeProvider.themeOf(context).id == "main"
-              ? Colors.red
-              : Colors.grey[800],
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              color: ThemeProvider.themeOf(context).id == "main"
-                  ? Colors.red
-                  : Colors.grey[800],
-            ),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(6.0),
-              bottomLeft: Radius.circular(6.0),
-            ),
-          ),
-          label: Text(
-            this.tag,
-            style: TextStyle(
-              fontFamily: 'Nunito',
-              color: Colors.white,
-            ),
-          ),
-        ),
-        Chip(
-          backgroundColor: ThemeProvider.themeOf(context).id == "main"
-              ? Colors.transparent
-              : Colors.grey[600],
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              color: ThemeProvider.themeOf(context).id == "main"
-                  ? Colors.red
-                  : Colors.grey[600],
-            ),
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(6.0),
-              bottomRight: Radius.circular(6.0),
-            ),
-          ),
-          label: Text(
-            this.value,
-            style: TextStyle(
-              fontFamily: 'Nunito',
-              color: ThemeProvider.themeOf(context).id == "main"
-                  ? Colors.black
-                  : Colors.white,
-            ),
-          ),
-        )
       ],
     );
   }
