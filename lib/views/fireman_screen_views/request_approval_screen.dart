@@ -94,7 +94,9 @@ class RequestScreenRecap extends StatelessWidget {
         color: ThemeProvider.themeOf(context).id == "main"
             ? Colors.white
             : Colors.black,
-        maxHeight: MediaQuery.of(context).size.height,
+        maxHeight: hydrant.getFirstAttack().isNotEmpty
+            ? MediaQuery.of(context).size.height
+            : MediaQuery.of(context).size.height / 1.3,
         panel: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -179,34 +181,48 @@ class RequestScreenRecap extends StatelessWidget {
                         tag: 'Note',
                         value: hydrant.getNotes(),
                       ),
-                      RowMarkerDetails(
-                        tag: 'Primo attacco',
-                        value: hydrant.getFirstAttack(),
-                      ),
-                      RowMarkerDetails(
-                        tag: 'Secondo attacco',
-                        value: hydrant.getSecondAttack(),
-                      ),
-                      RowMarkerDetails(
-                        tag: 'Pressione',
-                        value: hydrant.getPressure(),
-                      ),
-                      RowMarkerDetails(
-                        tag: 'Apertura',
-                        value: hydrant.getVehicle(),
-                      ),
-                      RowMarkerDetails(
-                        tag: 'Tipo',
-                        value: hydrant.getType(),
-                      ),
-                      RowMarkerDetails(
-                        tag: 'Colore',
-                        value: hydrant.getColor(),
-                      ),
-                      RowMarkerDetails(
-                        tag: 'Veicolo',
-                        value: hydrant.getVehicle(),
-                      ),
+                      hydrant.getFirstAttack().isNotEmpty
+                          ? RowMarkerDetails(
+                              tag: 'Primo attacco',
+                              value: hydrant.getFirstAttack(),
+                            )
+                          : SizedBox(),
+                      hydrant.getSecondAttack().isNotEmpty
+                          ? RowMarkerDetails(
+                              tag: 'Secondo attacco',
+                              value: hydrant.getSecondAttack(),
+                            )
+                          : SizedBox(),
+                      hydrant.getPressure().isNotEmpty
+                          ? RowMarkerDetails(
+                              tag: 'Pressione',
+                              value: hydrant.getPressure(),
+                            )
+                          : SizedBox(),
+                      hydrant.getOpening().isNotEmpty
+                          ? RowMarkerDetails(
+                              tag: 'Apertura',
+                              value: hydrant.getVehicle(),
+                            )
+                          : SizedBox(),
+                      hydrant.getType().isNotEmpty
+                          ? RowMarkerDetails(
+                              tag: 'Tipo',
+                              value: hydrant.getType(),
+                            )
+                          : SizedBox(),
+                      hydrant.getColor().isNotEmpty
+                          ? RowMarkerDetails(
+                              tag: 'Colore',
+                              value: hydrant.getColor(),
+                            )
+                          : SizedBox(),
+                      hydrant.getVehicle().isNotEmpty
+                          ? RowMarkerDetails(
+                              tag: 'Veicolo',
+                              value: hydrant.getVehicle(),
+                            )
+                          : SizedBox(),
                       RowMarkerDetails(
                         tag: 'Ultimo controllo',
                         value: hydrant.getLastCheck().toIso8601String(),
@@ -305,8 +321,8 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           onPressed: () async {
             FirebaseUser user =
                 await Provider.of<AuthProvider>(context).getUser();
-
             Provider.of<DbProvider>(context).denyRequest(this.request, user);
+            Navigator.pop(context);
             Flushbar(
               flushbarStyle: FlushbarStyle.GROUNDED,
               flushbarPosition: FlushbarPosition.TOP,
@@ -322,8 +338,7 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
               duration: Duration(
                 seconds: 4,
               ),
-            ).show(context);
-            Navigator.pop(context);
+            )..show(context);
           },
         ),
         ButtonDeclineConfirm(
@@ -340,6 +355,7 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
               this.request,
               user,
             );
+            Navigator.pop(context);
             Flushbar(
               flushbarStyle: FlushbarStyle.GROUNDED,
               flushbarPosition: FlushbarPosition.TOP,
@@ -355,8 +371,7 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
               duration: Duration(
                 seconds: 4,
               ),
-            ).show(context);
-            Navigator.pop(context);
+            )..show(context);
           },
         ),
       ],

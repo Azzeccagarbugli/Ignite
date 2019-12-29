@@ -10,8 +10,12 @@ import 'package:theme_provider/theme_provider.dart';
 class DepartmentScreen extends StatelessWidget {
   final Department department;
   final bool isHydrant = false;
+  final Widget buttonBar;
 
-  DepartmentScreen({@required this.department});
+  DepartmentScreen({
+    @required this.department,
+    @required this.buttonBar,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,7 @@ class DepartmentScreen extends StatelessWidget {
         color: ThemeProvider.themeOf(context).id == "main"
             ? Colors.white
             : Colors.black,
-        maxHeight: MediaQuery.of(context).size.height,
+        maxHeight: MediaQuery.of(context).size.height / 1.7,
         panel: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -45,9 +49,11 @@ class DepartmentScreen extends StatelessWidget {
                       width: 30,
                       height: 5,
                       decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0))),
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12.0),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -111,6 +117,20 @@ class DepartmentScreen extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(
+              height: 16.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ButtonBarTheme(
+                  data: ButtonBarThemeData(
+                    alignment: MainAxisAlignment.center,
+                  ),
+                  child: buttonBar,
+                ),
+              ],
+            ),
           ],
         ),
         body: RequestMap(
@@ -121,7 +141,6 @@ class DepartmentScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _button(String label, IconData icon, BuildContext context) {
     return Column(
@@ -166,5 +185,5 @@ class DepartmentScreen extends StatelessWidget {
         ),
       ],
     );
-  }  
+  }
 }

@@ -110,6 +110,28 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return DepartmentScreen(
                   department: d,
+                  buttonBar: Container(
+                    color: Colors.red[600],
+                    width: MediaQuery.of(context).size.width,
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        MapUtils.openMap(
+                          d.getLat(),
+                          d.getLong(),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.navigation,
+                        color: Colors.white,
+                      ),
+                      label: Text(
+                        "Ottieni indicazioni",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               }));
             },
