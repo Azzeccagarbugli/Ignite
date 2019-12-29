@@ -95,7 +95,6 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                       ),
                     ),
                   );
-                ;
                 return ScrollConfiguration(
                   behavior: RemoveGlow(),
                   child: new ListView.builder(

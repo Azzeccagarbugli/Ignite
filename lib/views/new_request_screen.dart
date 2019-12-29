@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/widgets/clipping_class.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/top_button_request.dart';
@@ -41,27 +42,36 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
           : Colors.grey[700],
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 46,
-              bottom: 16,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TopButtonRequest(
-                  context: context,
-                  text: "Utilizza la posizione corrente",
-                  function: () async {
-                    Position position = await Geolocator().getCurrentPosition(
-                        desiredAccuracy: LocationAccuracy.high);
-                    setState(() {
-                      widget.position =
-                          LatLng(position.latitude, position.longitude);
-                    });
-                  },
-                ),
-              ],
+          ClipPath(
+            clipper: ClippingClass(),
+            child: Container(
+              color: Colors.grey[900],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 42,
+                    ),
+                    child: TopButtonRequest(
+                      context: context,
+                      text: "Utilizza la posizione corrente",
+                      function: () async {
+                        Position position =
+                            await Geolocator().getCurrentPosition(
+                          desiredAccuracy: LocationAccuracy.high,
+                        );
+                        setState(() {
+                          widget.position = LatLng(
+                            position.latitude,
+                            position.longitude,
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Flexible(
@@ -674,7 +684,7 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   final _key = GlobalKey<FormState>();
-  final TextEditingController textController = TextEditingController();
+  static TextEditingController textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -736,87 +746,85 @@ class _RequestFormState extends State<RequestForm> {
           }
         },
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 80.0),
-        child: FloatingActionButton(
-          child: Icon(
-            Icons.done,
-          ),
-          backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
-          onPressed: () {
-            if (_key.currentState.validate()) {
-              _key.currentState.save();
-              Hydrant newHydrant = widget._isFireman
-                  ? Hydrant.fromFireman(
-                      widget._firstAttack,
-                      widget._secondAttack,
-                      widget._pressure,
-                      widget._cap,
-                      widget._city,
-                      widget.lat,
-                      widget.long,
-                      widget._color,
-                      widget._lastCheck,
-                      widget._notes,
-                      widget._opening,
-                      widget._place,
-                      "${widget._street}, ${widget._number}",
-                      widget._type,
-                      widget._vehicle,
-                    )
-                  : Hydrant.fromCitizen(
-                      widget._cap,
-                      widget._city,
-                      widget.lat,
-                      widget.long,
-                      widget._notes,
-                      widget._place,
-                      "${widget._street}, ${widget._number}",
-                    );
-              Provider.of<AuthProvider>(context).getUser().then((user) {
-                Provider.of<DbProvider>(context).addRequest(
-                  newHydrant,
-                  widget._isFireman,
-                  user,
-                );
-              });
-              Flushbar(
-                flushbarStyle: FlushbarStyle.GROUNDED,
-                flushbarPosition: FlushbarPosition.TOP,
-                title: "Idrante registrato",
-                shouldIconPulse: true,
-                message:
-                    "L'idrante è stato inserito correttamente e sarà possibile visulizzarlo nella mappa a breve",
-                icon: Icon(
-                  Icons.check_circle,
-                  size: 28.0,
-                  color: Colors.greenAccent,
-                ),
-                duration: Duration(
-                  seconds: 4,
-                ),
-              )..show(context);
-              setState(() {});
-            } else {
-              Flushbar(
-                flushbarStyle: FlushbarStyle.GROUNDED,
-                flushbarPosition: FlushbarPosition.TOP,
-                title: "Compila tutti i campi!",
-                shouldIconPulse: true,
-                message:
-                    "Si prega di compilare tutti i campi affinchè la registazione di un nuovo idrante abbia esito positivo",
-                icon: Icon(
-                  Icons.warning,
-                  size: 28.0,
-                  color: Colors.redAccent,
-                ),
-                duration: Duration(
-                  seconds: 4,
-                ),
-              )..show(context);
-            }
-          },
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.done,
         ),
+        backgroundColor: Colors.orangeAccent,
+        onPressed: () {
+          if (_key.currentState.validate()) {
+            _key.currentState.save();
+            Hydrant newHydrant = widget._isFireman
+                ? Hydrant.fromFireman(
+                    widget._firstAttack,
+                    widget._secondAttack,
+                    widget._pressure,
+                    widget._cap,
+                    widget._city,
+                    widget.lat,
+                    widget.long,
+                    widget._color,
+                    widget._lastCheck,
+                    widget._notes,
+                    widget._opening,
+                    widget._place,
+                    "${widget._street}, ${widget._number}",
+                    widget._type,
+                    widget._vehicle,
+                  )
+                : Hydrant.fromCitizen(
+                    widget._cap,
+                    widget._city,
+                    widget.lat,
+                    widget.long,
+                    widget._notes,
+                    widget._place,
+                    "${widget._street}, ${widget._number}",
+                  );
+            Provider.of<AuthProvider>(context).getUser().then((user) {
+              Provider.of<DbProvider>(context).addRequest(
+                newHydrant,
+                widget._isFireman,
+                user,
+              );
+            });
+            Flushbar(
+              flushbarStyle: FlushbarStyle.GROUNDED,
+              flushbarPosition: FlushbarPosition.TOP,
+              title: "Idrante registrato",
+              shouldIconPulse: true,
+              message:
+                  "L'idrante è stato inserito correttamente e sarà possibile visulizzarlo nella mappa a breve",
+              icon: Icon(
+                Icons.check_circle,
+                size: 28.0,
+                color: Colors.greenAccent,
+              ),
+              duration: Duration(
+                seconds: 4,
+              ),
+            )..show(context);
+            setState(() {});
+          } else {
+            Flushbar(
+              flushbarStyle: FlushbarStyle.GROUNDED,
+              flushbarPosition: FlushbarPosition.TOP,
+              title: "Compila tutti i campi!",
+              shouldIconPulse: true,
+              message:
+                  "Si prega di compilare tutti i campi affinchè la registazione di un nuovo idrante abbia esito positivo",
+              icon: Icon(
+                Icons.warning,
+                size: 28.0,
+                color: Colors.redAccent,
+              ),
+              duration: Duration(
+                seconds: 4,
+              ),
+            )..show(context);
+          }
+        },
       ),
     );
   }

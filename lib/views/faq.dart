@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:ignite/widgets/faq_panels.dart';
 import 'dart:convert';
 import 'package:ignite/widgets/header.dart';
+import 'package:ignite/widgets/remove_glow.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class FAQ {
@@ -46,53 +47,56 @@ class _FaqScreenState extends State<FaqScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
-      body: ListView(
-        scrollDirection: Axis.vertical,
-        children: <Widget>[
-          Header(
-            title: 'F.A.Q',
-            subtitle:
-                'Di seguito sarà possibile consultare delle domande frequenti per comprendere meglio il funzionamento dell\'applicazione.',
-            heroTag: 'icon_faq',
-            icon: Icon(
-              Icons.question_answer,
-              size: 52.0,
-              color: Colors.white,
+      body: ScrollConfiguration(
+        behavior: RemoveGlow(),
+        child: ListView(
+          scrollDirection: Axis.vertical,
+          children: <Widget>[
+            Header(
+              title: 'F.A.Q',
+              subtitle:
+                  'Di seguito sarà possibile consultare delle domande frequenti per comprendere meglio il funzionamento dell\'applicazione.',
+              heroTag: 'icon_faq',
+              icon: Icon(
+                Icons.question_answer,
+                size: 52.0,
+                color: Colors.white,
+              ),
             ),
-          ),
-          FutureBuilder<List<FAQ>>(
-            future: loadFAQ(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return new FAQPanel(
-                  listFaqs: snapshot.data,
-                );
-              } else if (snapshot.hasError) {
-                return new Container(
-                  child: new Text(
-                    'Si è verificato un errore nella lettura del file JSON della seguente natura: ${snapshot.error}.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
+            FutureBuilder<List<FAQ>>(
+              future: loadFAQ(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return new FAQPanel(
+                    listFaqs: snapshot.data,
+                  );
+                } else if (snapshot.hasError) {
+                  return new Container(
+                    child: new Text(
+                      'Si è verificato un errore nella lettura del file JSON della seguente natura: ${snapshot.error}.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                      ),
                     ),
-                  ),
-                );
-              } else {
-                return new Container(
-                  child: new Text(
-                    'Si è verificato un errore nella lettura del file JSON.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
+                  );
+                } else {
+                  return new Container(
+                    child: new Text(
+                      'Si è verificato un errore nella lettura del file JSON.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                      ),
                     ),
-                  ),
-                );
-              }
-            },
-          ),
-        ],
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

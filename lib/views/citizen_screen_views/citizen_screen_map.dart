@@ -1,14 +1,20 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:ignite/helper/map_launcher.dart';
 import 'package:ignite/models/department.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/views/department_screen.dart';
+import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
 import 'package:ignite/views/hydrant_screen.dart';
 import 'package:ignite/widgets/homepage_button.dart';
 import 'package:provider/provider.dart';
+
+import 'dart:ui' as ui;
 
 class CitizenScreenMap extends StatefulWidget {
   String jsonStyle;
@@ -37,22 +43,56 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
     });
   }
 
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+        .buffer
+        .asUint8List();
+  }
+
   void _buildHydrantMarkers() async {
+    final Uint8List markerIconHydrant =
+        await getBytesFromAsset('assets/images/marker_1.png', 130);
     await Provider.of<DbProvider>(context).getApprovedHydrants().then((value) {
       for (Hydrant h in value) {
         _markerSet.add(
           new Marker(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return HydrantScreen(
+                return RequestScreenRecap(
                   hydrant: h,
+                  buttonBar: Container(
+                    color: Colors.red[600],
+                    width: MediaQuery.of(context).size.width,
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        MapUtils.openMap(
+                          h.getLat(),
+                          h.getLong(),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.navigation,
+                        color: Colors.white,
+                      ),
+                      label: Text(
+                        "Ottieni indicazioni",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  isHydrant: true,
                 );
               }));
             },
             markerId: MarkerId(h.getDBReference()),
             position: LatLng(h.getLat(), h.getLong()),
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose),
+            icon: BitmapDescriptor.fromBytes(markerIconHydrant),
           ),
         );
       }
@@ -60,6 +100,8 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
   }
 
   void _buildDepartmentsMarkers() async {
+    final Uint8List markerIconDepartment =
+        await getBytesFromAsset('assets/images/marker_2.png', 130);
     await Provider.of<DbProvider>(context).getDepartments().then((value) {
       for (Department d in value) {
         _markerSet.add(
@@ -73,8 +115,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
             },
             markerId: MarkerId(d.getDBReference()),
             position: LatLng(d.getLat(), d.getLong()),
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            icon: BitmapDescriptor.fromBytes(markerIconDepartment),
           ),
         );
       }
@@ -90,6 +131,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
       zoomGesturesEnabled: true,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
+      compassEnabled: false,
       onMapCreated: _onMapCreated,
       markers: _markerSet,
       initialCameraPosition: CameraPosition(

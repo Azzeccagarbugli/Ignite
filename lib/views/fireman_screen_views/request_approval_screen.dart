@@ -90,6 +90,9 @@ class RequestScreenRecap extends StatelessWidget {
         ),
         parallaxEnabled: true,
         parallaxOffset: .5,
+        color: ThemeProvider.themeOf(context).id == "main"
+            ? Colors.white
+            : Colors.black,
         maxHeight: MediaQuery.of(context).size.height,
         panel: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,6 +127,9 @@ class RequestScreenRecap extends StatelessWidget {
                           fontWeight: FontWeight.normal,
                           fontSize: 24.0,
                           fontFamily: 'Nunito',
+                          color: ThemeProvider.themeOf(context).id == "main"
+                              ? Colors.grey[800]
+                              : Colors.white,
                         ),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -142,8 +148,8 @@ class RequestScreenRecap extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _button(hydrant.getCity(), Icons.place),
-                _button(hydrant.getCap(), Icons.map),
+                _button(hydrant.getCity(), Icons.place, context),
+                _button(hydrant.getCap(), Icons.map, context),
               ],
             ),
             Expanded(
@@ -231,21 +237,25 @@ class RequestScreenRecap extends StatelessWidget {
     );
   }
 
-  Widget _button(String label, IconData icon) {
+  Widget _button(String label, IconData icon, BuildContext context) {
     return Column(
       children: <Widget>[
         Container(
           padding: const EdgeInsets.all(16.0),
           child: Icon(
             icon,
-            color: Colors.red,
+            color: ThemeProvider.themeOf(context).id == "main"
+                ? Colors.red
+                : Colors.white,
             size: 30,
           ),
           decoration: BoxDecoration(
             color: Colors.transparent,
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.red,
+              color: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.red
+                  : Colors.white,
               width: 2,
             ),
           ),
@@ -259,6 +269,9 @@ class RequestScreenRecap extends StatelessWidget {
             label,
             style: TextStyle(
               fontFamily: 'Nunito',
+              color: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.grey[800]
+                  : Colors.white,
             ),
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
@@ -364,9 +377,15 @@ class RowBuilderHydrant extends StatelessWidget {
     return Row(
       children: <Widget>[
         Chip(
-          backgroundColor: Colors.red,
+          backgroundColor: ThemeProvider.themeOf(context).id == "main"
+              ? Colors.red
+              : Colors.grey[800],
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.red),
+            side: BorderSide(
+              color: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.red
+                  : Colors.grey[800],
+            ),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(6.0),
               bottomLeft: Radius.circular(6.0),
@@ -381,9 +400,15 @@ class RowBuilderHydrant extends StatelessWidget {
           ),
         ),
         Chip(
-          backgroundColor: Colors.transparent,
+          backgroundColor: ThemeProvider.themeOf(context).id == "main"
+              ? Colors.transparent
+              : Colors.grey[600],
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.red),
+            side: BorderSide(
+              color: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.red
+                  : Colors.grey[600],
+            ),
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(6.0),
               bottomRight: Radius.circular(6.0),
@@ -393,7 +418,9 @@ class RowBuilderHydrant extends StatelessWidget {
             this.value,
             style: TextStyle(
               fontFamily: 'Nunito',
-              color: Colors.black,
+              color: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.black
+                  : Colors.white,
             ),
           ),
         )
