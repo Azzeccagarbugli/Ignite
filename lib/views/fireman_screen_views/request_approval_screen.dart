@@ -6,6 +6,7 @@ import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
+import 'package:ignite/views/fireman_screen_views/fireman_screen_add_information.dart';
 import 'package:ignite/widgets/button_decline_approve.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/remove_glow.dart';
@@ -57,6 +58,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
                 hydrant: snapshot.data,
                 buttonBar: ButtonAppBarDeclineConfirm(
                   request: widget.request,
+                  hydrant: snapshot.data,
                 ),
               );
           }
@@ -302,9 +304,11 @@ class RequestScreenRecap extends StatelessWidget {
 
 class ButtonAppBarDeclineConfirm extends StatelessWidget {
   final Request request;
+  final Hydrant hydrant;
 
   ButtonAppBarDeclineConfirm({
     @required this.request,
+    this.hydrant,
   });
 
   @override
@@ -349,29 +353,39 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           ),
           text: "Inserisci più valori",
           onPressed: () async {
-            FirebaseUser user =
-                await Provider.of<AuthProvider>(context).getUser();
-            Provider.of<DbProvider>(context).approveRequest(
-              this.request,
-              user,
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return FiremanAddInformation(
+                    hydrant: hydrant,
+                  );
+                },
+              ),
             );
-            Navigator.pop(context);
-            Flushbar(
-              flushbarStyle: FlushbarStyle.GROUNDED,
-              flushbarPosition: FlushbarPosition.TOP,
-              title: "Idrante approvato",
-              shouldIconPulse: true,
-              message:
-                  "La richiesta dell'idrante è stata approvata con successo",
-              icon: Icon(
-                Icons.done,
-                size: 28.0,
-                color: Colors.greenAccent,
-              ),
-              duration: Duration(
-                seconds: 4,
-              ),
-            )..show(context);
+            // FirebaseUser user =
+            //     await Provider.of<AuthProvider>(context).getUser();
+            // Provider.of<DbProvider>(context).approveRequest(
+            //   this.request,
+            //   user,
+            // );
+            // Navigator.pop(context);
+            // Flushbar(
+            //   flushbarStyle: FlushbarStyle.GROUNDED,
+            //   flushbarPosition: FlushbarPosition.TOP,
+            //   title: "Idrante approvato",
+            //   shouldIconPulse: true,
+            //   message:
+            //       "La richiesta dell'idrante è stata approvata con successo",
+            //   icon: Icon(
+            //     Icons.done,
+            //     size: 28.0,
+            //     color: Colors.greenAccent,
+            //   ),
+            //   duration: Duration(
+            //     seconds: 4,
+            //   ),
+            // )..show(context);
           },
         ),
       ],

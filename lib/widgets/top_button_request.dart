@@ -2,15 +2,19 @@ import "package:flutter/material.dart";
 import 'package:theme_provider/theme_provider.dart';
 
 class TopButtonRequest extends StatelessWidget {
-  TopButtonRequest(
-      {Key key,
-      @required this.context,
-      @required this.text,
-      @required this.function})
-      : super(key: key);
+  TopButtonRequest({
+    Key key,
+    @required this.context,
+    @required this.title,
+    @required this.subtitle,
+    @required this.function,
+    @required this.icon,
+  }) : super(key: key);
 
   final BuildContext context;
-  final String text;
+  final String title;
+  final String subtitle;
+  final Icon icon;
   final Function function;
 
   @override
@@ -40,7 +44,7 @@ class TopButtonRequest extends StatelessWidget {
                 ),
                 child: Container(
                   child: Text(
-                    "Ottieni le informazioni automaticamente",
+                    subtitle,
                     style: TextStyle(
                       fontFamily: 'Nunito',
                     ),
@@ -53,12 +57,9 @@ class TopButtonRequest extends StatelessWidget {
             transform: Matrix4.translationValues(0.0, -28.0, 0.0),
             child: RaisedButton.icon(
               elevation: 10,
-              icon: Icon(
-                Icons.my_location,
-                color: Colors.white,
-              ),
+              icon: icon,
               label: Text(
-                text,
+                title,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,

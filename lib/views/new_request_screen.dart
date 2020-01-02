@@ -55,7 +55,12 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                     ),
                     child: TopButtonRequest(
                       context: context,
-                      text: "Utilizza la posizione corrente",
+                      title: "Utilizza la posizione corrente",
+                      subtitle: "Ottieni le informazioni automaticamente",
+                      icon: Icon(
+                        Icons.my_location,
+                        color: Colors.white,
+                      ),
                       function: () async {
                         Position position =
                             await Geolocator().getCurrentPosition(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
@@ -49,49 +50,62 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                       ),
-                      child: Card(
-                        color: ThemeProvider.themeOf(context).id == "main"
-                            ? Colors.white
-                            : Colors.grey[900],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(12.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          _buildImage(
+                            'not_found',
                           ),
-                        ),
-                        elevation: 8,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                child: Icon(
-                                  Icons.info,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              isThreeLine: true,
-                              title: Text(
-                                'Nessuna richiesta presente',
-                                style: TextStyle(
-                                  color: ThemeProvider.themeOf(context).id ==
-                                          "main"
-                                      ? Colors.grey[850]
-                                      : Colors.white,
-                                ),
-                              ),
-                              subtitle: Text(
-                                'Al momento non è presente alcuna richiesta all\'interno di Ignite',
-                                style: TextStyle(
-                                  color: ThemeProvider.themeOf(context).id ==
-                                          "main"
-                                      ? Colors.grey[650]
-                                      : Colors.grey[100],
-                                ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Card(
+                            color: ThemeProvider.themeOf(context).id == "main"
+                                ? Colors.white
+                                : Colors.grey[900],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(12.0),
                               ),
                             ),
-                          ],
-                        ),
+                            elevation: 8,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    child: Icon(
+                                      Icons.info,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  isThreeLine: true,
+                                  title: Text(
+                                    'Nessuna richiesta presente',
+                                    style: TextStyle(
+                                      color:
+                                          ThemeProvider.themeOf(context).id ==
+                                                  "main"
+                                              ? Colors.grey[850]
+                                              : Colors.white,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'Al momento non è presente alcuna richiesta all\'interno di Ignite',
+                                    style: TextStyle(
+                                      color:
+                                          ThemeProvider.themeOf(context).id ==
+                                                  "main"
+                                              ? Colors.grey[650]
+                                              : Colors.grey[100],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -111,6 +125,24 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildImage(String assetName) {
+    return Align(
+      child: SvgPicture.asset(
+        'assets/images/$assetName.svg',
+        placeholderBuilder: (BuildContext context) => new Container(
+          padding: const EdgeInsets.all(30.0),
+          child: const CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+              Colors.white,
+            ),
+          ),
+        ),
+        width: 250.0,
+      ),
+      alignment: Alignment.bottomCenter,
     );
   }
 }

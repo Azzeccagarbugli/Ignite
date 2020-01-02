@@ -53,6 +53,7 @@ flutter:
     - assets/images/logo.png
     - assets/images/logo_height.png
     - assets/images/icon.png
+    - assets/images/not_found.svg
     - assets/images/introduction/1.svg
     - assets/images/introduction/2.svg
     - assets/images/introduction/3.svg
