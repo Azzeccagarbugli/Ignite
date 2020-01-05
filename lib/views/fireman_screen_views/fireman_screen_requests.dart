@@ -221,7 +221,7 @@ class RequestCard extends StatelessWidget {
                                 ),
                               ),
                               subtitle: Text(
-                                "${snapshot.data.getStreetNumber()}\n${snapshot.data.getCap()}",
+                                "${snapshot.data.getStreet()}, ${snapshot.data.getNumber()}\n${snapshot.data.getCap()}",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: ThemeProvider.themeOf(context).id ==

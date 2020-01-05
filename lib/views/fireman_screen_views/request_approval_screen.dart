@@ -127,7 +127,7 @@ class RequestScreenRecap extends StatelessWidget {
                   children: <Widget>[
                     Center(
                       child: Text(
-                        hydrant.getStreetNumber(),
+                        hydrant.getStreet() + ", " + hydrant.getNumber(),
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 24.0,
@@ -359,6 +359,7 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
                 builder: (context) {
                   return FiremanAddInformation(
                     hydrant: hydrant,
+                    request: request,
                   );
                 },
               ),

@@ -13,7 +13,8 @@ class Hydrant {
       String notes,
       String opening,
       String place,
-      String streetNumber,
+      String street,
+      String number,
       String type,
       String vehicle) {
     this._reference = ref;
@@ -28,7 +29,8 @@ class Hydrant {
     this._notes = notes;
     this._opening = opening;
     this._place = place;
-    this._streetNumber = streetNumber;
+    this._street = street;
+    this._number = number;
     this._type = type;
     this._vehicle = vehicle;
     this._color = color;
@@ -41,7 +43,8 @@ class Hydrant {
     double long,
     String notes,
     String place,
-    String streetNumber,
+    String street,
+    String number,
   ) {
     this._reference = "";
     this._firstAttack = "";
@@ -55,7 +58,8 @@ class Hydrant {
     this._notes = notes;
     this._opening = "";
     this._place = place;
-    this._streetNumber = streetNumber;
+    this._street = street;
+    this._number = number;
     this._type = "";
     this._vehicle = "";
     this._color = "";
@@ -74,7 +78,8 @@ class Hydrant {
       String notes,
       String opening,
       String place,
-      String streetNumber,
+      String street,
+      String number,
       String type,
       String vehicle) {
     this._reference = "";
@@ -89,7 +94,8 @@ class Hydrant {
     this._notes = notes;
     this._opening = opening;
     this._place = place;
-    this._streetNumber = streetNumber;
+    this._street = street;
+    this._number = number;
     this._type = type;
     this._vehicle = vehicle;
     this._color = color;
@@ -108,7 +114,8 @@ class Hydrant {
   String _notes;
   String _opening;
   String _place;
-  String _streetNumber;
+  String _street;
+  String _number;
   String _type;
   String _vehicle;
 
@@ -160,8 +167,12 @@ class Hydrant {
     return _place;
   }
 
-  String getStreetNumber() {
-    return _streetNumber;
+  String getStreet() {
+    return _street;
+  }
+
+  String getNumber() {
+    return _number;
   }
 
   String getType() {
@@ -174,5 +185,9 @@ class Hydrant {
 
   String getDBReference() {
     return _reference;
+  }
+
+  void setDBReference(String ref) {
+    this._reference = ref;
   }
 }
