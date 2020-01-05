@@ -118,7 +118,7 @@ class _RequestFormState extends State<RequestForm> {
       buildListTile(
         'Città',
         'Inserisci la città',
-        (widget.oldHydrant.getCity() == null)
+        (widget.isNewRequest)
             ? ((placemark == null) ? "" : placemark[0].locality)
             : widget.oldHydrant.getCity(),
         Icon(
@@ -143,7 +143,7 @@ class _RequestFormState extends State<RequestForm> {
       buildListTile(
         'Via',
         'Inserisci la via',
-        (widget.oldHydrant.getStreet() == null)
+        (widget.isNewRequest)
             ? ((placemark == null) ? "" : placemark[0].thoroughfare)
             : widget.oldHydrant.getStreet(),
         Icon(
@@ -168,7 +168,7 @@ class _RequestFormState extends State<RequestForm> {
       buildListTile(
         'Numero civico',
         'Inserisci il numero civico',
-        (widget.oldHydrant.getNumber() == null)
+        (widget.isNewRequest)
             ? ((placemark == null) ? "" : placemark[0].name)
             : widget.oldHydrant.getNumber(),
         Icon(
@@ -193,7 +193,7 @@ class _RequestFormState extends State<RequestForm> {
       buildListTile(
         'CAP',
         'Inserisci il CAP',
-        (widget.oldHydrant.getCap() == null)
+        (widget.isNewRequest)
             ? ((placemark == null) ? "" : placemark[0].postalCode)
             : widget.oldHydrant.getCap(),
         Icon(
@@ -218,9 +218,7 @@ class _RequestFormState extends State<RequestForm> {
       buildListTile(
         'Indicazioni spaziali',
         'Inserisci le indicazioni spaziali',
-        (widget.oldHydrant.getPlace() == null)
-            ? ""
-            : widget.oldHydrant.getPlace(),
+        (widget.isNewRequest) ? "" : widget.oldHydrant.getPlace(),
         Icon(
           Icons.local_florist,
           color: ThemeProvider.themeOf(context).id == "main"
@@ -243,9 +241,7 @@ class _RequestFormState extends State<RequestForm> {
       buildListTile(
         'Note',
         'Inserisci le note',
-        (widget.oldHydrant.getNotes() == null)
-            ? ""
-            : widget.oldHydrant.getNotes(),
+        (widget.isNewRequest) ? "" : widget.oldHydrant.getNotes(),
         Icon(
           Icons.speaker_notes,
           color: ThemeProvider.themeOf(context).id == "main"
@@ -740,6 +736,9 @@ class _RequestFormState extends State<RequestForm> {
                 newHydrant.setDBReference(widget.oldHydrant.getDBReference());
                 Provider.of<DbProvider>(context)
                     .approveRequest(newHydrant, widget.oldRequest, user);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               }
             });
             Flushbar(
@@ -747,8 +746,9 @@ class _RequestFormState extends State<RequestForm> {
               flushbarPosition: FlushbarPosition.TOP,
               title: "Idrante registrato",
               shouldIconPulse: true,
-              message:
-                  "L'idrante è stato inserito correttamente e sarà possibile visulizzarlo nella mappa a breve",
+              message: (widget._isFireman)
+                  ? "L'idrante è stato aggiunto con successo alla mappa!"
+                  : "La segnalazione dell'idrante è stata effettuata con successo!",
               icon: Icon(
                 Icons.check_circle,
                 size: 28.0,

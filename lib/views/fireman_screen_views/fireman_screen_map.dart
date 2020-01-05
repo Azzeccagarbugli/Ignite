@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,6 +21,8 @@ import 'package:provider/provider.dart';
 
 import 'dart:ui' as ui;
 
+import 'package:theme_provider/theme_provider.dart';
+
 class FiremanScreenMap extends StatefulWidget {
   String jsonStyle;
   LatLng position;
@@ -37,13 +40,14 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   GoogleMapController _mapController;
 
   List<Marker> _markerSet;
+  List<Hydrant> _approvedHydrants;
 
   double _zoomCameraOnMe = 18.0;
 
   void setupPositionStream() {
     _positionStream = Geolocator()
         .getPositionStream(
-      LocationOptions(accuracy: LocationAccuracy.best, timeInterval: 1000),
+      LocationOptions(accuracy: LocationAccuracy.best, timeInterval: 500),
     )
         .listen((pos) {
       widget.position = LatLng(pos.latitude, pos.longitude);
@@ -64,49 +68,50 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     final Uint8List markerIconHydrant =
         await getBytesFromAsset('assets/images/marker_1.png', 130);
     await Provider.of<DbProvider>(context).getApprovedHydrants().then((value) {
-      for (Hydrant h in value) {
-        _markerSet.add(
-          new Marker(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return RequestScreenRecap(
-                  hydrant: h,
-                  buttonBar: Container(
-                    color: Colors.red[600],
-                    width: MediaQuery.of(context).size.width,
-                    child: FlatButton.icon(
-                      onPressed: () {
-                        MapUtils.openMap(
-                          h.getLat(),
-                          h.getLong(),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.navigation,
+      _approvedHydrants = value;
+    });
+    for (Hydrant h in _approvedHydrants) {
+      _markerSet.add(
+        new Marker(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return RequestScreenRecap(
+                hydrant: h,
+                buttonBar: Container(
+                  color: Colors.red[600],
+                  width: MediaQuery.of(context).size.width,
+                  child: FlatButton.icon(
+                    onPressed: () {
+                      MapUtils.openMap(
+                        h.getLat(),
+                        h.getLong(),
+                      );
+                    },
+                    icon: Icon(
+                      Icons.navigation,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      "Ottieni indicazioni",
+                      style: TextStyle(
                         color: Colors.white,
-                      ),
-                      label: Text(
-                        "Ottieni indicazioni",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
                       ),
                     ),
                   ),
-                  isHydrant: true,
-                );
-              }));
-            },
-            markerId: MarkerId(h.getDBReference()),
-            position: LatLng(
-              h.getLat(),
-              h.getLong(),
-            ),
-            icon: BitmapDescriptor.fromBytes(markerIconHydrant),
+                ),
+                isHydrant: true,
+              );
+            }));
+          },
+          markerId: MarkerId(h.getDBReference()),
+          position: LatLng(
+            h.getLat(),
+            h.getLong(),
           ),
-        );
-      }
-    });
+          icon: BitmapDescriptor.fromBytes(markerIconHydrant),
+        ),
+      );
+    }
   }
 
   void _buildDepartmentsMarkers() async {
@@ -183,6 +188,20 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   void _animateCameraOnMe() {
+    Flushbar(
+      flushbarStyle: FlushbarStyle.GROUNDED,
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
+      icon: Icon(
+        Icons.gps_fixed,
+        color: Colors.white,
+      ),
+      title: "Posizione attuale",
+      message: "Verrà visualizzata la posizione attuale",
+      duration: Duration(
+        seconds: 2,
+      ),
+    )..show(context);
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
         bearing: 0,
@@ -190,6 +209,77 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
         zoom: _zoomCameraOnMe,
       ),
     ));
+  }
+
+  void _animateCameraOnNearestHydrant() async {
+    double minDistance = double.maxFinite;
+    double targetLat = widget.position.latitude;
+    double targetLong = widget.position.longitude;
+    Hydrant targetHydrant = null;
+    for (Hydrant h in _approvedHydrants) {
+      double distance = await Geolocator().distanceBetween(
+          widget.position.latitude,
+          widget.position.longitude,
+          h.getLat(),
+          h.getLong());
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        targetLat = h.getLat();
+        targetLong = h.getLong();
+        targetHydrant = h;
+      }
+    }
+    _mapController.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        bearing: 0,
+        target: LatLng(targetLat, targetLong),
+        zoom: _zoomCameraOnMe,
+      ),
+    ));
+    Flushbar(
+      flushbarStyle: FlushbarStyle.GROUNDED,
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
+      icon: Icon(
+        Icons.explore,
+        color: Colors.white,
+      ),
+      title: "L'idrante più vicino",
+      message: "Verrà visualizzato l'idrante più vicino alla posizione attuale",
+      duration: Duration(
+        seconds: 2,
+      ),
+    )..show(context);
+    await Future.delayed(const Duration(milliseconds: 2000), () {});
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return RequestScreenRecap(
+        hydrant: targetHydrant,
+        buttonBar: Container(
+          color: Colors.red[600],
+          width: MediaQuery.of(context).size.width,
+          child: FlatButton.icon(
+            onPressed: () {
+              MapUtils.openMap(
+                targetHydrant.getLat(),
+                targetHydrant.getLong(),
+              );
+            },
+            icon: Icon(
+              Icons.navigation,
+              color: Colors.white,
+            ),
+            label: Text(
+              "Ottieni indicazioni",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        isHydrant: true,
+      );
+    }));
   }
 
   @override
@@ -228,10 +318,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                     ),
                     HomePageButton(
                       heroTag: 'NEARESTHYDRANT',
-                      icon: FontAwesomeIcons.tint,
-                      function: () {
-                        print("sas");
-                      },
+                      icon: Icons.explore,
+                      function: _animateCameraOnNearestHydrant,
                     ),
                   ],
                 ),
