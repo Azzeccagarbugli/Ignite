@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/qZ3VO0r.png" style="max-width: 43%">
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" style="max-width: 20%">
 </p>
 
 ---
@@ -11,7 +11,7 @@
     <b>Ignite</b>, progetto realizzato in <b>Flutter</b> per il corso di laurea <b>L-31</b> presso <b>Unicam</b>, <i>nell'anno accademico 2019/2020</i>, realizzato dagli studenti Francesco Coppola, Francesco Pio Stelluti e Luca Cervioni per l'esame di <b>Programmazione Web App e Mobile</b> seguendo i canoni di sviluppo proposti
     <br><br><b>
 <a href="https://www.unicam.it/">• Unicam</a>
-<a href="https://francescocoppola.me">• Documentazione</a>
+<a href="http://francescocoppola.me/Ignite-Homepage/">• Sito web</a>
 <a href="https://it.wikipedia.org/wiki/Licenza_MIT">• Licenza</a>
 <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">• Contribuisci</a>
 </b></p>
