@@ -64,7 +64,7 @@ class DepartmentScreen extends StatelessWidget {
                   children: <Widget>[
                     Center(
                       child: Text(
-                        department.getStreetNumber(),
+                        department.getStreet() + ", " + department.getNumber(),
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 24.0,

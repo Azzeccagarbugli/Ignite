@@ -44,7 +44,7 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                 return new RequestLoading();
               case ConnectionState.done:
                 if (snapshot.hasError) return new RequestLoading();
-                if (snapshot.data.isEmpty)
+                if (snapshot.data.isEmpty) {
                   return new Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -109,17 +109,19 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                       ),
                     ),
                   );
-                return ScrollConfiguration(
-                  behavior: RemoveGlow(),
-                  child: new ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return new RequestCard(
-                        request: snapshot.data[index],
-                      );
-                    },
-                  ),
-                );
+                } else {
+                  return ScrollConfiguration(
+                    behavior: RemoveGlow(),
+                    child: new ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        return new RequestCard(
+                          request: snapshot.data[index],
+                        );
+                      },
+                    ),
+                  );
+                }
             }
             return null;
           },
@@ -147,13 +149,18 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
   }
 }
 
-class RequestCard extends StatelessWidget {
+class RequestCard extends StatefulWidget {
   final Request request;
 
   RequestCard({
     @required this.request,
   });
 
+  @override
+  _RequestCardState createState() => _RequestCardState();
+}
+
+class _RequestCardState extends State<RequestCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -163,7 +170,7 @@ class RequestCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) {
               return RequestApprovalScreen(
-                request: this.request,
+                request: this.widget.request,
               );
             },
           ),
@@ -175,7 +182,7 @@ class RequestCard extends StatelessWidget {
         ),
         child: FutureBuilder<Hydrant>(
           future: Provider.of<DbProvider>(context)
-              .getHydrantByDocumentReference(request.getHydrant()),
+              .getHydrantByDocumentReference(widget.request.getHydrant()),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -184,8 +191,7 @@ class RequestCard extends StatelessWidget {
               case ConnectionState.waiting:
                 return new RequestLoading();
               case ConnectionState.done:
-                if (snapshot.hasError)
-                  return new Text("Errore nel recupero dei dati");
+                if (snapshot.hasError) setState(() {});
                 return new Container(
                   child: Stack(
                     children: <Widget>[
@@ -221,7 +227,7 @@ class RequestCard extends StatelessWidget {
                                 ),
                               ),
                               subtitle: Text(
-                                "${snapshot.data.getStreetNumber()}\n${snapshot.data.getCap()}",
+                                "${snapshot.data.getStreet()}, ${snapshot.data.getNumber()}\n${snapshot.data.getCap()}",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: ThemeProvider.themeOf(context).id ==

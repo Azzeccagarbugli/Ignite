@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
+import 'package:ignite/main.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/views/faq.dart';
 import 'package:ignite/views/loading_screen.dart';

@@ -54,7 +54,6 @@ class DbProvider extends ChangeNotifier {
         requestedBy.documentID,
       );
       requests.add(newRequest);
-      // print(newRequest.toString());
     }
     return requests;
   }
@@ -97,7 +96,6 @@ class DbProvider extends ChangeNotifier {
         await _db.collection('departments').getDocuments();
     for (DocumentSnapshot ds in qsDepartments.documents) {
       GeoPoint geo = ds.data['geopoint'];
-      print("SASSI: ${ds.documentID}");
       deps.add(Department(
         ds.documentID,
         ds.data['cap'],
@@ -106,7 +104,8 @@ class DbProvider extends ChangeNotifier {
         geo.longitude,
         ds.data['mail'],
         ds.data['phone_number'],
-        ds.data['street_number'],
+        ds.data['street'],
+        ds.data['number'],
       ));
     }
     return deps;
@@ -141,7 +140,8 @@ class DbProvider extends ChangeNotifier {
         data['notes'],
         data['opening'],
         data['place'],
-        data['street_number'],
+        data['street'],
+        data['number'],
         data['type'],
         data['vehicle']);
   }
@@ -167,7 +167,29 @@ class DbProvider extends ChangeNotifier {
     }
   }
 
-  void approveRequest(Request request, FirebaseUser curUser) async {
+  void approveRequest(
+      Hydrant hydrant, Request request, FirebaseUser curUser) async {
+    print("ERRORE: " + hydrant.getDBReference().toString());
+    await _db
+        .collection('hydrants')
+        .document(hydrant.getDBReference())
+        .updateData({
+      'attack': [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
+      'bar': hydrant.getPressure(),
+      'cap': hydrant.getCap(),
+      'city': hydrant.getCity(),
+      'color': hydrant.getColor(),
+      'geopoint': GeoPoint(hydrant.getLat(), hydrant.getLong()),
+      'last_check': hydrant.getLastCheck(),
+      'notes': hydrant.getNotes(),
+      'opening': hydrant.getOpening(),
+      'place': hydrant.getPlace(),
+      'street': hydrant.getStreet(),
+      'number': hydrant.getNumber(),
+      'type': hydrant.getType(),
+      'vehicle': hydrant.getVehicle(),
+    });
+
     QuerySnapshot qsApprove = await _db
         .collection('users')
         .where('email', isEqualTo: curUser.email)
@@ -181,17 +203,12 @@ class DbProvider extends ChangeNotifier {
             {'approved': true, 'open': false, 'approved_by': refApprove});
   }
 
-  void denyRequest(Request request, FirebaseUser curUser) async {
-    QuerySnapshot qsApprove = await _db
-        .collection('users')
-        .where('email', isEqualTo: curUser.email)
-        .getDocuments();
-    DocumentReference refApprove = qsApprove.documents[0].reference;
+  void denyRequest(Request request) async {
+    await _db.collection('hydrants').document(request.getHydrant()).delete();
     await _db
         .collection('requests')
         .document(request.getDBReference())
-        .updateData(
-            {'approved': false, 'open': false, 'approved_by': refApprove});
+        .delete();
   }
 
   void addRequest(Hydrant hydrant, bool isFireman, FirebaseUser curUser) async {
@@ -206,7 +223,8 @@ class DbProvider extends ChangeNotifier {
       'notes': hydrant.getNotes(),
       'opening': hydrant.getOpening(),
       'place': hydrant.getPlace(),
-      'street_number': hydrant.getStreetNumber(),
+      'street': hydrant.getStreet(),
+      'number': hydrant.getNumber(),
       'type': hydrant.getType(),
       'vehicle': hydrant.getVehicle(),
     });

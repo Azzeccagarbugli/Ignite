@@ -43,6 +43,16 @@ class _LoginScreenState extends State<LoginScreen> {
           return 'Email non corretta';
         case 'ERROR_WRONG_PASSWORD':
           return 'Password non corretta';
+        case 'ERROR_INVALID_EMAIL':
+          return 'Email non valida';
+        case 'ERROR_USER_NOT_FOUND':
+          return 'Utente non presente nel sistema';
+        case 'ERROR_USER_DISABLED':
+          return 'L\' account è stato disabilitato';
+        case 'ERROR_TOO_MANY_REQUESTS':
+          return 'Sono stati effettuati troppi tentativi di accesso';
+        case 'ERROR_OPERATION_NOT_ALLOWED':
+          return 'Email e password non abilitati';
       }
     }
     return null;
@@ -98,6 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return e.message;
       }
     }
+    return null;
   }
 
   Future<void> _fbLogin() async {
@@ -177,6 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: <Widget>[
           FlutterLogin(
             theme: LoginTheme(
+              errorColor: ThemeProvider.themeOf(context).data.primaryColor,
               primaryColor: ThemeProvider.themeOf(context).data.primaryColor,
               accentColor: ThemeProvider.themeOf(context).data.accentColor,
               titleStyle: TextStyle(

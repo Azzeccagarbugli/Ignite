@@ -127,7 +127,7 @@ class RequestScreenRecap extends StatelessWidget {
                   children: <Widget>[
                     Center(
                       child: Text(
-                        hydrant.getStreetNumber(),
+                        hydrant.getStreet() + ", " + hydrant.getNumber(),
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 24.0,
@@ -325,7 +325,7 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           onPressed: () async {
             FirebaseUser user =
                 await Provider.of<AuthProvider>(context).getUser();
-            Provider.of<DbProvider>(context).denyRequest(this.request, user);
+            Provider.of<DbProvider>(context).denyRequest(this.request);
             Navigator.pop(context);
             Flushbar(
               flushbarStyle: FlushbarStyle.GROUNDED,
@@ -359,33 +359,11 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
                 builder: (context) {
                   return FiremanAddInformation(
                     hydrant: hydrant,
+                    request: request,
                   );
                 },
               ),
             );
-            // FirebaseUser user =
-            //     await Provider.of<AuthProvider>(context).getUser();
-            // Provider.of<DbProvider>(context).approveRequest(
-            //   this.request,
-            //   user,
-            // );
-            // Navigator.pop(context);
-            // Flushbar(
-            //   flushbarStyle: FlushbarStyle.GROUNDED,
-            //   flushbarPosition: FlushbarPosition.TOP,
-            //   title: "Idrante approvato",
-            //   shouldIconPulse: true,
-            //   message:
-            //       "La richiesta dell'idrante è stata approvata con successo",
-            //   icon: Icon(
-            //     Icons.done,
-            //     size: 28.0,
-            //     color: Colors.greenAccent,
-            //   ),
-            //   duration: Duration(
-            //     seconds: 4,
-            //   ),
-            // )..show(context);
           },
         ),
       ],

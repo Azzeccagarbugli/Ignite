@@ -1,17 +1,20 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:ignite/models/hydrant.dart';
+import 'package:ignite/models/request.dart';
 import 'package:ignite/widgets/clipping_class.dart';
 import 'package:ignite/widgets/top_button_request.dart';
 import 'package:theme_provider/theme_provider.dart';
+import 'package:ignite/widgets/request_form.dart';
 
 import '../new_request_screen.dart';
 
 class FiremanAddInformation extends StatefulWidget {
   final Hydrant hydrant;
-
+  final Request request;
   FiremanAddInformation({
     @required this.hydrant,
+    @required this.request,
   });
 
   @override
@@ -48,8 +51,10 @@ class _FiremanAddInformationState extends State<FiremanAddInformation> {
                         Icons.location_on,
                         color: Colors.white,
                       ),
-                      subtitle:
-                          "Idrante in " + widget.hydrant.getStreetNumber(),
+                      subtitle: "Idrante in " +
+                          widget.hydrant.getStreet() +
+                          ", " +
+                          widget.hydrant.getNumber(),
                       function: () {
                         Flushbar(
                           flushbarStyle: FlushbarStyle.GROUNDED,
@@ -77,8 +82,11 @@ class _FiremanAddInformationState extends State<FiremanAddInformation> {
           ),
           Flexible(
             child: RequestForm(
+              isNewRequest: false,
               lat: widget.hydrant.getLat(),
               long: widget.hydrant.getLong(),
+              oldHydrant: widget.hydrant,
+              oldRequest: widget.request,
             ),
           ),
         ],

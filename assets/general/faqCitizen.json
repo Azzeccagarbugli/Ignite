@@ -1,37 +1,10 @@
-[{
-        "question": "A cosa serve questa applicazione?",
-        "answer": "Per fare tante cose belle CITIZEN"
+[
+    {
+        "question": "Come faccio ad inviare una richiesta per aggiungere un idrante?",
+        "answer": "Per inviare una nuova richiesta ai vigili del fuoco non servirà altro che andare nella sezione apposita, cliccando nel menù in basso l'icona con il \"+\", inserire i dati richiesti, premere conferma e il gioco è fatto! Ora starà ai pompieri se aggiungere o meno l'idrante al sistema."
     },
     {
-        "question": "Perchè mangiate le mele?",
-        "answer": "Così non andiamo dal dottore"
-    },
-    {
-        "question": "Perchè ci sono due coccodrilli?",
-        "answer": "Per evitare il riscaldamento globale"
-    },
-    {
-        "question": "A cosa serve questa applicazione?",
-        "answer": "Per fare tante cose belle"
-    },
-    {
-        "question": "Perchè mangiate le mele?",
-        "answer": "Così non andiamo dal dottore"
-    },
-    {
-        "question": "Perchè ci sono due coccodrilli?",
-        "answer": "Per evitare il riscaldamento globale"
-    },
-    {
-        "question": "A cosa serve questa applicazione?",
-        "answer": "Per fare tante cose belle"
-    },
-    {
-        "question": "Perchè mangiate le mele?",
-        "answer": "Così non andiamo dal dottore"
-    },
-    {
-        "question": "Perchè ci sono due coccodrilli?",
-        "answer": "Per evitare il riscaldamento globale"
+        "question": "L'app non funziona correttamente?",
+        "answer": "Inviaci una mail all'indirizzo support@ignite.com spiegandoci qual è il problema. Saremo felici di ascoltare le vostre richieste e cercheremo di fare tutto il possibile per risolverle 😊"
     }
 ]

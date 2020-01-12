@@ -10,7 +10,6 @@ import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/views/department_screen.dart';
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
-import 'package:ignite/views/hydrant_screen.dart';
 import 'package:ignite/widgets/homepage_button.dart';
 import 'package:provider/provider.dart';
 
@@ -72,6 +71,8 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
                         MapUtils.openMap(
                           h.getLat(),
                           h.getLong(),
+                          widget.position.latitude,
+                          widget.position.longitude,
                         );
                       },
                       icon: Icon(
@@ -118,6 +119,8 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
                         MapUtils.openMap(
                           d.getLat(),
                           d.getLong(),
+                          widget.position.latitude,
+                          widget.position.longitude,
                         );
                       },
                       icon: Icon(
