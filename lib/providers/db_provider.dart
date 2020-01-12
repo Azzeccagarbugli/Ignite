@@ -96,7 +96,6 @@ class DbProvider extends ChangeNotifier {
         await _db.collection('departments').getDocuments();
     for (DocumentSnapshot ds in qsDepartments.documents) {
       GeoPoint geo = ds.data['geopoint'];
-      print("SASSI: ${ds.documentID}");
       deps.add(Department(
         ds.documentID,
         ds.data['cap'],

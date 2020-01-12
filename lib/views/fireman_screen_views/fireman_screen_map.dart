@@ -85,6 +85,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                       MapUtils.openMap(
                         h.getLat(),
                         h.getLong(),
+                        widget.position.latitude,
+                        widget.position.longitude,
                       );
                     },
                     icon: Icon(
@@ -133,6 +135,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                         MapUtils.openMap(
                           d.getLat(),
                           d.getLong(),
+                          widget.position.latitude,
+                          widget.position.longitude,
                         );
                       },
                       icon: Icon(
@@ -263,6 +267,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
               MapUtils.openMap(
                 targetHydrant.getLat(),
                 targetHydrant.getLong(),
+                widget.position.latitude,
+                widget.position.longitude,
               );
             },
             icon: Icon(

@@ -25,24 +25,31 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> authMailPassword(String mail, String pass) async {
+    print("Tentativo per ${mail} e ${pass}");
     try {
       AuthResult result =
           await _auth.signInWithEmailAndPassword(email: mail, password: pass);
-      getUser().then((user) {
-        print(user.email);
-      });
     } catch (e) {
       throw e;
     }
+    getUser().then((user) {
+      print("${user.email} ha effettuato il login con mail e password");
+    });
   }
 
   Future<void> newMailPassword(String mail, String pass) async {
     try {
-      AuthResult result = await _auth.createUserWithEmailAndPassword(
+      final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
+        email: mail,
+        password: pass,
+      ))
+          .user;
+      this.updateUsersCollection(user.email, false);
+      /*AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: mail, password: pass);
       getUser().then((user) {
         this.updateUsersCollection(user.email, false);
-      });
+      });*/
     } catch (e) {
       throw e;
     }
@@ -116,11 +123,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  void logOut(BuildContext context) async {
-    await this.accountsLogOut();
-  }
-
-  Future<void> accountsLogOut() async {
+  Future<void> logOut(BuildContext context) async {
     getUser().then((currentUser) {
       print("L'utente si sta disconnettendo");
       print("Utente prima del logout: ${currentUser.email}");
