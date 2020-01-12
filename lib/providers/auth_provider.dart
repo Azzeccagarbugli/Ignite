@@ -6,9 +6,12 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
   final facebookLogin = FacebookLogin();
   final Firestore _db = Firestore.instance;
+  bool authMail = false;
+  bool authGoogle = false;
+  bool authFB = false;
 
   Future<FirebaseUser> getUser() async {
     return await _auth.currentUser();
@@ -24,6 +27,16 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<String> getUserImage() async {
+    FirebaseUser user = await this.getUser();
+    if (user == null) {
+      return 'null';
+    } else {
+      String image = user.photoUrl;
+      return image;
+    }
+  }
+
   Future<void> authMailPassword(String mail, String pass) async {
     print("Tentativo per ${mail} e ${pass}");
     try {
@@ -35,6 +48,7 @@ class AuthProvider extends ChangeNotifier {
     getUser().then((user) {
       print("${user.email} ha effettuato il login con mail e password");
     });
+    authMail = true;
   }
 
   Future<void> newMailPassword(String mail, String pass) async {
@@ -45,6 +59,10 @@ class AuthProvider extends ChangeNotifier {
       ))
           .user;
       this.updateUsersCollection(user.email, false);
+      getUser().then((user) {
+        print("${user.email} ha effettuato il login con mail e password");
+      });
+      authMail = true;
       /*AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: mail, password: pass);
       getUser().then((user) {
@@ -66,13 +84,21 @@ class AuthProvider extends ChangeNotifier {
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
-      AuthResult result = await _auth.signInWithCredential(credential);
+      final FirebaseUser user =
+          (await _auth.signInWithCredential(credential)).user;
+      this.updateUsersCollection(user.email, false);
+      await _auth.signInWithCredential(credential);
+      getUser().then((user) {
+        print("${user.email} ha effettuato il login con Google");
+      });
+      authGoogle = true;
+      /*AuthResult result = await _auth.signInWithCredential(credential);
       getUser().then((user) {
         print(user.email);
       });
       getUser().then((user) {
         this.updateUsersCollection(user.email, false);
-      });
+      });*/
     } catch (e) {
       throw e;
     }
@@ -87,14 +113,21 @@ class AuthProvider extends ChangeNotifier {
           FacebookAccessToken myToken = fbResult.accessToken;
           AuthCredential credential =
               FacebookAuthProvider.getCredential(accessToken: myToken.token);
-
-          AuthResult result = await _auth.signInWithCredential(credential);
+          final FirebaseUser user =
+              (await _auth.signInWithCredential(credential)).user;
+          this.updateUsersCollection(user.email, false);
+          await _auth.signInWithCredential(credential);
+          getUser().then((user) {
+            print("${user.email} ha effettuato il login con Facebook");
+          });
+          authFB = true;
+          /*AuthResult result = await _auth.signInWithCredential(credential);
           print(result.user.email);
           FirebaseUser user = await getUser();
           print(user.email);
           getUser().then((user) {
             this.updateUsersCollection(user.email, false);
-          });
+          });*/
 
           break;
         case FacebookLoginStatus.cancelledByUser:
@@ -129,9 +162,11 @@ class AuthProvider extends ChangeNotifier {
       print("Utente prima del logout: ${currentUser.email}");
     });
     await _auth.signOut();
+    authMail = false;
     await googleSignIn.signOut();
+    authGoogle = false;
     await facebookLogin.logOut();
-
+    authFB = false;
     print("Utente disconnesso");
   }
 

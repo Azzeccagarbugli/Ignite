@@ -108,6 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return e.message;
       }
     }
+    return null;
   }
 
   Future<void> _fbLogin() async {

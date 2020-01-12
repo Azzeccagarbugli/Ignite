@@ -46,16 +46,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   Widget screenChange() {
-    if (_isFirstAccess && _isFireman) {
+    if (_isFirstAccess) {
       return IntroductionTutorial(
         isFireman: this._isFireman,
-        curloc: this._curloc,
-        mapStyle: this._mapStyle,
-        userMail: this._userMail,
-      );
-    } else if (_isFirstAccess && !_isFireman) {
-      return IntroductionTutorial(
-        isFireman: _isFireman,
         curloc: this._curloc,
         mapStyle: this._mapStyle,
         userMail: this._userMail,
@@ -94,6 +87,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
     bool value =
         await Provider.of<DbProvider>(context).isCurrentUserFireman(user);
+    print("L\'utente ${user.email} è un pompiere: ${value}");
     setState(() {
       _isFireman = value;
     });
@@ -102,6 +96,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   void _getIsFirstAccess() async {
     FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
     bool value = await Provider.of<DbProvider>(context).isFirstAccess(user);
+    print("L\'utente ${user.email} è al primo accesso: ${value}");
     setState(() {
       _isFirstAccess = value;
     });

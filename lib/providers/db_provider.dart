@@ -203,17 +203,12 @@ class DbProvider extends ChangeNotifier {
             {'approved': true, 'open': false, 'approved_by': refApprove});
   }
 
-  void denyRequest(Request request, FirebaseUser curUser) async {
-    QuerySnapshot qsApprove = await _db
-        .collection('users')
-        .where('email', isEqualTo: curUser.email)
-        .getDocuments();
-    DocumentReference refApprove = qsApprove.documents[0].reference;
+  void denyRequest(Request request) async {
+    await _db.collection('hydrants').document(request.getHydrant()).delete();
     await _db
         .collection('requests')
         .document(request.getDBReference())
-        .updateData(
-            {'approved': false, 'open': false, 'approved_by': refApprove});
+        .delete();
   }
 
   void addRequest(Hydrant hydrant, bool isFireman, FirebaseUser curUser) async {
