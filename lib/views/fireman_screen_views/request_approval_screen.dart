@@ -176,10 +176,6 @@ class RequestScreenRecap extends StatelessWidget {
                         value: hydrant.getLong().toString(),
                       ),
                       RowMarkerDetails(
-                        tag: 'Dati spaziali',
-                        value: hydrant.getPlace(),
-                      ),
-                      RowMarkerDetails(
                         tag: 'Note',
                         value: hydrant.getNotes(),
                       ),

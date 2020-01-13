@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/models/department.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
@@ -58,8 +60,35 @@ class DbProvider extends ChangeNotifier {
     return requests;
   }
 
-  Future<List<Request>> getPendingRequests() async {
-    List<Request> requests = await this.getRequests();
+  Future<List<Request>> getRequestsByDistance(LatLng position) async {
+    QuerySnapshot qsRequests = await _db.collection('requests').getDocuments();
+    List<Request> requests = new List<Request>();
+
+    for (DocumentSnapshot ds in qsRequests.documents) {
+      DocumentReference approvedBy = ds.data['approved_by'];
+      DocumentReference hydrant = ds.data['hydrant'];
+      DocumentReference requestedBy = ds.data['requested_by'];
+      Request newRequest = Request(
+        ds.documentID,
+        ds.data['approved'],
+        ds.data['open'],
+        (approvedBy == null) ? null : approvedBy.documentID,
+        hydrant.documentID,
+        requestedBy.documentID,
+      );
+      Hydrant newHydrant =
+          await getHydrantByDocumentReference(newRequest.getHydrant());
+      double distance = await Geolocator().distanceBetween(position.latitude,
+          position.longitude, newHydrant.getLat(), newHydrant.getLong());
+      if (distance < 20000) {
+        requests.add(newRequest);
+      }
+    }
+    return requests;
+  }
+
+  Future<List<Request>> getPendingRequestsByDistance(LatLng position) async {
+    List<Request> requests = await this.getRequestsByDistance(position);
     List<Request> pending = new List<Request>();
     for (Request re in requests) {
       if (re.getOpen() && !re.getApproved()) {
@@ -139,7 +168,6 @@ class DbProvider extends ChangeNotifier {
         time.toDate(),
         data['notes'],
         data['opening'],
-        data['place'],
         data['street'],
         data['number'],
         data['type'],
@@ -183,7 +211,6 @@ class DbProvider extends ChangeNotifier {
       'last_check': hydrant.getLastCheck(),
       'notes': hydrant.getNotes(),
       'opening': hydrant.getOpening(),
-      'place': hydrant.getPlace(),
       'street': hydrant.getStreet(),
       'number': hydrant.getNumber(),
       'type': hydrant.getType(),
@@ -222,7 +249,6 @@ class DbProvider extends ChangeNotifier {
       'last_check': hydrant.getLastCheck(),
       'notes': hydrant.getNotes(),
       'opening': hydrant.getOpening(),
-      'place': hydrant.getPlace(),
       'street': hydrant.getStreet(),
       'number': hydrant.getNumber(),
       'type': hydrant.getType(),

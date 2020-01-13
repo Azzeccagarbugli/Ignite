@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
@@ -12,6 +16,10 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class FiremanScreenRequests extends StatefulWidget {
+  LatLng position;
+
+  FiremanScreenRequests({@required this.position});
+
   @override
   _FiremanScreenRequestsState createState() => _FiremanScreenRequestsState();
 }
@@ -34,7 +42,8 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
               : Colors.grey[700],
         ),
         child: FutureBuilder<List<Request>>(
-          future: Provider.of<DbProvider>(context).getPendingRequests(),
+          future: Provider.of<DbProvider>(context)
+              .getPendingRequestsByDistance(widget.position),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:

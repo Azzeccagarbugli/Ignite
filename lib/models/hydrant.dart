@@ -12,7 +12,6 @@ class Hydrant {
       DateTime lastCheck,
       String notes,
       String opening,
-      String place,
       String street,
       String number,
       String type,
@@ -28,7 +27,6 @@ class Hydrant {
     this._lastCheck = lastCheck;
     this._notes = notes;
     this._opening = opening;
-    this._place = place;
     this._street = street;
     this._number = number;
     this._type = type;
@@ -42,7 +40,6 @@ class Hydrant {
     double lat,
     double long,
     String notes,
-    String place,
     String street,
     String number,
   ) {
@@ -57,7 +54,6 @@ class Hydrant {
     this._lastCheck = DateTime.now();
     this._notes = notes;
     this._opening = "";
-    this._place = place;
     this._street = street;
     this._number = number;
     this._type = "";
@@ -77,7 +73,6 @@ class Hydrant {
       DateTime lastCheck,
       String notes,
       String opening,
-      String place,
       String street,
       String number,
       String type,
@@ -93,7 +88,6 @@ class Hydrant {
     this._lastCheck = lastCheck;
     this._notes = notes;
     this._opening = opening;
-    this._place = place;
     this._street = street;
     this._number = number;
     this._type = type;
@@ -113,7 +107,6 @@ class Hydrant {
   DateTime _lastCheck;
   String _notes;
   String _opening;
-  String _place;
   String _street;
   String _number;
   String _type;
@@ -161,10 +154,6 @@ class Hydrant {
 
   String getOpening() {
     return _opening;
-  }
-
-  String getPlace() {
-    return _place;
   }
 
   String getStreet() {

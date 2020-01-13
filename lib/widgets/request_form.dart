@@ -27,7 +27,6 @@ class RequestForm extends StatefulWidget {
   DateTime _lastCheck;
   String _notes;
   String _opening;
-  String _place;
   String _street;
   String _number;
   String _type;
@@ -168,9 +167,7 @@ class _RequestFormState extends State<RequestForm> {
       buildListTile(
         'Numero civico',
         'Inserisci il numero civico',
-        (widget.isNewRequest)
-            ? ((placemark == null) ? "" : placemark[0].name)
-            : widget.oldHydrant.getNumber(),
+        (widget.isNewRequest) ? "" : widget.oldHydrant.getNumber(),
         Icon(
           Icons.format_list_numbered,
           color: ThemeProvider.themeOf(context).id == "main"
@@ -214,29 +211,6 @@ class _RequestFormState extends State<RequestForm> {
           });
         },
         TextInputType.numberWithOptions(),
-      ),
-      buildListTile(
-        'Indicazioni spaziali',
-        'Inserisci le indicazioni spaziali',
-        (widget.isNewRequest) ? "" : widget.oldHydrant.getPlace(),
-        Icon(
-          Icons.local_florist,
-          color: ThemeProvider.themeOf(context).id == "main"
-              ? Colors.red[900]
-              : Colors.white,
-        ),
-        (value) {
-          if (value.isEmpty) {
-            return 'Inserisci un valore';
-          } else
-            return null;
-        },
-        (value) {
-          setState(() {
-            widget._place = value;
-          });
-        },
-        TextInputType.text,
       ),
       buildListTile(
         'Note',
@@ -709,7 +683,6 @@ class _RequestFormState extends State<RequestForm> {
                     widget._lastCheck,
                     widget._notes,
                     widget._opening,
-                    widget._place,
                     widget._street,
                     widget._number,
                     widget._type,
@@ -721,7 +694,6 @@ class _RequestFormState extends State<RequestForm> {
                     widget.lat,
                     widget.long,
                     widget._notes,
-                    widget._place,
                     widget._street,
                     widget._number,
                   );

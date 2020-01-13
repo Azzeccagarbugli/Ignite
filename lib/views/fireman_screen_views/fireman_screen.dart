@@ -47,7 +47,9 @@ class _FiremanScreenState extends State<FiremanScreen> {
   }
 
   Widget _requestsBody() {
-    return FiremanScreenRequests();
+    return FiremanScreenRequests(
+      position: widget.position,
+    );
   }
 
   Widget _newHydrantBody() {
