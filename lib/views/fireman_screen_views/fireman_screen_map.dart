@@ -215,7 +215,21 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     ));
   }
 
-  void _animateCameraOnNearestHydrant() async {
+  void _setFilter() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomDialog(searchFunction: (String attackFilter,
+              String vechicleFilter, String openingFilter) {
+            _animateCameraOnNearestHydrant(
+                attackFilter, vechicleFilter, openingFilter);
+          });
+        });
+  }
+
+  void _animateCameraOnNearestHydrant(
+      String attack, String vehicle, String opening) async {
+        print(attack);
     double minDistance = double.maxFinite;
     double targetLat = widget.position.latitude;
     double targetLong = widget.position.longitude;
@@ -325,7 +339,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                     HomePageButton(
                       heroTag: 'NEARESTHYDRANT',
                       icon: Icons.explore,
-                      function: _animateCameraOnNearestHydrant,
+                      function: _setFilter,
                     ),
                   ],
                 ),
@@ -334,6 +348,161 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
           )
         ],
       ),
+    );
+  }
+}
+
+class CustomDialog extends StatefulWidget {
+  CustomDialog(
+      {@required this.searchFunction,
+      @required this.attacksList,
+      @required this.openingsList});
+
+  Function searchFunction;
+  List<DropdownMenuItem> attacksList;
+  List<DropdownMenuItem> openingsList;
+
+  @override
+  _CustomDialogState createState() => _CustomDialogState();
+}
+
+class _CustomDialogState extends State<CustomDialog> {
+  String _attackFilter;
+  String _vehicleFilter;
+  String _openingFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      title: Text(
+        "Trova l'idrante più vicino",
+        style: TextStyle(
+          fontFamily: "Nunito",
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Container(
+        height: 250,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Imposta filtro:",
+              style: TextStyle(
+                fontFamily: "Nunito",
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            DropdownButton<String>(
+              hint: Text(
+                "Nessun attacco selezionato",
+                style: TextStyle(),
+              ),
+              value: _attackFilter,
+              isDense: true,
+              onChanged: (value) {
+                setState(() {
+                  _attackFilter = value;
+                });
+              },
+              items: [
+                DropdownMenuItem(
+                  value: "0+",
+                  child: Text("0+"),
+                ),
+                DropdownMenuItem(
+                  value: "0-",
+                  child: Text("0-"),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 18,
+            ),
+            DropdownButton<String>(
+              hint: Text(
+                "Nessun veicolo selezionato",
+                style: TextStyle(),
+              ),
+              value: _vehicleFilter,
+              isDense: true,
+              onChanged: (value) {
+                setState(() {
+                  _vehicleFilter = value;
+                });
+              },
+              items: [
+                DropdownMenuItem(
+                  value: "0+",
+                  child: Text("0+"),
+                ),
+                DropdownMenuItem(
+                  value: "0-",
+                  child: Text("0-"),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 18,
+            ),
+            DropdownButton<String>(
+              hint: Text(
+                "Nessuna apertura selezionata",
+                style: TextStyle(),
+              ),
+              value: _openingFilter,
+              isDense: true,
+              onChanged: (value) {
+                setState(() {
+                  _openingFilter = value;
+                });
+              },
+              items: [
+                DropdownMenuItem(
+                  value: "0+",
+                  child: Text("0+"),
+                ),
+                DropdownMenuItem(
+                  value: "0-",
+                  child: Text("0-"),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        ButtonBar(
+          children: <Widget>[
+            ButtonDeclineConfirm(
+              color: Colors.red,
+              icon: Icon(
+                Icons.cancel,
+                color: Colors.white,
+              ),
+              text: "Annulla",
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            ButtonDeclineConfirm(
+              color: Colors.green,
+              icon: Icon(
+                Icons.check_circle,
+                color: Colors.white,
+              ),
+              text: "Cerca",
+              onPressed: widget.searchFunction(
+                  _attackFilter, _vehicleFilter, _openingFilter),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
