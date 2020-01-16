@@ -13,6 +13,7 @@ import 'package:ignite/models/department.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/views/department_screen.dart';
+import 'package:ignite/views/fireman_screen_views/fireman_screen.dart';
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
 import 'package:ignite/widgets/button_decline_approve.dart';
 
@@ -42,6 +43,10 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   List<Marker> _markerSet;
   List<Hydrant> _approvedHydrants;
 
+  List<String> _attackValues;
+  List<String> _vehicleValues;
+  List<String> _openingValues;
+
   double _zoomCameraOnMe = 18.0;
 
   void setupPositionStream() {
@@ -52,6 +57,12 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
         .listen((pos) {
       widget.position = LatLng(pos.latitude, pos.longitude);
     });
+  }
+
+  Future<void> _buildValues() async {
+    _attackValues = await Provider.of<DbProvider>(context).getAttacks();
+    _vehicleValues = await Provider.of<DbProvider>(context).getVehicles();
+    _openingValues = await Provider.of<DbProvider>(context).getOpenings();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -219,87 +230,125 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return CustomDialog(searchFunction: (String attackFilter,
-              String vechicleFilter, String openingFilter) {
-            _animateCameraOnNearestHydrant(
-                attackFilter, vechicleFilter, openingFilter);
-          });
+          return CustomDialog(
+            searchFunction: _animateCameraOnNearestHydrant,
+            attacksList: _attackValues,
+            vehiclesList: _vehicleValues,
+            openingsList: _openingValues,
+          );
         });
+  }
+
+  List<Hydrant> _buildHydrantsFilteredForSearch(
+      String attack, String vehicle, String opening) {
+    print(attack);
+    List<Hydrant> filteredHydrants = List.from(_approvedHydrants);
+    for (Hydrant h in _approvedHydrants) {
+      if (attack == "" && vehicle == "" && opening == "") {
+      } else if ((attack != null &&
+              attack != h.getFirstAttack() &&
+              attack != h.getSecondAttack()) ||
+          (vehicle != null && vehicle != h.getVehicle()) ||
+          (opening != null && opening != h.getOpening())) {
+        filteredHydrants.remove(h);
+      }
+    }
+    return filteredHydrants;
   }
 
   void _animateCameraOnNearestHydrant(
       String attack, String vehicle, String opening) async {
-        print(attack);
-    double minDistance = double.maxFinite;
-    double targetLat = widget.position.latitude;
-    double targetLong = widget.position.longitude;
-    Hydrant targetHydrant = null;
-    for (Hydrant h in _approvedHydrants) {
-      double distance = await Geolocator().distanceBetween(
-          widget.position.latitude,
-          widget.position.longitude,
-          h.getLat(),
-          h.getLong());
+    List<Hydrant> filteredHydrants =
+        _buildHydrantsFilteredForSearch(attack, vehicle, opening);
+    if (filteredHydrants.isEmpty) {
+      Flushbar(
+        flushbarStyle: FlushbarStyle.GROUNDED,
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
+        icon: Icon(
+          Icons.explore,
+          color: Colors.white,
+        ),
+        title: "Idrante non trovato",
+        message:
+            "Non esistono idranti con queste caratteristiche all'interno della mappa",
+        duration: Duration(
+          seconds: 2,
+        ),
+      )..show(context);
+    } else {
+      double minDistance = double.maxFinite;
+      double targetLat = widget.position.latitude;
+      double targetLong = widget.position.longitude;
+      Hydrant targetHydrant = null;
+      for (Hydrant h in filteredHydrants) {
+        double distance = await Geolocator().distanceBetween(
+            widget.position.latitude,
+            widget.position.longitude,
+            h.getLat(),
+            h.getLong());
 
-      if (distance < minDistance) {
-        minDistance = distance;
-        targetLat = h.getLat();
-        targetLong = h.getLong();
-        targetHydrant = h;
+        if (distance < minDistance) {
+          minDistance = distance;
+          targetLat = h.getLat();
+          targetLong = h.getLong();
+          targetHydrant = h;
+        }
       }
-    }
-    _mapController.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        bearing: 0,
-        target: LatLng(targetLat, targetLong),
-        zoom: _zoomCameraOnMe,
-      ),
-    ));
-    Flushbar(
-      flushbarStyle: FlushbarStyle.GROUNDED,
-      flushbarPosition: FlushbarPosition.BOTTOM,
-      backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
-      icon: Icon(
-        Icons.explore,
-        color: Colors.white,
-      ),
-      title: "L'idrante più vicino",
-      message: "Verrà visualizzato l'idrante più vicino alla posizione attuale",
-      duration: Duration(
-        seconds: 2,
-      ),
-    )..show(context);
-    await Future.delayed(const Duration(milliseconds: 2000), () {});
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return RequestScreenRecap(
-        hydrant: targetHydrant,
-        buttonBar: Container(
-          color: Colors.red[600],
-          width: MediaQuery.of(context).size.width,
-          child: FlatButton.icon(
-            onPressed: () {
-              MapUtils.openMap(
-                targetHydrant.getLat(),
-                targetHydrant.getLong(),
-                widget.position.latitude,
-                widget.position.longitude,
-              );
-            },
-            icon: Icon(
-              Icons.navigation,
-              color: Colors.white,
-            ),
-            label: Text(
-              "Ottieni indicazioni",
-              style: TextStyle(
+      _mapController.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(
+          bearing: 0,
+          target: LatLng(targetLat, targetLong),
+          zoom: _zoomCameraOnMe,
+        ),
+      ));
+      Flushbar(
+        flushbarStyle: FlushbarStyle.GROUNDED,
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
+        icon: Icon(
+          Icons.explore,
+          color: Colors.white,
+        ),
+        title: "L'idrante più vicino",
+        message:
+            "Verrà visualizzato l'idrante più vicino alla posizione attuale",
+        duration: Duration(
+          seconds: 2,
+        ),
+      )..show(context);
+      await Future.delayed(const Duration(milliseconds: 2000), () {});
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return RequestScreenRecap(
+          hydrant: targetHydrant,
+          buttonBar: Container(
+            color: Colors.red[600],
+            width: MediaQuery.of(context).size.width,
+            child: FlatButton.icon(
+              onPressed: () {
+                MapUtils.openMap(
+                  targetHydrant.getLat(),
+                  targetHydrant.getLong(),
+                  widget.position.latitude,
+                  widget.position.longitude,
+                );
+              },
+              icon: Icon(
+                Icons.navigation,
                 color: Colors.white,
+              ),
+              label: Text(
+                "Ottieni indicazioni",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
-        ),
-        isHydrant: true,
-      );
-    }));
+          isHydrant: true,
+        );
+      }));
+    }
   }
 
   @override
@@ -317,7 +366,12 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
           FutureBuilder<List<Hydrant>>(
             future: Provider.of<DbProvider>(context).getApprovedHydrants(),
             builder: (context, hydrants) {
-              return _buildGoogleMap();
+              return FutureBuilder(
+                future: _buildValues(),
+                builder: (context, result) {
+                  return _buildGoogleMap();
+                },
+              );
             },
           ),
           Padding(
@@ -356,11 +410,13 @@ class CustomDialog extends StatefulWidget {
   CustomDialog(
       {@required this.searchFunction,
       @required this.attacksList,
+      @required this.vehiclesList,
       @required this.openingsList});
 
-  Function searchFunction;
-  List<DropdownMenuItem> attacksList;
-  List<DropdownMenuItem> openingsList;
+  final Function searchFunction;
+  final List<String> attacksList;
+  final List<String> vehiclesList;
+  final List<String> openingsList;
 
   @override
   _CustomDialogState createState() => _CustomDialogState();
@@ -371,9 +427,47 @@ class _CustomDialogState extends State<CustomDialog> {
   String _vehicleFilter;
   String _openingFilter;
 
+  bool _attackSwitch = false;
+  bool _vehicleSwitch = false;
+  bool _openingSwitch = false;
+
+  List<DropdownMenuItem<String>> _attacksListDropdown = [];
+  List<DropdownMenuItem<String>> _vehiclesListDropdown = [];
+  List<DropdownMenuItem<String>> _openingsListDropdown = [];
+
+  bool notNull(Object o) => o != null;
+
+  void setDropdownMenuItems() {
+    for (String value in widget.attacksList) {
+      _attacksListDropdown.add(DropdownMenuItem(
+        value: value,
+        child: Text(value),
+      ));
+    }
+    for (String value in widget.vehiclesList) {
+      _vehiclesListDropdown.add(DropdownMenuItem(
+        value: value,
+        child: Text(value),
+      ));
+    }
+    for (String value in widget.openingsList) {
+      _openingsListDropdown.add(DropdownMenuItem(
+        value: value,
+        child: Text(value),
+      ));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setDropdownMenuItems();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: ThemeProvider.themeOf(context).data.backgroundColor,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
       title: Text(
@@ -381,10 +475,12 @@ class _CustomDialogState extends State<CustomDialog> {
         style: TextStyle(
           fontFamily: "Nunito",
           fontWeight: FontWeight.bold,
+          fontSize: 21,
         ),
       ),
       content: Container(
-        height: 250,
+        height: 360,
+        width: 320,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -393,87 +489,163 @@ class _CustomDialogState extends State<CustomDialog> {
               style: TextStyle(
                 fontFamily: "Nunito",
                 fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
-            DropdownButton<String>(
-              hint: Text(
-                "Nessun attacco selezionato",
-                style: TextStyle(),
-              ),
-              value: _attackFilter,
-              isDense: true,
-              onChanged: (value) {
-                setState(() {
-                  _attackFilter = value;
-                });
-              },
-              items: [
-                DropdownMenuItem(
-                  value: "0+",
-                  child: Text("0+"),
+            Row(
+              children: <Widget>[
+                Chip(
+                  elevation: 4,
+                  backgroundColor: ThemeProvider.themeOf(context).id == "main"
+                      ? Colors.red
+                      : Colors.grey[700],
+                  label: Text(
+                    "Attacco",
+                    style: TextStyle(
+                        fontFamily: "Nunito",
+                        color: Colors.white,
+                        fontSize: 16),
+                  ),
                 ),
-                DropdownMenuItem(
-                  value: "0-",
-                  child: Text("0-"),
+                Spacer(),
+                Switch(
+                  value: _attackSwitch,
+                  onChanged: (value) {
+                    setState(() {
+                      _attackSwitch = value;
+                    });
+                  },
+                  activeColor: ThemeProvider.themeOf(context).id == "main"
+                      ? Colors.red
+                      : Colors.grey[700],
                 ),
               ],
             ),
+            _attackSwitch
+                ? Padding(
+                    padding: EdgeInsets.fromLTRB(5, 15, 0, 15),
+                    child: DropdownButton<String>(
+                      hint: Text(
+                        "Nessun attacco selezionato",
+                        style: TextStyle(),
+                      ),
+                      value: _attackFilter,
+                      isDense: true,
+                      onChanged: (value) {
+                        setState(() {
+                          _attackFilter = value;
+                        });
+                      },
+                      items: _attacksListDropdown,
+                    ),
+                  )
+                : null,
             SizedBox(
-              height: 18,
+              height: 5,
             ),
-            DropdownButton<String>(
-              hint: Text(
-                "Nessun veicolo selezionato",
-                style: TextStyle(),
-              ),
-              value: _vehicleFilter,
-              isDense: true,
-              onChanged: (value) {
-                setState(() {
-                  _vehicleFilter = value;
-                });
-              },
-              items: [
-                DropdownMenuItem(
-                  value: "0+",
-                  child: Text("0+"),
+            Row(
+              children: <Widget>[
+                Chip(
+                  elevation: 4,
+                  backgroundColor: ThemeProvider.themeOf(context).id == "main"
+                      ? Colors.red
+                      : Colors.grey[700],
+                  label: Text(
+                    "Veicolo",
+                    style: TextStyle(
+                        fontFamily: "Nunito",
+                        color: Colors.white,
+                        fontSize: 16),
+                  ),
                 ),
-                DropdownMenuItem(
-                  value: "0-",
-                  child: Text("0-"),
+                Spacer(),
+                Switch(
+                  value: _vehicleSwitch,
+                  onChanged: (value) {
+                    setState(() {
+                      _vehicleSwitch = value;
+                    });
+                  },
+                  activeColor: ThemeProvider.themeOf(context).id == "main"
+                      ? Colors.red
+                      : Colors.grey[700],
                 ),
               ],
             ),
+            _vehicleSwitch
+                ? Padding(
+                    padding: EdgeInsets.fromLTRB(5, 15, 0, 15),
+                    child: DropdownButton<String>(
+                      hint: Text(
+                        "Nessun veicolo selezionato",
+                        style: TextStyle(),
+                      ),
+                      value: _vehicleFilter,
+                      isDense: true,
+                      onChanged: (value) {
+                        setState(() {
+                          _vehicleFilter = value;
+                        });
+                      },
+                      items: _vehiclesListDropdown,
+                    ),
+                  )
+                : null,
             SizedBox(
-              height: 18,
+              height: 5,
             ),
-            DropdownButton<String>(
-              hint: Text(
-                "Nessuna apertura selezionata",
-                style: TextStyle(),
-              ),
-              value: _openingFilter,
-              isDense: true,
-              onChanged: (value) {
-                setState(() {
-                  _openingFilter = value;
-                });
-              },
-              items: [
-                DropdownMenuItem(
-                  value: "0+",
-                  child: Text("0+"),
+            Row(
+              children: <Widget>[
+                Chip(
+                  elevation: 4,
+                  backgroundColor: ThemeProvider.themeOf(context).id == "main"
+                      ? Colors.red
+                      : Colors.grey[700],
+                  label: Text(
+                    "Apertura",
+                    style: TextStyle(
+                        fontFamily: "Nunito",
+                        color: Colors.white,
+                        fontSize: 16),
+                  ),
                 ),
-                DropdownMenuItem(
-                  value: "0-",
-                  child: Text("0-"),
+                Spacer(),
+                Switch(
+                  value: _openingSwitch,
+                  onChanged: (value) {
+                    setState(() {
+                      _openingSwitch = value;
+                    });
+                  },
+                  activeColor: ThemeProvider.themeOf(context).id == "main"
+                      ? Colors.red
+                      : Colors.grey[700],
                 ),
               ],
             ),
-          ],
+            _openingSwitch
+                ? Padding(
+                    padding: EdgeInsets.fromLTRB(5, 15, 0, 15),
+                    child: DropdownButton<String>(
+                      hint: Text(
+                        "Nessuna apertura selezionata",
+                        style: TextStyle(),
+                      ),
+                      value: _openingFilter,
+                      isDense: true,
+                      onChanged: (value) {
+                        setState(() {
+                          _openingFilter = value;
+                        });
+                      },
+                      items: _openingsListDropdown,
+                    ),
+                  )
+                : null,
+          ].where(notNull).toList(),
         ),
       ),
       actions: <Widget>[
@@ -491,15 +663,17 @@ class _CustomDialogState extends State<CustomDialog> {
               },
             ),
             ButtonDeclineConfirm(
-              color: Colors.green,
-              icon: Icon(
-                Icons.check_circle,
-                color: Colors.white,
-              ),
-              text: "Cerca",
-              onPressed: widget.searchFunction(
-                  _attackFilter, _vehicleFilter, _openingFilter),
-            ),
+                color: Colors.green,
+                icon: Icon(
+                  Icons.check_circle,
+                  color: Colors.white,
+                ),
+                text: "Cerca",
+                onPressed: () {
+                  Navigator.pop(context);
+                  widget.searchFunction(
+                      _attackFilter, _vehicleFilter, _openingFilter);
+                }),
           ],
         ),
       ],
