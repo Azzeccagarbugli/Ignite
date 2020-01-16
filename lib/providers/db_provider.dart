@@ -140,6 +140,39 @@ class DbProvider extends ChangeNotifier {
     return deps;
   }
 
+  Future<List<String>> _getEnumByName(String name) async {
+    List<String> attacks = new List<String>();
+    QuerySnapshot qs = await _db
+        .collection('enums')
+        .where('name', isEqualTo: name)
+        .getDocuments();
+    DocumentSnapshot document = qs.documents[0];
+    for (String value in document['values']) {
+      attacks.add(value);
+    }
+    return attacks;
+  }
+
+  Future<List<String>> getColors() async {
+    return _getEnumByName('color');
+  }
+
+  Future<List<String>> getAttacks() async {
+    return _getEnumByName('attack');
+  }
+
+  Future<List<String>> getOpenings() async {
+    return _getEnumByName('opening');
+  }
+
+  Future<List<String>> getVehicles() async {
+    return _getEnumByName('vehicle');
+  }
+
+  Future<List<String>> getTypes() async {
+    return _getEnumByName('type');
+  }
+
   Future<Request> getRequestByDocumentReference(String ref) async {
     DocumentSnapshot ds = await _db.collection('requests').document(ref).get();
     Map<String, dynamic> data = ds.data;
