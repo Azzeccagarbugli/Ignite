@@ -9,6 +9,8 @@ import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/remove_glow.dart';
+import 'package:ignite/widgets/request_form_dropdownlisttile.dart';
+import 'package:ignite/widgets/request_form_textlisttile.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +35,14 @@ class RequestForm extends StatefulWidget {
   String _vehicle;
   bool _isFireman;
   bool isNewRequest;
+  List<String> _attackValues;
+  List<String> _colorValues;
+  List<String> _typeValues;
+  List<String> _vehicleValues;
+
+  List<String> _openingValues;
+
+  List<String> _pressureValues;
   RequestForm({
     @required this.lat,
     @required this.long,
@@ -59,20 +69,32 @@ class _RequestFormState extends State<RequestForm> {
     return list;
   }
 
+  Future<void> buildValues() async {
+    widget._attackValues = await Provider.of<DbProvider>(context).getAttacks();
+    widget._colorValues = await Provider.of<DbProvider>(context).getColors();
+    widget._typeValues = await Provider.of<DbProvider>(context).getTypes();
+    widget._vehicleValues =
+        await Provider.of<DbProvider>(context).getVehicles();
+    widget._openingValues =
+        await Provider.of<DbProvider>(context).getOpenings();
+    widget._pressureValues =
+        await Provider.of<DbProvider>(context).getPressures();
+  }
+
   List<Widget> buildListTileList(List<Placemark> placemark) {
     List<Widget> tiles = new List<Widget>();
     tiles.addAll([
-      buildListTile(
-        'Latitudine',
-        'Inserisci la latitudine',
-        widget.lat.toString(),
-        Icon(
+      RequestFormTextListTile(
+        label: 'Latitudine',
+        hintText: 'Inserisci la latitudine',
+        initValue: widget.lat.toString(),
+        icon: Icon(
           Icons.location_on,
           color: ThemeProvider.themeOf(context).id == "main"
               ? Colors.red[900]
               : Colors.white,
         ),
-        (value) {
+        validator: (value) {
           if (value.isEmpty) {
             return 'Inserisci un valore';
           } else if (!((double.parse(value) > -90) &&
@@ -81,24 +103,24 @@ class _RequestFormState extends State<RequestForm> {
           } else
             return null;
         },
-        (value) {
+        onSaved: (value) {
           setState(() {
             widget.lat = double.parse(value);
           });
         },
-        TextInputType.numberWithOptions(),
+        textInputType: TextInputType.numberWithOptions(),
       ),
-      buildListTile(
-        'Longitudine',
-        'Inserisci la longitudine',
-        widget.long.toString(),
-        Icon(
+      RequestFormTextListTile(
+        label: 'Longitudine',
+        hintText: 'Inserisci la longitudine',
+        initValue: widget.long.toString(),
+        icon: Icon(
           Icons.location_on,
           color: ThemeProvider.themeOf(context).id == "main"
               ? Colors.red[900]
               : Colors.white,
         ),
-        (value) {
+        validator: (value) {
           if (value.isEmpty) {
             return 'Inserisci un valore';
           } else if (!((double.parse(value) > -180) &&
@@ -107,133 +129,133 @@ class _RequestFormState extends State<RequestForm> {
           } else
             return null;
         },
-        (value) {
+        onSaved: (value) {
           setState(() {
             widget.long = double.parse(value);
           });
         },
-        TextInputType.numberWithOptions(),
+        textInputType: TextInputType.numberWithOptions(),
       ),
-      buildListTile(
-        'Città',
-        'Inserisci la città',
-        (widget.isNewRequest)
+      RequestFormTextListTile(
+        label: 'Città',
+        hintText: 'Inserisci la città',
+        initValue: (widget.isNewRequest)
             ? ((placemark == null) ? "" : placemark[0].locality)
             : widget.oldHydrant.getCity(),
-        Icon(
+        icon: Icon(
           Icons.location_city,
           color: ThemeProvider.themeOf(context).id == "main"
               ? Colors.red[900]
               : Colors.white,
         ),
-        (value) {
+        validator: (value) {
           if (value.isEmpty) {
             return 'Inserisci un valore';
           } else
             return null;
         },
-        (value) {
+        onSaved: (value) {
           setState(() {
             widget._city = value;
           });
         },
-        TextInputType.text,
+        textInputType: TextInputType.text,
       ),
-      buildListTile(
-        'Via',
-        'Inserisci la via',
-        (widget.isNewRequest)
+      RequestFormTextListTile(
+        label: 'Via',
+        hintText: 'Inserisci la via',
+        initValue: (widget.isNewRequest)
             ? ((placemark == null) ? "" : placemark[0].thoroughfare)
             : widget.oldHydrant.getStreet(),
-        Icon(
+        icon: Icon(
           Icons.nature_people,
           color: ThemeProvider.themeOf(context).id == "main"
               ? Colors.red[900]
               : Colors.white,
         ),
-        (value) {
+        validator: (value) {
           if (value.isEmpty) {
             return 'Inserisci un valore';
           } else
             return null;
         },
-        (value) {
+        onSaved: (value) {
           setState(() {
             widget._street = value;
           });
         },
-        TextInputType.text,
+        textInputType: TextInputType.text,
       ),
-      buildListTile(
-        'Numero civico',
-        'Inserisci il numero civico',
-        (widget.isNewRequest) ? "" : widget.oldHydrant.getNumber(),
-        Icon(
+      RequestFormTextListTile(
+        label: 'Numero civico',
+        hintText: 'Inserisci il numero civico',
+        initValue: (widget.isNewRequest) ? "" : widget.oldHydrant.getNumber(),
+        icon: Icon(
           Icons.format_list_numbered,
           color: ThemeProvider.themeOf(context).id == "main"
               ? Colors.red[900]
               : Colors.white,
         ),
-        (value) {
+        validator: (value) {
           if (value.isEmpty) {
             return 'Inserisci un valore';
           } else
             return null;
         },
-        (value) {
+        onSaved: (value) {
           setState(() {
             widget._number = value;
           });
         },
-        TextInputType.numberWithOptions(),
+        textInputType: TextInputType.numberWithOptions(),
       ),
-      buildListTile(
-        'CAP',
-        'Inserisci il CAP',
-        (widget.isNewRequest)
+      RequestFormTextListTile(
+        label: 'CAP',
+        hintText: 'Inserisci il CAP',
+        initValue: (widget.isNewRequest)
             ? ((placemark == null) ? "" : placemark[0].postalCode)
             : widget.oldHydrant.getCap(),
-        Icon(
+        icon: Icon(
           Icons.grain,
           color: ThemeProvider.themeOf(context).id == "main"
               ? Colors.red[900]
               : Colors.white,
         ),
-        (value) {
+        validator: (value) {
           if (value.isEmpty) {
             return 'Inserisci un valore';
           } else
             return null;
         },
-        (value) {
+        onSaved: (value) {
           setState(() {
             widget._cap = value;
           });
         },
-        TextInputType.numberWithOptions(),
+        textInputType: TextInputType.numberWithOptions(),
       ),
-      buildListTile(
-        'Note',
-        'Inserisci le note',
-        (widget.isNewRequest) ? "" : widget.oldHydrant.getNotes(),
-        Icon(
+      RequestFormTextListTile(
+        label: 'Note',
+        hintText: 'Inserisci le note',
+        initValue: (widget.isNewRequest) ? "" : widget.oldHydrant.getNotes(),
+        icon: Icon(
           Icons.speaker_notes,
           color: ThemeProvider.themeOf(context).id == "main"
               ? Colors.red[900]
               : Colors.white,
         ),
-        (value) {
+        validator: (value) {
           if (value.isEmpty) {
             return 'Inserisci un valore';
           } else
             return null;
         },
-        (value) {
+        onSaved: (value) {
           setState(() {
             widget._notes = value;
           });
         },
-        TextInputType.text,
+        textInputType: TextInputType.text,
       ),
       widget._isFireman
           ? SizedBox(
@@ -246,166 +268,104 @@ class _RequestFormState extends State<RequestForm> {
     ]);
     if (widget._isFireman) {
       tiles.addAll([
-        buildListTile(
-          'Primo attacco',
-          'Inserisci il primo attacco',
-          "",
-          Icon(
+        RequestFormDropDownListTile(
+          hintText: "Seleziona il primo attacco",
+          label: "Primo Attacco",
+          values: widget._attackValues,
+          icon: Icon(
             Icons.looks_one,
             color: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.red[900]
                 : Colors.white,
           ),
-          (value) {
-            if (value.isEmpty) {
-              return 'Inserisci un valore';
-            } else
-              return null;
+          onChangedFunction: (value) {
+            widget._firstAttack = value;
           },
-          (value) {
-            setState(() {
-              widget._firstAttack = value;
-            });
-          },
-          TextInputType.text,
         ),
-        buildListTile(
-          'Secondo attacco',
-          'Inserisci il secondo attacco',
-          "",
-          Icon(
+        RequestFormDropDownListTile(
+          hintText: "Seleziona il secondo attacco",
+          label: "Secondo Attacco",
+          values: widget._attackValues,
+          icon: Icon(
             Icons.looks_two,
             color: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.red[900]
                 : Colors.white,
           ),
-          (value) {
-            if (value.isEmpty) {
-              return 'Inserisci un valore';
-            } else
-              return null;
+          onChangedFunction: (value) {
+            widget._secondAttack = value;
           },
-          (value) {
-            setState(() {
-              widget._secondAttack = value;
-            });
-          },
-          TextInputType.text,
         ),
-        buildListTile(
-          'Pressione',
-          'Inserisci la pressione',
-          "",
-          Icon(
+        RequestFormDropDownListTile(
+          hintText: "Seleziona la pressione",
+          label: "Pressione",
+          values: widget._pressureValues,
+          icon: Icon(
             Icons.layers,
             color: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.red[900]
                 : Colors.white,
           ),
-          (value) {
-            if (value.isEmpty) {
-              return 'Inserisci un valore';
-            } else
-              return null;
+          onChangedFunction: (value) {
+            widget._pressure = value;
           },
-          (value) {
-            setState(() {
-              widget._pressure = value;
-            });
-          },
-          TextInputType.text,
         ),
-        buildListTile(
-          'Apertura',
-          'Inserisci l\'apertura',
-          "",
-          Icon(
+        RequestFormDropDownListTile(
+          hintText: "Seleziona l'apertura",
+          label: "Apertura",
+          values: widget._openingValues,
+          icon: Icon(
             Icons.open_in_browser,
             color: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.red[900]
                 : Colors.white,
           ),
-          (value) {
-            if (value.isEmpty) {
-              return 'Inserisci un valore';
-            } else
-              return null;
+          onChangedFunction: (value) {
+            widget._opening = value;
+            print(widget._opening);
           },
-          (value) {
-            setState(() {
-              widget._opening = value;
-            });
-          },
-          TextInputType.text,
         ),
-        buildListTile(
-          'Tipo',
-          'Inserisci il tipo',
-          "",
-          Icon(
+        RequestFormDropDownListTile(
+          hintText: "Seleziona il tipo",
+          label: "Tipo",
+          values: widget._typeValues,
+          icon: Icon(
             Icons.featured_play_list,
             color: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.red[900]
                 : Colors.white,
           ),
-          (value) {
-            if (value.isEmpty) {
-              return 'Inserisci un valore';
-            } else
-              return null;
+          onChangedFunction: (value) {
+            widget._type = value;
           },
-          (value) {
-            setState(() {
-              widget._type = value;
-            });
-          },
-          TextInputType.text,
         ),
-        buildListTile(
-          'Colore',
-          'Inserisci il colore',
-          "",
-          Icon(
+        RequestFormDropDownListTile(
+          hintText: "Seleziona il colore",
+          label: "Colore",
+          values: widget._colorValues,
+          icon: Icon(
             Icons.format_paint,
             color: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.red[900]
                 : Colors.white,
           ),
-          (value) {
-            if (value.isEmpty) {
-              return 'Inserisci un valore';
-            } else
-              return null;
+          onChangedFunction: (value) {
+            widget._color = value;
           },
-          (value) {
-            setState(() {
-              widget._color = value;
-            });
-          },
-          TextInputType.text,
         ),
-        buildListTile(
-          'Veicolo',
-          'Inserisci il veicolo',
-          "",
-          Icon(
+        RequestFormDropDownListTile(
+          hintText: "Seleziona il veicolo",
+          label: "Veicolo",
+          values: widget._vehicleValues,
+          icon: Icon(
             Icons.rv_hookup,
             color: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.red[900]
                 : Colors.white,
           ),
-          (value) {
-            if (value.isEmpty) {
-              return 'Inserisci un valore';
-            } else
-              return null;
+          onChangedFunction: (value) {
+            widget._vehicle = value;
           },
-          (value) {
-            setState(() {
-              widget._vehicle = value;
-            });
-          },
-          TextInputType.text,
         ),
         ListTile(
           title: Align(
@@ -504,98 +464,11 @@ class _RequestFormState extends State<RequestForm> {
           ),
         ),
         SizedBox(
-          height: 106,
+          height: 75,
         ),
       ]);
     }
     return tiles;
-  }
-
-  ListTile buildListTile(
-    String label,
-    String hintText,
-    String initValue,
-    Icon icon,
-    Function validator,
-    Function onSaved,
-    TextInputType textInputType,
-  ) {
-    return ListTile(
-      title: Align(
-        alignment: Alignment.centerLeft,
-        child: Chip(
-          backgroundColor: Colors.white,
-          elevation: 12,
-          shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.only(
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
-          ),
-          label: Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'Nunito',
-            ),
-          ),
-        ),
-      ),
-      subtitle: Material(
-        borderRadius: BorderRadius.circular(8.0),
-        elevation: 12,
-        child: TextFormField(
-          textAlignVertical: TextAlignVertical.center,
-          style: TextStyle(
-            fontFamily: 'Nunito',
-            color: ThemeProvider.themeOf(context).id == "main"
-                ? Colors.grey
-                : Colors.white,
-          ),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: ThemeProvider.themeOf(context).id == "main"
-                ? Colors.white
-                : Colors.grey[850],
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 15,
-            ),
-            prefixIcon: icon,
-            counterStyle: TextStyle(
-              color: ThemeProvider.themeOf(context).id == "main"
-                  ? Colors.grey
-                  : Colors.white,
-              fontFamily: 'Nunito',
-            ),
-            hintText: hintText,
-            hintStyle: TextStyle(
-              color: ThemeProvider.themeOf(context).id == "main"
-                  ? Colors.grey
-                  : Colors.white,
-              fontFamily: 'Nunito',
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                style: BorderStyle.none,
-              ),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                style: BorderStyle.solid,
-                color: Colors.redAccent,
-              ),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-          ),
-          keyboardType: textInputType,
-          initialValue: initValue,
-          validator: validator,
-          onSaved: onSaved,
-        ),
-      ),
-    );
   }
 
   final _key = GlobalKey<FormState>();
@@ -641,17 +514,33 @@ class _RequestFormState extends State<RequestForm> {
                               case ConnectionState.done:
                                 if (result.hasError)
                                   return new RequestLoading();
-                                return Form(
-                                  key: _key,
-                                  child: ScrollConfiguration(
-                                    behavior: RemoveGlow(),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        children: this
-                                            .buildListTileList(placemark.data),
-                                      ),
-                                    ),
-                                  ),
+                                return FutureBuilder<void>(
+                                  future: this.buildValues(),
+                                  builder: (context, result) {
+                                    switch (result.connectionState) {
+                                      case ConnectionState.none:
+                                        return new RequestLoading();
+                                      case ConnectionState.active:
+                                      case ConnectionState.waiting:
+                                        return new RequestLoading();
+                                      case ConnectionState.done:
+                                        if (result.hasError)
+                                          return new RequestLoading();
+                                        return Form(
+                                          key: _key,
+                                          child: ScrollConfiguration(
+                                            behavior: RemoveGlow(),
+                                            child: SingleChildScrollView(
+                                              child: Column(
+                                                children: this
+                                                    .buildListTileList(
+                                                        placemark.data),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                    }
+                                  },
                                 );
                             }
                           },

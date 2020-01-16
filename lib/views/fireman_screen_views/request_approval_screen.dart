@@ -200,7 +200,7 @@ class RequestScreenRecap extends StatelessWidget {
                       hydrant.getOpening().isNotEmpty
                           ? RowMarkerDetails(
                               tag: 'Apertura',
-                              value: hydrant.getVehicle(),
+                              value: hydrant.getOpening(),
                             )
                           : SizedBox(),
                       hydrant.getType().isNotEmpty

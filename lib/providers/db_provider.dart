@@ -173,6 +173,10 @@ class DbProvider extends ChangeNotifier {
     return _getEnumByName('type');
   }
 
+  Future<List<String>> getPressures() async {
+    return _getEnumByName('pressure');
+  }
+
   Future<Request> getRequestByDocumentReference(String ref) async {
     DocumentSnapshot ds = await _db.collection('requests').document(ref).get();
     Map<String, dynamic> data = ds.data;
