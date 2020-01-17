@@ -226,12 +226,12 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     ));
   }
 
-  void _setFilter() {
+  void _setFilterAndSearch() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
-            searchFunction: _animateCameraOnNearestHydrant,
+            searchFunction: _animateCameraOnNearestHydrantUsingFilter,
             attacksList: _attackValues,
             vehiclesList: _vehicleValues,
             openingsList: _openingValues,
@@ -256,7 +256,11 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     return filteredHydrants;
   }
 
-  void _animateCameraOnNearestHydrant(
+  void _animateCameraOnNearestHydrant() {
+    _searchAndZoomOnNearestHydrant(_approvedHydrants);
+  }
+
+  void _animateCameraOnNearestHydrantUsingFilter(
       String attack, String vehicle, String opening) async {
     List<Hydrant> filteredHydrants =
         _buildHydrantsFilteredForSearch(attack, vehicle, opening);
@@ -276,79 +280,81 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
           seconds: 2,
         ),
       )..show(context);
-    } else {
-      double minDistance = double.maxFinite;
-      double targetLat = widget.position.latitude;
-      double targetLong = widget.position.longitude;
-      Hydrant targetHydrant = null;
-      for (Hydrant h in filteredHydrants) {
-        double distance = await Geolocator().distanceBetween(
-            widget.position.latitude,
-            widget.position.longitude,
-            h.getLat(),
-            h.getLong());
+    }
+    _searchAndZoomOnNearestHydrant(filteredHydrants);
+  }
 
-        if (distance < minDistance) {
-          minDistance = distance;
-          targetLat = h.getLat();
-          targetLong = h.getLong();
-          targetHydrant = h;
-        }
+  void _searchAndZoomOnNearestHydrant(List<Hydrant> hydrants) async {
+    double minDistance = double.maxFinite;
+    double targetLat = widget.position.latitude;
+    double targetLong = widget.position.longitude;
+    Hydrant targetHydrant = null;
+    for (Hydrant h in hydrants) {
+      double distance = await Geolocator().distanceBetween(
+          widget.position.latitude,
+          widget.position.longitude,
+          h.getLat(),
+          h.getLong());
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        targetLat = h.getLat();
+        targetLong = h.getLong();
+        targetHydrant = h;
       }
-      _mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-          bearing: 0,
-          target: LatLng(targetLat, targetLong),
-          zoom: _zoomCameraOnMe,
-        ),
-      ));
-      Flushbar(
-        flushbarStyle: FlushbarStyle.GROUNDED,
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
-        icon: Icon(
-          Icons.explore,
-          color: Colors.white,
-        ),
-        title: "L'idrante più vicino",
-        message:
-            "Verrà visualizzato l'idrante più vicino alla posizione attuale",
-        duration: Duration(
-          seconds: 2,
-        ),
-      )..show(context);
-      await Future.delayed(const Duration(milliseconds: 2000), () {});
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return RequestScreenRecap(
-          hydrant: targetHydrant,
-          buttonBar: Container(
-            color: Colors.red[600],
-            width: MediaQuery.of(context).size.width,
-            child: FlatButton.icon(
-              onPressed: () {
-                MapUtils.openMap(
-                  targetHydrant.getLat(),
-                  targetHydrant.getLong(),
-                  widget.position.latitude,
-                  widget.position.longitude,
-                );
-              },
-              icon: Icon(
-                Icons.navigation,
+    }
+    _mapController.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        bearing: 0,
+        target: LatLng(targetLat, targetLong),
+        zoom: _zoomCameraOnMe,
+      ),
+    ));
+    Flushbar(
+      flushbarStyle: FlushbarStyle.GROUNDED,
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
+      icon: Icon(
+        Icons.explore,
+        color: Colors.white,
+      ),
+      title: "L'idrante più vicino",
+      message: "Verrà visualizzato l'idrante più vicino alla posizione attuale",
+      duration: Duration(
+        seconds: 2,
+      ),
+    )..show(context);
+    await Future.delayed(const Duration(milliseconds: 2000), () {});
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return RequestScreenRecap(
+        hydrant: targetHydrant,
+        buttonBar: Container(
+          color: Colors.red[600],
+          width: MediaQuery.of(context).size.width,
+          child: FlatButton.icon(
+            onPressed: () {
+              MapUtils.openMap(
+                targetHydrant.getLat(),
+                targetHydrant.getLong(),
+                widget.position.latitude,
+                widget.position.longitude,
+              );
+            },
+            icon: Icon(
+              Icons.navigation,
+              color: Colors.white,
+            ),
+            label: Text(
+              "Ottieni indicazioni",
+              style: TextStyle(
                 color: Colors.white,
-              ),
-              label: Text(
-                "Ottieni indicazioni",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
               ),
             ),
           ),
-          isHydrant: true,
-        );
-      }));
-    }
+        ),
+        isHydrant: true,
+      );
+    }));
   }
 
   @override
@@ -392,8 +398,13 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                     ),
                     HomePageButton(
                       heroTag: 'NEARESTHYDRANT',
+                      icon: Icons.not_listed_location,
+                      function: _animateCameraOnNearestHydrant,
+                    ),
+                    HomePageButton(
+                      heroTag: 'NEARESTHYDRANTFILTERED',
                       icon: Icons.explore,
-                      function: _setFilter,
+                      function: _setFilterAndSearch,
                     ),
                   ],
                 ),
