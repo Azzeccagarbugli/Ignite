@@ -7,6 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'dart:ui' as ui;
 
+import 'homepage_button.dart';
+
 class RequestMap extends StatefulWidget {
   final double latitude;
   final double longitude;
@@ -23,14 +25,16 @@ class RequestMap extends StatefulWidget {
 }
 
 class _RequestMapState extends State<RequestMap> {
-  final Completer<GoogleMapController> _mapsController = Completer();
+  GoogleMapController _mapController;
 
   Uint8List markerIconHydrant, markerIconDepartment;
 
   BitmapDescriptor icon;
 
   void _onMapCreated(GoogleMapController controller) {
-    _mapsController.complete(controller);
+    setState(() {
+      _mapController = controller;
+    });
   }
 
   Future<BitmapDescriptor> _buildMarkers() async {
@@ -63,36 +67,71 @@ class _RequestMapState extends State<RequestMap> {
         .asUint8List();
   }
 
-  GoogleMap googleMap() {
+  void _animateCameraOnMe() {
+    _mapController.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        bearing: 0,
+        target: LatLng(widget.latitude, widget.longitude),
+        zoom: 18,
+      ),
+    ));
+  }
+
+  Stack googleMap() {
     _buildMarkers().then((value) {
       setState(() {
         icon = value;
       });
     });
-    return GoogleMap(
-      rotateGesturesEnabled: true,
-      scrollGesturesEnabled: true,
-      tiltGesturesEnabled: false,
-      zoomGesturesEnabled: true,
-      markers: {
-        Marker(
-          markerId: MarkerId('Marker'),
-          position: LatLng(
-            widget.latitude,
-            widget.longitude,
+    return Stack(
+      children: <Widget>[
+        GoogleMap(
+          rotateGesturesEnabled: true,
+          scrollGesturesEnabled: true,
+          tiltGesturesEnabled: false,
+          zoomGesturesEnabled: true,
+          markers: {
+            Marker(
+              markerId: MarkerId('Marker'),
+              position: LatLng(
+                widget.latitude,
+                widget.longitude,
+              ),
+              icon: icon,
+            )
+          },
+          mapType: MapType.satellite,
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(
+              widget.latitude,
+              widget.longitude,
+            ),
+            zoom: 18.0,
           ),
-          icon: icon,
-        )
-      },
-      mapType: MapType.satellite,
-      onMapCreated: _onMapCreated,
-      initialCameraPosition: CameraPosition(
-        target: LatLng(
-          widget.latitude,
-          widget.longitude,
         ),
-        zoom: 18.0,
-      ),
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 30.0,
+            right: 15.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  HomePageButton(
+                    function: _animateCameraOnMe,
+                    icon: Icons.gps_fixed,
+                    heroTag: 'GPS_REQUEST_MAP',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
