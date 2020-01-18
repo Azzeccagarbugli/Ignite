@@ -56,68 +56,76 @@ class _RequestFormDropDownListTileState
       subtitle: Material(
         borderRadius: BorderRadius.circular(8.0),
         elevation: 12,
-        child: DropdownButtonFormField(
-          value: widget._value,
-          style: TextStyle(
-            fontFamily: 'Nunito',
-            color: ThemeProvider.themeOf(context).id == "main"
-                ? Colors.grey
-                : Colors.white,
-          ),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: ThemeProvider.themeOf(context).id == "main"
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: ThemeProvider.themeOf(context).id == "main"
                 ? Colors.white
-                : Colors.grey[850],
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 15,
-            ),
-            prefixIcon: widget.icon,
-            counterStyle: TextStyle(
-              color: ThemeProvider.themeOf(context).id == "main"
-                  ? Colors.grey
-                  : Colors.white,
-              fontFamily: 'Nunito',
-            ),
-            hintStyle: TextStyle(
-              color: ThemeProvider.themeOf(context).id == "main"
-                  ? Colors.grey
-                  : Colors.white,
-              fontFamily: 'Nunito',
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                style: BorderStyle.none,
-              ),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                style: BorderStyle.solid,
-                color: Colors.redAccent,
-              ),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+                : Colors.grey[900],
           ),
-          onChanged: (value) {
-            setState(() {
-              widget._value = value;
-              widget.onChangedFunction(value);
-            });
-          },
-          items: widget.values.map((String value) {
-            return new DropdownMenuItem<String>(
-              value: value,
-              child: new Text(
-                value,
-                style: TextStyle(
+          child: DropdownButtonFormField(
+            value: widget._value,
+            style: TextStyle(
+              fontFamily: 'Nunito',
+              color: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.grey
+                  : Colors.white,
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.white
+                  : Colors.grey[850],
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 15,
+              ),
+              prefixIcon: widget.icon,
+              counterStyle: TextStyle(
+                color: ThemeProvider.themeOf(context).id == "main"
+                    ? Colors.grey
+                    : Colors.white,
+                fontFamily: 'Nunito',
+              ),
+              hintStyle: TextStyle(
+                color: ThemeProvider.themeOf(context).id == "main"
+                    ? Colors.grey
+                    : Colors.white,
+                fontFamily: 'Nunito',
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  style: BorderStyle.none,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  style: BorderStyle.solid,
+                  color: Colors.redAccent,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            onChanged: (value) {
+              setState(() {
+                widget._value = value;
+                widget.onChangedFunction(value);
+              });
+            },
+            items: widget.values.map((String value) {
+              return new DropdownMenuItem<String>(
+                value: value,
+                child: new Text(
+                  value,
+                  style: TextStyle(
                     color: ThemeProvider.themeOf(context).id == "main"
                         ? Colors.grey
-                        : Colors.white),
-              ),
-            );
-          }).toList(),
+                        : Colors.white,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
@@ -164,9 +172,10 @@ class _RequestFormDropDownButtonState extends State<RequestFormDropDownButton> {
           child: new Text(
             value,
             style: TextStyle(
-                color: ThemeProvider.themeOf(context).id == "main"
-                    ? Colors.grey
-                    : Colors.white),
+              color: ThemeProvider.themeOf(context).id == "main"
+                  ? Colors.grey
+                  : Colors.white,
+            ),
           ),
         );
       }).toList(),
