@@ -1,5 +1,6 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:ignite/widgets/remove_glow.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'button_decline_approve.dart';
@@ -24,10 +25,6 @@ class _CustomDialogState extends State<CustomDialog> {
   String _attackFilter;
   String _vehicleFilter;
   String _openingFilter;
-
-  bool _attackSwitch = false;
-  bool _vehicleSwitch = false;
-  bool _openingSwitch = false;
 
   List<DropdownMenuItem<String>> _attacksListDropdown = [];
   List<DropdownMenuItem<String>> _vehiclesListDropdown = [];
@@ -87,58 +84,49 @@ class _CustomDialogState extends State<CustomDialog> {
           content: Container(
             height: 360,
             width: 320,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    "Seleziona i valori da te desiderati per cercare l'idrante più vicino che rispecchi i seguenti canoni",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  children: <Widget>[
-                    Chip(
-                      elevation: 4,
-                      backgroundColor:
-                          ThemeProvider.themeOf(context).id == "main"
-                              ? Colors.red
-                              : Colors.grey[700],
-                      label: Text(
-                        "Attacco",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+            child: ScrollConfiguration(
+              behavior: RemoveGlow(),
+              child: SingleChildScrollView(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          "Seleziona i valori da te desiderati per cercare l'idrante più vicino che rispecchi i seguenti canoni",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
                       ),
-                    ),
-                    Spacer(),
-                    Switch(
-                      value: _attackSwitch,
-                      onChanged: (value) {
-                        setState(() {
-                          _attackSwitch = value;
-                        });
-                      },
-                      activeColor: ThemeProvider.themeOf(context).id == "main"
-                          ? Colors.red
-                          : Colors.grey[700],
-                    ),
-                  ],
-                ),
-                _attackSwitch
-                    ? Padding(
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Chip(
+                            elevation: 4,
+                            backgroundColor:
+                                ThemeProvider.themeOf(context).id == "main"
+                                    ? Colors.red
+                                    : Colors.grey[700],
+                            label: Text(
+                              "Attacco",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                      Padding(
                         padding: EdgeInsets.fromLTRB(5, 15, 0, 15),
                         child: DropdownButton<String>(
                           hint: Text(
-                            "Nessun attacco selezionato",
+                            "Nessun attacco scelto",
                             style: TextStyle(),
                           ),
                           value: _attackFilter,
@@ -150,47 +138,34 @@ class _CustomDialogState extends State<CustomDialog> {
                           },
                           items: _attacksListDropdown,
                         ),
-                      )
-                    : null,
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  children: <Widget>[
-                    Chip(
-                      elevation: 4,
-                      backgroundColor:
-                          ThemeProvider.themeOf(context).id == "main"
-                              ? Colors.red
-                              : Colors.grey[700],
-                      label: Text(
-                        "Veicolo",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
                       ),
-                    ),
-                    Spacer(),
-                    Switch(
-                      value: _vehicleSwitch,
-                      onChanged: (value) {
-                        setState(() {
-                          _vehicleSwitch = value;
-                        });
-                      },
-                      activeColor: ThemeProvider.themeOf(context).id == "main"
-                          ? Colors.red
-                          : Colors.grey[700],
-                    ),
-                  ],
-                ),
-                _vehicleSwitch
-                    ? Padding(
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Chip(
+                            elevation: 4,
+                            backgroundColor:
+                                ThemeProvider.themeOf(context).id == "main"
+                                    ? Colors.red
+                                    : Colors.grey[700],
+                            label: Text(
+                              "Veicolo",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                      Padding(
                         padding: EdgeInsets.fromLTRB(5, 15, 0, 15),
                         child: DropdownButton<String>(
                           hint: Text(
-                            "Nessun veicolo selezionato",
+                            "Nessun veicolo scelto",
                             style: TextStyle(),
                           ),
                           value: _vehicleFilter,
@@ -202,47 +177,34 @@ class _CustomDialogState extends State<CustomDialog> {
                           },
                           items: _vehiclesListDropdown,
                         ),
-                      )
-                    : null,
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  children: <Widget>[
-                    Chip(
-                      elevation: 4,
-                      backgroundColor:
-                          ThemeProvider.themeOf(context).id == "main"
-                              ? Colors.red
-                              : Colors.grey[700],
-                      label: Text(
-                        "Apertura",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
                       ),
-                    ),
-                    Spacer(),
-                    Switch(
-                      value: _openingSwitch,
-                      onChanged: (value) {
-                        setState(() {
-                          _openingSwitch = value;
-                        });
-                      },
-                      activeColor: ThemeProvider.themeOf(context).id == "main"
-                          ? Colors.red
-                          : Colors.grey[700],
-                    ),
-                  ],
-                ),
-                _openingSwitch
-                    ? Padding(
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Chip(
+                            elevation: 4,
+                            backgroundColor:
+                                ThemeProvider.themeOf(context).id == "main"
+                                    ? Colors.red
+                                    : Colors.grey[700],
+                            label: Text(
+                              "Apertura",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                      Padding(
                         padding: EdgeInsets.fromLTRB(5, 15, 0, 15),
                         child: DropdownButton<String>(
                           hint: Text(
-                            "Nessuna apertura selezionata",
+                            "Nessuna apertura scelta",
                             style: TextStyle(),
                           ),
                           value: _openingFilter,
@@ -255,8 +217,8 @@ class _CustomDialogState extends State<CustomDialog> {
                           items: _openingsListDropdown,
                         ),
                       )
-                    : null,
-              ].where(notNull).toList(),
+                    ]),
+              ),
             ),
           ),
           actions: <Widget>[
