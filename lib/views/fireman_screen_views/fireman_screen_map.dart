@@ -16,6 +16,7 @@ import 'package:ignite/views/department_screen.dart';
 import 'package:ignite/views/fireman_screen_views/fireman_screen.dart';
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
 import 'package:ignite/widgets/button_decline_approve.dart';
+import 'package:ignite/widgets/custom_dialog_search.dart';
 
 import 'package:ignite/widgets/homepage_button.dart';
 import 'package:provider/provider.dart';
@@ -228,15 +229,16 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
 
   void _setFilterAndSearch() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CustomDialog(
-            searchFunction: _animateCameraOnNearestHydrantUsingFilter,
-            attacksList: _attackValues,
-            vehiclesList: _vehicleValues,
-            openingsList: _openingValues,
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return CustomDialog(
+          searchFunction: _animateCameraOnNearestHydrantUsingFilter,
+          attacksList: _attackValues,
+          vehiclesList: _vehicleValues,
+          openingsList: _openingValues,
+        );
+      },
+    );
   }
 
   List<Hydrant> _buildHydrantsFilteredForSearch(
@@ -403,7 +405,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                     ),
                     HomePageButton(
                       heroTag: 'NEARESTHYDRANTFILTERED',
-                      icon: Icons.explore,
+                      icon: Icons.filter_list,
                       function: _setFilterAndSearch,
                     ),
                   ],
@@ -413,281 +415,6 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
           )
         ],
       ),
-    );
-  }
-}
-
-class CustomDialog extends StatefulWidget {
-  CustomDialog(
-      {@required this.searchFunction,
-      @required this.attacksList,
-      @required this.vehiclesList,
-      @required this.openingsList});
-
-  final Function searchFunction;
-  final List<String> attacksList;
-  final List<String> vehiclesList;
-  final List<String> openingsList;
-
-  @override
-  _CustomDialogState createState() => _CustomDialogState();
-}
-
-class _CustomDialogState extends State<CustomDialog> {
-  String _attackFilter;
-  String _vehicleFilter;
-  String _openingFilter;
-
-  bool _attackSwitch = false;
-  bool _vehicleSwitch = false;
-  bool _openingSwitch = false;
-
-  List<DropdownMenuItem<String>> _attacksListDropdown = [];
-  List<DropdownMenuItem<String>> _vehiclesListDropdown = [];
-  List<DropdownMenuItem<String>> _openingsListDropdown = [];
-
-  bool notNull(Object o) => o != null;
-
-  void setDropdownMenuItems() {
-    for (String value in widget.attacksList) {
-      _attacksListDropdown.add(DropdownMenuItem(
-        value: value,
-        child: Text(value),
-      ));
-    }
-    for (String value in widget.vehiclesList) {
-      _vehiclesListDropdown.add(DropdownMenuItem(
-        value: value,
-        child: Text(value),
-      ));
-    }
-    for (String value in widget.openingsList) {
-      _openingsListDropdown.add(DropdownMenuItem(
-        value: value,
-        child: Text(value),
-      ));
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    setDropdownMenuItems();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: ThemeProvider.themeOf(context).data.backgroundColor,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(32.0))),
-      title: Text(
-        "Trova l'idrante più vicino",
-        style: TextStyle(
-          fontFamily: "Nunito",
-          fontWeight: FontWeight.bold,
-          fontSize: 21,
-        ),
-      ),
-      content: Container(
-        height: 360,
-        width: 320,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              "Imposta filtro:",
-              style: TextStyle(
-                fontFamily: "Nunito",
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: <Widget>[
-                Chip(
-                  elevation: 4,
-                  backgroundColor: ThemeProvider.themeOf(context).id == "main"
-                      ? Colors.red
-                      : Colors.grey[700],
-                  label: Text(
-                    "Attacco",
-                    style: TextStyle(
-                        fontFamily: "Nunito",
-                        color: Colors.white,
-                        fontSize: 16),
-                  ),
-                ),
-                Spacer(),
-                Switch(
-                  value: _attackSwitch,
-                  onChanged: (value) {
-                    setState(() {
-                      _attackSwitch = value;
-                    });
-                  },
-                  activeColor: ThemeProvider.themeOf(context).id == "main"
-                      ? Colors.red
-                      : Colors.grey[700],
-                ),
-              ],
-            ),
-            _attackSwitch
-                ? Padding(
-                    padding: EdgeInsets.fromLTRB(5, 15, 0, 15),
-                    child: DropdownButton<String>(
-                      hint: Text(
-                        "Nessun attacco selezionato",
-                        style: TextStyle(),
-                      ),
-                      value: _attackFilter,
-                      isDense: true,
-                      onChanged: (value) {
-                        setState(() {
-                          _attackFilter = value;
-                        });
-                      },
-                      items: _attacksListDropdown,
-                    ),
-                  )
-                : null,
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: <Widget>[
-                Chip(
-                  elevation: 4,
-                  backgroundColor: ThemeProvider.themeOf(context).id == "main"
-                      ? Colors.red
-                      : Colors.grey[700],
-                  label: Text(
-                    "Veicolo",
-                    style: TextStyle(
-                        fontFamily: "Nunito",
-                        color: Colors.white,
-                        fontSize: 16),
-                  ),
-                ),
-                Spacer(),
-                Switch(
-                  value: _vehicleSwitch,
-                  onChanged: (value) {
-                    setState(() {
-                      _vehicleSwitch = value;
-                    });
-                  },
-                  activeColor: ThemeProvider.themeOf(context).id == "main"
-                      ? Colors.red
-                      : Colors.grey[700],
-                ),
-              ],
-            ),
-            _vehicleSwitch
-                ? Padding(
-                    padding: EdgeInsets.fromLTRB(5, 15, 0, 15),
-                    child: DropdownButton<String>(
-                      hint: Text(
-                        "Nessun veicolo selezionato",
-                        style: TextStyle(),
-                      ),
-                      value: _vehicleFilter,
-                      isDense: true,
-                      onChanged: (value) {
-                        setState(() {
-                          _vehicleFilter = value;
-                        });
-                      },
-                      items: _vehiclesListDropdown,
-                    ),
-                  )
-                : null,
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: <Widget>[
-                Chip(
-                  elevation: 4,
-                  backgroundColor: ThemeProvider.themeOf(context).id == "main"
-                      ? Colors.red
-                      : Colors.grey[700],
-                  label: Text(
-                    "Apertura",
-                    style: TextStyle(
-                        fontFamily: "Nunito",
-                        color: Colors.white,
-                        fontSize: 16),
-                  ),
-                ),
-                Spacer(),
-                Switch(
-                  value: _openingSwitch,
-                  onChanged: (value) {
-                    setState(() {
-                      _openingSwitch = value;
-                    });
-                  },
-                  activeColor: ThemeProvider.themeOf(context).id == "main"
-                      ? Colors.red
-                      : Colors.grey[700],
-                ),
-              ],
-            ),
-            _openingSwitch
-                ? Padding(
-                    padding: EdgeInsets.fromLTRB(5, 15, 0, 15),
-                    child: DropdownButton<String>(
-                      hint: Text(
-                        "Nessuna apertura selezionata",
-                        style: TextStyle(),
-                      ),
-                      value: _openingFilter,
-                      isDense: true,
-                      onChanged: (value) {
-                        setState(() {
-                          _openingFilter = value;
-                        });
-                      },
-                      items: _openingsListDropdown,
-                    ),
-                  )
-                : null,
-          ].where(notNull).toList(),
-        ),
-      ),
-      actions: <Widget>[
-        ButtonBar(
-          children: <Widget>[
-            ButtonDeclineConfirm(
-              color: Colors.red,
-              icon: Icon(
-                Icons.cancel,
-                color: Colors.white,
-              ),
-              text: "Annulla",
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            ButtonDeclineConfirm(
-                color: Colors.green,
-                icon: Icon(
-                  Icons.check_circle,
-                  color: Colors.white,
-                ),
-                text: "Cerca",
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.searchFunction(
-                      _attackFilter, _vehicleFilter, _openingFilter);
-                }),
-          ],
-        ),
-      ],
     );
   }
 }
