@@ -58,7 +58,7 @@ class AuthProvider extends ChangeNotifier {
         password: pass,
       ))
           .user;
-      this.updateUsersCollection(user.email, false);
+      this.updateUsersCollection(user.email, false, false, false);
       getUser().then((user) {
         print("${user.email} ha effettuato il login con mail e password");
       });
@@ -86,7 +86,7 @@ class AuthProvider extends ChangeNotifier {
       );
       final FirebaseUser user =
           (await _auth.signInWithCredential(credential)).user;
-      this.updateUsersCollection(user.email, false);
+      this.updateUsersCollection(user.email, false, true, false);
       await _auth.signInWithCredential(credential);
       getUser().then((user) {
         print("${user.email} ha effettuato il login con Google");
@@ -115,7 +115,7 @@ class AuthProvider extends ChangeNotifier {
               FacebookAuthProvider.getCredential(accessToken: myToken.token);
           final FirebaseUser user =
               (await _auth.signInWithCredential(credential)).user;
-          this.updateUsersCollection(user.email, false);
+          this.updateUsersCollection(user.email, false, false, true);
           await _auth.signInWithCredential(credential);
           getUser().then((user) {
             print("${user.email} ha effettuato il login con Facebook");
@@ -170,7 +170,8 @@ class AuthProvider extends ChangeNotifier {
     print("Utente disconnesso");
   }
 
-  void updateUsersCollection(String mail, bool isFireman) {
+  void updateUsersCollection(
+      String mail, bool isFireman, bool isGoogle, bool isFacebook) {
     _db
         .collection('users')
         .where('email', isEqualTo: mail)
@@ -181,6 +182,8 @@ class AuthProvider extends ChangeNotifier {
           'email': mail,
           'isFireman': isFireman,
           'isFirstAccess': true,
+          'isGoogle': isGoogle,
+          'isFacebook': isFacebook,
         });
       }
     });

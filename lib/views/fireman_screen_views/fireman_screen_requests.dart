@@ -8,23 +8,38 @@ import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
+import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/painter.dart';
 import 'package:ignite/widgets/remove_glow.dart';
-import 'package:ignite/widgets/request_map.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class FiremanScreenRequests extends StatefulWidget {
-  LatLng position;
-
-  FiremanScreenRequests({@required this.position});
-
   @override
   _FiremanScreenRequestsState createState() => _FiremanScreenRequestsState();
 }
 
 class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
+  List<Request> _requests;
+  LatLng _curloc;
+
+  Future<void> _getPosition() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _curloc = LatLng(position.latitude, position.longitude);
+  }
+
+  Future _getRequests() async {
+    _requests = await Provider.of<DbProvider>(context)
+        .getPendingRequestsByDistance(_curloc);
+  }
+
+  Future initFuture() async {
+    await Future.wait([this._getPosition()]);
+    await Future.wait([this._getRequests()]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,19 +56,17 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
               ? Colors.white
               : Colors.grey[700],
         ),
-        child: FutureBuilder<List<Request>>(
-          future: Provider.of<DbProvider>(context)
-              .getPendingRequestsByDistance(widget.position),
+        child: FutureBuilder(
+          future: initFuture(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return new RequestLoading();
+                return new LoadingScreen(message: "In attesa del GPS");
               case ConnectionState.active:
               case ConnectionState.waiting:
-                return new RequestLoading();
+                return new LoadingScreen(message: "In attesa del GPS");
               case ConnectionState.done:
-                if (snapshot.hasError) return new RequestLoading();
-                if (snapshot.data.isEmpty) {
+                if (_requests.isEmpty) {
                   return new Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -122,10 +135,10 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                   return ScrollConfiguration(
                     behavior: RemoveGlow(),
                     child: new ListView.builder(
-                      itemCount: snapshot.data.length,
+                      itemCount: _requests.length,
                       itemBuilder: (context, index) {
                         return new RequestCard(
-                          request: snapshot.data[index],
+                          request: _requests[index],
                         );
                       },
                     ),
@@ -195,12 +208,11 @@ class _RequestCardState extends State<RequestCard> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return new RequestLoading();
+                return new LoadingShimmer();
               case ConnectionState.active:
               case ConnectionState.waiting:
-                return new RequestLoading();
+                return new LoadingShimmer();
               case ConnectionState.done:
-                if (snapshot.hasError) setState(() {});
                 return new Container(
                   child: Stack(
                     children: <Widget>[

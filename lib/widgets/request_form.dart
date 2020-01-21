@@ -33,7 +33,6 @@ class RequestForm extends StatefulWidget {
   String _number;
   String _type;
   String _vehicle;
-  bool _isFireman;
   bool isNewRequest;
   List<String> _attackValues;
   List<String> _colorValues;
@@ -56,17 +55,39 @@ class RequestForm extends StatefulWidget {
 }
 
 class _RequestFormState extends State<RequestForm> {
+  List<Placemark> _placeMarks;
+  bool _isFireman;
+  FirebaseUser _user;
+
   Future<List<Placemark>> getFuturePlacemark() async {
-    List<Placemark> list;
     try {
-      list = await Geolocator().placemarkFromCoordinates(
+      _placeMarks = await Geolocator().placemarkFromCoordinates(
         widget.lat,
         widget.long,
       );
     } catch (e) {
-      list = null;
+      _placeMarks = null;
     }
-    return list;
+  }
+
+  Future getIsFireman() async {
+    _isFireman =
+        await Provider.of<DbProvider>(context).isCurrentUserFireman(_user);
+  }
+
+  Future getUser() async {
+    _user = await Provider.of<AuthProvider>(context).getUser();
+  }
+
+  Future initFuture() async {
+    await Future.wait([
+      this.getFuturePlacemark(),
+      this.getUser(),
+      this.buildValues(),
+    ]);
+    await Future.wait([
+      this.getIsFireman(),
+    ]);
   }
 
   Future<void> buildValues() async {
@@ -87,7 +108,7 @@ class _RequestFormState extends State<RequestForm> {
       RequestFormTextListTile(
         label: 'Latitudine',
         hintText: 'Inserisci la latitudine',
-        initValue: widget.lat.toString(),
+        initValue: widget.lat == null ? "" : widget.lat.toString(),
         icon: Icon(
           Icons.location_on,
           color: ThemeProvider.themeOf(context).id == "main"
@@ -113,7 +134,7 @@ class _RequestFormState extends State<RequestForm> {
       RequestFormTextListTile(
         label: 'Longitudine',
         hintText: 'Inserisci la longitudine',
-        initValue: widget.long.toString(),
+        initValue: widget.long == null ? "" : widget.long.toString(),
         icon: Icon(
           Icons.location_on,
           color: ThemeProvider.themeOf(context).id == "main"
@@ -257,7 +278,7 @@ class _RequestFormState extends State<RequestForm> {
         },
         textInputType: TextInputType.text,
       ),
-      widget._isFireman
+      _isFireman
           ? SizedBox(
               height: 0,
               width: 0,
@@ -266,7 +287,7 @@ class _RequestFormState extends State<RequestForm> {
               height: 106,
             ),
     ]);
-    if (widget._isFireman) {
+    if (_isFireman) {
       tiles.addAll([
         RequestFormDropDownListTile(
           hintText: "Seleziona il primo attacco",
@@ -322,7 +343,6 @@ class _RequestFormState extends State<RequestForm> {
           ),
           onChangedFunction: (value) {
             widget._opening = value;
-            print(widget._opening);
           },
         ),
         RequestFormDropDownListTile(
@@ -478,75 +498,27 @@ class _RequestFormState extends State<RequestForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: FutureBuilder<List<Placemark>>(
-        future: getFuturePlacemark(),
-        builder: (context, placemark) {
-          switch (placemark.connectionState) {
+      body: FutureBuilder(
+        future: this.initFuture(),
+        builder: (context, result) {
+          switch (result.connectionState) {
             case ConnectionState.none:
-              return new RequestLoading();
+              return new LoadingShimmer();
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return new RequestLoading();
+              return new LoadingShimmer();
             case ConnectionState.done:
-              if (placemark.hasError) return new RequestLoading();
-              return FutureBuilder<FirebaseUser>(
-                  future: Provider.of<AuthProvider>(context).getUser(),
-                  builder: (context, user) {
-                    switch (placemark.connectionState) {
-                      case ConnectionState.none:
-                        return new RequestLoading();
-                      case ConnectionState.active:
-                      case ConnectionState.waiting:
-                        return new RequestLoading();
-                      case ConnectionState.done:
-                        if (placemark.hasError) return new RequestLoading();
-                        return FutureBuilder<bool>(
-                          future: Provider.of<DbProvider>(context)
-                              .isCurrentUserFireman(user.data),
-                          builder: (context, result) {
-                            widget._isFireman = result.data;
-                            switch (result.connectionState) {
-                              case ConnectionState.none:
-                                return new RequestLoading();
-                              case ConnectionState.active:
-                              case ConnectionState.waiting:
-                                return new RequestLoading();
-                              case ConnectionState.done:
-                                if (result.hasError)
-                                  return new RequestLoading();
-                                return FutureBuilder<void>(
-                                  future: this.buildValues(),
-                                  builder: (context, result) {
-                                    switch (result.connectionState) {
-                                      case ConnectionState.none:
-                                        return new RequestLoading();
-                                      case ConnectionState.active:
-                                      case ConnectionState.waiting:
-                                        return new RequestLoading();
-                                      case ConnectionState.done:
-                                        if (result.hasError)
-                                          return new RequestLoading();
-                                        return Form(
-                                          key: _key,
-                                          child: ScrollConfiguration(
-                                            behavior: RemoveGlow(),
-                                            child: SingleChildScrollView(
-                                              child: Column(
-                                                children: this
-                                                    .buildListTileList(
-                                                        placemark.data),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                    }
-                                  },
-                                );
-                            }
-                          },
-                        );
-                    }
-                  });
+              return Form(
+                key: _key,
+                child: ScrollConfiguration(
+                  behavior: RemoveGlow(),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: this.buildListTileList(_placeMarks),
+                    ),
+                  ),
+                ),
+              );
           }
         },
       ),
@@ -559,7 +531,7 @@ class _RequestFormState extends State<RequestForm> {
         onPressed: () {
           if (_key.currentState.validate()) {
             _key.currentState.save();
-            Hydrant newHydrant = widget._isFireman
+            Hydrant newHydrant = _isFireman
                 ? Hydrant.fromFireman(
                     widget._firstAttack,
                     widget._secondAttack,
@@ -590,7 +562,7 @@ class _RequestFormState extends State<RequestForm> {
               if (widget.isNewRequest) {
                 Provider.of<DbProvider>(context).addRequest(
                   newHydrant,
-                  widget._isFireman,
+                  _isFireman,
                   user,
                 );
               } else {
@@ -607,7 +579,7 @@ class _RequestFormState extends State<RequestForm> {
               flushbarPosition: FlushbarPosition.TOP,
               title: "Idrante registrato",
               shouldIconPulse: true,
-              message: (widget._isFireman)
+              message: (_isFireman)
                   ? "L'idrante è stato aggiunto con successo alla mappa!"
                   : "La segnalazione dell'idrante è stata effettuata con successo!",
               icon: Icon(

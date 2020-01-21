@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/views/fireman_screen_views/fireman_screen_requests.dart';
@@ -11,13 +10,9 @@ import '../new_request_screen.dart';
 import 'fireman_screen_map.dart';
 
 class FiremanScreen extends StatefulWidget {
-  String jsonStyle;
-  LatLng position;
   String userMail;
   FiremanScreen({
     @required this.userMail,
-    @required this.position,
-    @required this.jsonStyle,
   });
   @override
   _FiremanScreenState createState() => _FiremanScreenState();
@@ -33,10 +28,7 @@ class _FiremanScreenState extends State<FiremanScreen> {
   }
 
   Widget _mapBody() {
-    return FiremanScreenMap(
-      jsonStyle: widget.jsonStyle,
-      position: widget.position,
-    );
+    return FiremanScreenMap();
   }
 
   Widget _profileSettingsBody() {
@@ -47,15 +39,11 @@ class _FiremanScreenState extends State<FiremanScreen> {
   }
 
   Widget _requestsBody() {
-    return FiremanScreenRequests(
-      position: widget.position,
-    );
+    return FiremanScreenRequests();
   }
 
   Widget _newHydrantBody() {
-    return NewRequestScreen(
-      position: widget.position,
-    );
+    return NewRequestScreen();
   }
 
   void _setScaffoldBody(index) {

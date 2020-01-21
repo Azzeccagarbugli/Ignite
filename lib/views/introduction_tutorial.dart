@@ -10,15 +10,9 @@ import 'package:theme_provider/theme_provider.dart';
 import 'citizen_screen_views/citizen_screen.dart';
 
 class IntroductionTutorial extends StatelessWidget {
-  IntroductionTutorial(
-      {@required this.isFireman,
-      @required this.curloc,
-      @required this.mapStyle,
-      @required this.userMail});
+  IntroductionTutorial({@required this.isFireman, @required this.userMail});
 
   final bool isFireman;
-  final LatLng curloc;
-  final String mapStyle;
   final String userMail;
 
   void _onIntroEnd(context) async {
@@ -28,12 +22,9 @@ class IntroductionTutorial extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => isFireman
             ? FiremanScreen(
-                position: this.curloc,
-                jsonStyle: this.mapStyle,
-                userMail: this.userMail)
+                userMail: this.userMail,
+              )
             : CitizenScreen(
-                position: this.curloc,
-                jsonStyle: this.mapStyle,
                 userMail: this.userMail,
               ),
       ),

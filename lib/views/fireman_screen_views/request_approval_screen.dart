@@ -48,12 +48,12 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return new RequestLoading();
+              return new LoadingShimmer();
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return new RequestLoading();
+              return new LoadingShimmer();
             case ConnectionState.done:
-              if (snapshot.hasError) return new RequestLoading();
+              if (snapshot.hasError) return new LoadingShimmer();
               return new RequestScreenRecap(
                 hydrant: snapshot.data,
                 buttonBar: ButtonAppBarDeclineConfirm(

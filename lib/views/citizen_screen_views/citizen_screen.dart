@@ -10,13 +10,9 @@ import 'package:theme_provider/theme_provider.dart';
 import '../../main.dart';
 
 class CitizenScreen extends StatefulWidget {
-  String jsonStyle;
-  LatLng position;
   String userMail;
   CitizenScreen({
     @required this.userMail,
-    @required this.position,
-    @required this.jsonStyle,
   });
 
   @override
@@ -40,14 +36,11 @@ class _CitizenScreenState extends State<CitizenScreen> {
   }
 
   Widget _mapBody() {
-    return CitizenScreenMap(
-        jsonStyle: widget.jsonStyle, position: widget.position);
+    return CitizenScreenMap();
   }
 
   Widget _newHydrantBody() {
-    return NewRequestScreen(
-      position: widget.position,
-    );
+    return NewRequestScreen();
   }
 
   void _setScaffoldBody(index) {

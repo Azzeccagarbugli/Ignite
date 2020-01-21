@@ -4,18 +4,17 @@ import 'dart:typed_data';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ignite/helper/map_launcher.dart';
+import 'package:ignite/main.dart';
 import 'package:ignite/models/department.dart';
 
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/views/department_screen.dart';
-import 'package:ignite/views/fireman_screen_views/fireman_screen.dart';
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
-import 'package:ignite/widgets/button_decline_approve.dart';
+import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/widgets/custom_dialog_search.dart';
 
 import 'package:ignite/widgets/homepage_button.dart';
@@ -25,13 +24,10 @@ import 'dart:ui' as ui;
 
 import 'package:theme_provider/theme_provider.dart';
 
+const double kStartupLat = 41.9038243;
+const double kStartupLong = 12.4476838;
+
 class FiremanScreenMap extends StatefulWidget {
-  String jsonStyle;
-  LatLng position;
-  FiremanScreenMap({
-    @required this.position,
-    @required this.jsonStyle,
-  });
   @override
   _FiremanScreenMapState createState() => _FiremanScreenMapState();
 }
@@ -40,15 +36,16 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   StreamSubscription<Position> _positionStream;
 
   GoogleMapController _mapController;
-
+  LatLng _curloc;
+  String _mapStyle;
   List<Marker> _markerSet;
   List<Hydrant> _approvedHydrants;
-
+  List<Department> _departments;
   List<String> _attackValues;
   List<String> _vehicleValues;
   List<String> _openingValues;
-
-  double _zoomCameraOnMe = 18.0;
+  bool _isSatellite;
+  double _zoomCameraOnMe = 16.0;
 
   void setupPositionStream() {
     _positionStream = Geolocator()
@@ -56,8 +53,37 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       LocationOptions(accuracy: LocationAccuracy.best, timeInterval: 500),
     )
         .listen((pos) {
-      widget.position = LatLng(pos.latitude, pos.longitude);
+      _curloc = LatLng(pos.latitude, pos.longitude);
     });
+  }
+
+  Future<void> getApprovedHydrants() async {
+    _approvedHydrants =
+        await Provider.of<DbProvider>(context).getApprovedHydrants();
+  }
+
+  Future<void> getDepartments() async {
+    _departments = await Provider.of<DbProvider>(context).getDepartments();
+  }
+
+  Future<void> firstFutureInit() async {
+    await Future.wait([
+      this.getApprovedHydrants(),
+      this.getDepartments(),
+    ]);
+    await Future.wait([
+      this._buildHydrantMarkers(),
+      this._buildDepartmentsMarkers(),
+      this._loadJson(),
+    ]);
+  }
+
+  Future<void> secondFutureInit() async {
+    await Future.wait([
+      this._buildValues(),
+      this._getPosition(),
+    ]);
+    this.setupPositionStream();
   }
 
   Future<void> _buildValues() async {
@@ -76,12 +102,24 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
         .asUint8List();
   }
 
-  void _buildHydrantMarkers() async {
+  Future<void> _getPosition() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _curloc = LatLng(position.latitude, position.longitude);
+  }
+
+  Future<void> _loadJson() async {
+    await rootBundle
+        .loadString(
+            'assets/general/${ThemeProvider.optionsOf<CustomOptions>(context).filename}.json')
+        .then((string) {
+      _mapStyle = string;
+    });
+  }
+
+  Future<void> _buildHydrantMarkers() async {
     final Uint8List markerIconHydrant =
         await getBytesFromAsset('assets/images/marker_1.png', 130);
-    await Provider.of<DbProvider>(context).getApprovedHydrants().then((value) {
-      _approvedHydrants = value;
-    });
     for (Hydrant h in _approvedHydrants) {
       _markerSet.add(
         new Marker(
@@ -97,8 +135,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                       MapUtils.openMap(
                         h.getLat(),
                         h.getLong(),
-                        widget.position.latitude,
-                        widget.position.longitude,
+                        _curloc.latitude,
+                        _curloc.longitude,
                       );
                     },
                     icon: Icon(
@@ -128,66 +166,60 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     }
   }
 
-  void _buildDepartmentsMarkers() async {
+  Future<void> _buildDepartmentsMarkers() async {
     final Uint8List markerIconDepartment =
         await getBytesFromAsset('assets/images/marker_2.png', 130);
-    await Provider.of<DbProvider>(context).getDepartments().then((value) {
-      for (Department d in value) {
-        _markerSet.add(
-          new Marker(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return DepartmentScreen(
-                  department: d,
-                  buttonBar: Container(
-                    color: Colors.red[600],
-                    width: MediaQuery.of(context).size.width,
-                    child: FlatButton.icon(
-                      onPressed: () {
-                        MapUtils.openMap(
-                          d.getLat(),
-                          d.getLong(),
-                          widget.position.latitude,
-                          widget.position.longitude,
-                        );
-                      },
-                      icon: Icon(
-                        Icons.navigation,
+    for (Department d in _departments) {
+      _markerSet.add(
+        new Marker(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return DepartmentScreen(
+                department: d,
+                buttonBar: Container(
+                  color: Colors.red[600],
+                  width: MediaQuery.of(context).size.width,
+                  child: FlatButton.icon(
+                    onPressed: () {
+                      MapUtils.openMap(
+                        d.getLat(),
+                        d.getLong(),
+                        _curloc.latitude,
+                        _curloc.longitude,
+                      );
+                    },
+                    icon: Icon(
+                      Icons.navigation,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      "Ottieni indicazioni",
+                      style: TextStyle(
                         color: Colors.white,
-                      ),
-                      label: Text(
-                        "Ottieni indicazioni",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
                       ),
                     ),
                   ),
-                );
-              }));
-            },
-            markerId: MarkerId(d.getDBReference()),
-            position: LatLng(
-              d.getLat(),
-              d.getLong(),
-            ),
-            icon: BitmapDescriptor.fromBytes(markerIconDepartment),
+                ),
+              );
+            }));
+          },
+          markerId: MarkerId(d.getDBReference()),
+          position: LatLng(
+            d.getLat(),
+            d.getLong(),
           ),
-        );
-      }
-    });
+          icon: BitmapDescriptor.fromBytes(markerIconDepartment),
+        ),
+      );
+    }
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      _mapController = controller;
-      _mapController.setMapStyle(widget.jsonStyle);
-    });
+    _mapController = controller;
+    _mapController.setMapStyle(_mapStyle);
   }
 
-  GoogleMap _buildGoogleMap() {
-    this._buildDepartmentsMarkers();
-    this._buildHydrantMarkers();
+  GoogleMap _buildLoadingGoogleMap() {
     return GoogleMap(
       mapToolbarEnabled: false,
       indoorViewEnabled: true,
@@ -195,12 +227,122 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
       onMapCreated: _onMapCreated,
+      mapType: _isSatellite ? MapType.satellite : MapType.normal,
       markers: _markerSet.toSet(),
       initialCameraPosition: CameraPosition(
-        target: widget.position,
+        target: LatLng(kStartupLat, kStartupLong),
+        zoom: 5.0,
+      ),
+    );
+  }
+
+  GoogleMap _buildLoadedGoogleMap() {
+    this._animateCameraOnMe();
+    return GoogleMap(
+      mapToolbarEnabled: false,
+      indoorViewEnabled: true,
+      zoomGesturesEnabled: true,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      mapType: _isSatellite ? MapType.satellite : MapType.normal,
+      onMapCreated: _onMapCreated,
+      markers: _markerSet.toSet(),
+      initialCameraPosition: CameraPosition(
+        target: _curloc,
         zoom: _zoomCameraOnMe,
       ),
     );
+  }
+
+  Widget _buildLoadingMap() {
+    return Stack(
+      children: <Widget>[
+        this._buildLoadingGoogleMap(),
+        Padding(
+          padding: const EdgeInsets.only(top: 500.0),
+          child: Center(
+            child: Chip(
+              label: Text(
+                "Ricerca GPS in corso",
+                style: TextStyle(fontSize: 15.0),
+              ),
+              backgroundColor: Colors.white,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 30.0,
+            right: 15.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  HomePageButton(
+                    function: _setSatellite,
+                    icon: Icons.filter_hdr,
+                    heroTag: 'SATELLITE',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildLoadedMap() {
+    return Stack(
+      children: <Widget>[
+        this._buildLoadedGoogleMap(),
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 30.0,
+            right: 15.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  HomePageButton(
+                    function: _setSatellite,
+                    icon: Icons.filter_hdr,
+                    heroTag: 'SATELLITE',
+                  ),
+                  HomePageButton(
+                    function: _animateCameraOnMe,
+                    icon: Icons.gps_fixed,
+                    heroTag: 'GPS',
+                  ),
+                  HomePageButton(
+                    heroTag: 'NEARESTHYDRANT',
+                    icon: Icons.not_listed_location,
+                    function: _animateCameraOnNearestHydrant,
+                  ),
+                  HomePageButton(
+                    heroTag: 'NEARESTHYDRANTFILTERED',
+                    icon: Icons.filter_list,
+                    function: _setFilterAndSearch,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  void _setSatellite() {
+    setState(() {
+      _isSatellite = !_isSatellite;
+    });
   }
 
   void _animateCameraOnMe() {
@@ -221,7 +363,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
         bearing: 0,
-        target: LatLng(widget.position.latitude, widget.position.longitude),
+        target: LatLng(_curloc.latitude, _curloc.longitude),
         zoom: _zoomCameraOnMe,
       ),
     ));
@@ -288,15 +430,12 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
 
   void _searchAndZoomOnNearestHydrant(List<Hydrant> hydrants) async {
     double minDistance = double.maxFinite;
-    double targetLat = widget.position.latitude;
-    double targetLong = widget.position.longitude;
+    double targetLat = _curloc.latitude;
+    double targetLong = _curloc.longitude;
     Hydrant targetHydrant = null;
     for (Hydrant h in hydrants) {
       double distance = await Geolocator().distanceBetween(
-          widget.position.latitude,
-          widget.position.longitude,
-          h.getLat(),
-          h.getLong());
+          _curloc.latitude, _curloc.longitude, h.getLat(), h.getLong());
 
       if (distance < minDistance) {
         minDistance = distance;
@@ -338,8 +477,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
               MapUtils.openMap(
                 targetHydrant.getLat(),
                 targetHydrant.getLong(),
-                widget.position.latitude,
-                widget.position.longitude,
+                _curloc.latitude,
+                _curloc.longitude,
               );
             },
             icon: Icon(
@@ -362,59 +501,43 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   @override
   void initState() {
     super.initState();
-    this.setupPositionStream();
     _markerSet = List<Marker>();
+    _curloc = LatLng(kStartupLat, kStartupLong);
+    _isSatellite = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          FutureBuilder<List<Hydrant>>(
-            future: Provider.of<DbProvider>(context).getApprovedHydrants(),
-            builder: (context, hydrants) {
-              return FutureBuilder(
-                future: _buildValues(),
-                builder: (context, result) {
-                  return _buildGoogleMap();
-                },
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 30.0,
-              right: 15.0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    HomePageButton(
-                      function: _animateCameraOnMe,
-                      icon: Icons.gps_fixed,
-                      heroTag: 'GPS',
-                    ),
-                    HomePageButton(
-                      heroTag: 'NEARESTHYDRANT',
-                      icon: Icons.not_listed_location,
-                      function: _animateCameraOnNearestHydrant,
-                    ),
-                    HomePageButton(
-                      heroTag: 'NEARESTHYDRANTFILTERED',
-                      icon: Icons.filter_list,
-                      function: _setFilterAndSearch,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+    return FutureBuilder(
+      future: firstFutureInit(),
+      builder: (context, data) {
+        switch (data.connectionState) {
+          case ConnectionState.none:
+            return new LoadingScreen(
+                message: "Caricamento della mappa in corso");
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+            return new LoadingScreen(
+                message: "Caricamento della mappa in corso");
+          case ConnectionState.done:
+            return FutureBuilder(
+              future: secondFutureInit(),
+              builder: (context, data) {
+                switch (data.connectionState) {
+                  case ConnectionState.none:
+                    return _buildLoadingMap();
+                  case ConnectionState.active:
+                  case ConnectionState.waiting:
+                    return _buildLoadingMap();
+                  case ConnectionState.done:
+                    return _buildLoadedMap();
+                }
+                return null;
+              },
+            );
+        }
+        return null;
+      },
     );
   }
 }

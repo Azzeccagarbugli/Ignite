@@ -6,6 +6,7 @@ import 'package:ignite/main.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/views/faq.dart';
 import 'package:ignite/views/loading_screen.dart';
+import 'package:ignite/views/loading_view.dart';
 import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/settings_button.dart';
 import 'package:simple_gravatar/simple_gravatar.dart';
@@ -154,7 +155,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                               ThemeProvider.controllerOf(context).nextTheme();
                               Navigator.pushReplacement(context,
                                   MaterialPageRoute(builder: (context) {
-                                return LoadingScreen();
+                                return LoadingView();
                               }));
                             },
                           ),
