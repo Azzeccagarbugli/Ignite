@@ -34,7 +34,6 @@ class FiremanScreenMap extends StatefulWidget {
 
 class _FiremanScreenMapState extends State<FiremanScreenMap> {
   StreamSubscription<Position> _positionStream;
-
   GoogleMapController _mapController;
   LatLng _curloc;
   String _mapStyle;
@@ -237,7 +236,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   GoogleMap _buildLoadedGoogleMap() {
-    this._animateCameraOnMe();
+    this._animateCameraOnMe(true);
     return GoogleMap(
       mapToolbarEnabled: false,
       indoorViewEnabled: true,
@@ -316,7 +315,9 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                     heroTag: 'SATELLITE',
                   ),
                   HomePageButton(
-                    function: _animateCameraOnMe,
+                    function: () {
+                      _animateCameraOnMe(false);
+                    },
                     icon: Icons.gps_fixed,
                     heroTag: 'GPS',
                   ),
@@ -345,21 +346,23 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     });
   }
 
-  void _animateCameraOnMe() {
-    Flushbar(
-      flushbarStyle: FlushbarStyle.GROUNDED,
-      flushbarPosition: FlushbarPosition.BOTTOM,
-      backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
-      icon: Icon(
-        Icons.gps_fixed,
-        color: Colors.white,
-      ),
-      title: "Posizione attuale",
-      message: "Verrà visualizzata la posizione attuale",
-      duration: Duration(
-        seconds: 2,
-      ),
-    )..show(context);
+  void _animateCameraOnMe(bool isFirstLoad) {
+    if (!isFirstLoad) {
+      Flushbar(
+        flushbarStyle: FlushbarStyle.GROUNDED,
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
+        icon: Icon(
+          Icons.gps_fixed,
+          color: Colors.white,
+        ),
+        title: "Posizione attuale",
+        message: "Verrà visualizzata la posizione attuale",
+        duration: Duration(
+          seconds: 2,
+        ),
+      )..show(context);
+    }
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
         bearing: 0,

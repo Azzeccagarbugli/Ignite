@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -30,22 +31,50 @@ class CitizenScreenMap extends StatefulWidget {
 class _CitizenScreenMapState extends State<CitizenScreenMap> {
   StreamSubscription<Position> _positionStream;
   GoogleMapController _mapController;
-  List<Marker> _markerSet;
-  double _zoomCameraOnMe = 16.0;
   LatLng _curloc;
   String _mapStyle;
-  bool _isSatellite;
+  List<Marker> _markerSet;
   List<Hydrant> _approvedHydrants;
   List<Department> _departments;
+  bool _isSatellite;
+  double _zoomCameraOnMe = 16.0;
 
   void setupPositionStream() {
     _positionStream = Geolocator()
         .getPositionStream(
-      LocationOptions(accuracy: LocationAccuracy.best, timeInterval: 1000),
+      LocationOptions(accuracy: LocationAccuracy.best, timeInterval: 500),
     )
         .listen((pos) {
       _curloc = LatLng(pos.latitude, pos.longitude);
     });
+  }
+
+  Future<void> getApprovedHydrants() async {
+    _approvedHydrants =
+        await Provider.of<DbProvider>(context).getApprovedHydrants();
+  }
+
+  Future<void> getDepartments() async {
+    _departments = await Provider.of<DbProvider>(context).getDepartments();
+  }
+
+  Future<void> firstFutureInit() async {
+    await Future.wait([
+      this.getApprovedHydrants(),
+      this.getDepartments(),
+    ]);
+    await Future.wait([
+      this._buildHydrantMarkers(),
+      this._buildDepartmentsMarkers(),
+      this._loadJson(),
+    ]);
+  }
+
+  Future<void> secondFutureInit() async {
+    await Future.wait([
+      this._getPosition(),
+    ]);
+    this.setupPositionStream();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -58,16 +87,22 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
         .asUint8List();
   }
 
-  Future<void> getApprovedHydrants() async {
-    _approvedHydrants =
-        await Provider.of<DbProvider>(context).getApprovedHydrants();
+  Future<void> _getPosition() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _curloc = LatLng(position.latitude, position.longitude);
   }
 
-  Future<void> getDepartments() async {
-    _departments = await Provider.of<DbProvider>(context).getDepartments();
+  Future<void> _loadJson() async {
+    await rootBundle
+        .loadString(
+            'assets/general/${ThemeProvider.optionsOf<CustomOptions>(context).filename}.json')
+        .then((string) {
+      _mapStyle = string;
+    });
   }
 
-  Future _buildHydrantMarkers() async {
+  Future<void> _buildHydrantMarkers() async {
     final Uint8List markerIconHydrant =
         await getBytesFromAsset('assets/images/marker_1.png', 130);
     for (Hydrant h in _approvedHydrants) {
@@ -106,39 +141,17 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
             }));
           },
           markerId: MarkerId(h.getDBReference()),
-          position: LatLng(h.getLat(), h.getLong()),
+          position: LatLng(
+            h.getLat(),
+            h.getLong(),
+          ),
           icon: BitmapDescriptor.fromBytes(markerIconHydrant),
         ),
       );
     }
   }
 
-  Future<void> firstFutureInit() async {
-    await Future.wait([
-      this.getApprovedHydrants(),
-      this.getDepartments(),
-    ]);
-    await Future.wait([
-      this._buildHydrantMarkers(),
-      this._buildDepartmentsMarkers(),
-      this._loadJson(),
-    ]);
-  }
-
-  Future<void> secondFutureInit() async {
-    await Future.wait([
-      this._getPosition(),
-    ]);
-    this.setupPositionStream();
-  }
-
-  Future<void> _getPosition() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    _curloc = LatLng(position.latitude, position.longitude);
-  }
-
-  Future _buildDepartmentsMarkers() async {
+  Future<void> _buildDepartmentsMarkers() async {
     final Uint8List markerIconDepartment =
         await getBytesFromAsset('assets/images/marker_2.png', 130);
     for (Department d in _departments) {
@@ -176,17 +189,19 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
             }));
           },
           markerId: MarkerId(d.getDBReference()),
-          position: LatLng(d.getLat(), d.getLong()),
+          position: LatLng(
+            d.getLat(),
+            d.getLong(),
+          ),
           icon: BitmapDescriptor.fromBytes(markerIconDepartment),
         ),
       );
     }
   }
 
-  void _setSatellite() {
-    setState(() {
-      _isSatellite = !_isSatellite;
-    });
+  void _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
+    _mapController.setMapStyle(_mapStyle);
   }
 
   GoogleMap _buildLoadingGoogleMap() {
@@ -195,9 +210,9 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
       indoorViewEnabled: true,
       zoomGesturesEnabled: true,
       myLocationEnabled: true,
-      mapType: _isSatellite ? MapType.satellite : MapType.normal,
       myLocationButtonEnabled: false,
       onMapCreated: _onMapCreated,
+      mapType: _isSatellite ? MapType.satellite : MapType.normal,
       markers: _markerSet.toSet(),
       initialCameraPosition: CameraPosition(
         target: LatLng(kStartupLat, kStartupLong),
@@ -207,6 +222,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
   }
 
   GoogleMap _buildLoadedGoogleMap() {
+    this._animateCameraOnMe(true);
     return GoogleMap(
       mapToolbarEnabled: false,
       indoorViewEnabled: true,
@@ -265,7 +281,6 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
   }
 
   Widget _buildLoadedMap() {
-    this._animateCameraOnMe();
     return Stack(
       children: <Widget>[
         this._buildLoadedGoogleMap(),
@@ -286,7 +301,9 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
                     heroTag: 'SATELLITE',
                   ),
                   HomePageButton(
-                    function: _animateCameraOnMe,
+                    function: () {
+                      _animateCameraOnMe(false);
+                    },
                     icon: Icons.gps_fixed,
                     heroTag: 'GPS',
                   ),
@@ -299,21 +316,29 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
     );
   }
 
-  Future<void> _loadJson() async {
-    await rootBundle
-        .loadString(
-            'assets/general/${ThemeProvider.optionsOf<CustomOptions>(context).filename}.json')
-        .then((string) {
-      _mapStyle = string;
+  void _setSatellite() {
+    setState(() {
+      _isSatellite = !_isSatellite;
     });
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
-    _mapController.setMapStyle(_mapStyle);
-  }
-
-  void _animateCameraOnMe() {
+  void _animateCameraOnMe(bool isFirstLoad) {
+    if (!isFirstLoad) {
+      Flushbar(
+        flushbarStyle: FlushbarStyle.GROUNDED,
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
+        icon: Icon(
+          Icons.gps_fixed,
+          color: Colors.white,
+        ),
+        title: "Posizione attuale",
+        message: "Verrà visualizzata la posizione attuale",
+        duration: Duration(
+          seconds: 2,
+        ),
+      )..show(context);
+    }
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
         bearing: 0,
@@ -328,6 +353,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
     super.initState();
     _markerSet = List<Marker>();
     _curloc = LatLng(kStartupLat, kStartupLong);
+    _isSatellite = false;
   }
 
   @override

@@ -71,7 +71,7 @@ class _CustomDialogState extends State<CustomDialog> {
             ),
           ),
           title: Padding(
-            padding: const EdgeInsets.only(top: 36.0),
+            padding: const EdgeInsets.only(top: 72.0),
             child: Text(
               "Trova l'idrante più vicino",
               textAlign: TextAlign.center,
