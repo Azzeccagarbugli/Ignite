@@ -61,10 +61,18 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return new LoadingScreen(message: "In attesa del GPS");
+                return new LoadingScreen(
+                  message: "In attesa del GPS",
+                  pathFlare: "assets/general/gps_rotation.flr",
+                  nameAnimation: "rotate",
+                );
               case ConnectionState.active:
               case ConnectionState.waiting:
-                return new LoadingScreen(message: "In attesa del GPS");
+                return new LoadingScreen(
+                  message: "In attesa del GPS",
+                  pathFlare: "assets/general/gps_rotation.flr",
+                  nameAnimation: "rotate",
+                );
               case ConnectionState.done:
                 if (_requests.isEmpty) {
                   return new Center(

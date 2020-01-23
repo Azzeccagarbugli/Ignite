@@ -35,10 +35,18 @@ class _LoadingViewState extends State<LoadingView> {
       builder: (context, data) {
         switch (data.connectionState) {
           case ConnectionState.none:
-            return new LoadingScreen(message: "Accesso in corso");
+            return new LoadingScreen(
+              message: "Accesso in corso",
+              pathFlare: "assets/general/user.flr",
+              nameAnimation: "smile",
+            );
           case ConnectionState.active:
           case ConnectionState.waiting:
-            return new LoadingScreen(message: "Accesso in corso");
+            return new LoadingScreen(
+              message: "Accesso in corso",
+              pathFlare: "assets/general/user.flr",
+              nameAnimation: "smile",
+            );
           case ConnectionState.done:
             return this.screenChange();
         }

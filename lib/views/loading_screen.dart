@@ -4,32 +4,53 @@ import 'package:theme_provider/theme_provider.dart';
 
 class LoadingScreen extends StatelessWidget {
   final String message;
-  LoadingScreen({@required this.message});
+  final String pathFlare;
+  final String nameAnimation;
+  LoadingScreen({
+    @required this.message,
+    @required this.pathFlare,
+    @required this.nameAnimation,
+  });
   @override
   Widget build(BuildContext context) {
-    return Stack(children: <Widget>[
-      Scaffold(
-        backgroundColor: ThemeProvider.themeOf(context).id == "main"
-            ? Colors.red[800]
-            : Colors.grey[900],
-        body: FlareActor(
-          "assets/general/intro.flr",
-          alignment: Alignment.center,
-          animation: "Untitled",
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: 500.0),
-        child: Center(
-          child: Chip(
-            label: Text(
-              message,
-              style: TextStyle(fontSize: 15.0),
-            ),
-            backgroundColor: Colors.white,
+    return Scaffold(
+      backgroundColor: ThemeProvider.themeOf(context).id == "main"
+          ? Colors.red[700]
+          : Colors.grey[900],
+      body: Stack(
+        children: <Widget>[
+          FlareActor(
+            "assets/general/intro.flr",
+            alignment: Alignment.center,
+            animation: "Untitled",
           ),
-        ),
+          Positioned(
+            left: 16,
+            top: 42,
+            right: 16,
+            child: Chip(
+              elevation: 4,
+              avatar: CircleAvatar(
+                backgroundColor:
+                    ThemeProvider.themeOf(context).data.primaryColor,
+                child: Transform.scale(
+                  scale: 0.7,
+                  child: FlareActor(
+                    this.pathFlare,
+                    animation: nameAnimation,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              label: Text(
+                message,
+                style: TextStyle(fontSize: 15.0),
+              ),
+              backgroundColor: Colors.white,
+            ),
+          ),
+        ],
       ),
-    ]);
+    );
   }
 }

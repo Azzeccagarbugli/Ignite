@@ -60,6 +60,9 @@ flutter:
     - assets/images/introduction/4.svg
     - assets/images/introduction/5.svg
     - assets/general/find.flr
+    - assets/general/gps_rotation.flr
+    - assets/general/maps.flr
+    - assets/general/user.flr
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

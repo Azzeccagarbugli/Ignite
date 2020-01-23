@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -243,16 +244,27 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
     return Stack(
       children: <Widget>[
         this._buildLoadingGoogleMap(),
-        Padding(
-          padding: const EdgeInsets.only(top: 500.0),
-          child: Center(
-            child: Chip(
-              label: Text(
-                "Ricerca GPS in corso",
-                style: TextStyle(fontSize: 15.0),
+        Positioned(
+          left: 16,
+          top: 42,
+          right: 16,
+          child: Chip(
+            elevation: 4,
+            avatar: CircleAvatar(
+              backgroundColor: ThemeProvider.themeOf(context).data.primaryColor,
+              child: Transform.scale(
+                scale: 0.7,
+                child: FlareActor(
+                  "assets/general/gps_rotation.flr",
+                  animation: "rotate",
+                ),
               ),
-              backgroundColor: Colors.white,
             ),
+            label: Text(
+              "Ricerca GPS in corso",
+              style: TextStyle(fontSize: 15.0),
+            ),
+            backgroundColor: Colors.white,
           ),
         ),
         Padding(
@@ -290,16 +302,20 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
             right: 15.0,
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   HomePageButton(
                     function: _setSatellite,
                     icon: Icons.filter_hdr,
                     heroTag: 'SATELLITE',
                   ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
                   HomePageButton(
                     function: () {
                       _animateCameraOnMe(false);
@@ -364,11 +380,17 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
         switch (data.connectionState) {
           case ConnectionState.none:
             return new LoadingScreen(
-                message: "Caricamento della mappa in corso");
+              message: "Caricamento della mappa in corso",
+              pathFlare: "assets/general/maps.flr",
+              nameAnimation: "anim",
+            );
           case ConnectionState.active:
           case ConnectionState.waiting:
             return new LoadingScreen(
-                message: "Caricamento della mappa in corso");
+              message: "Caricamento della mappa in corso",
+              pathFlare: "assets/general/maps.flr",
+              nameAnimation: "anim",
+            );
           case ConnectionState.done:
             return FutureBuilder(
               future: secondFutureInit(),
