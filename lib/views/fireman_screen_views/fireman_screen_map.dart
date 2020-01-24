@@ -443,6 +443,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
           seconds: 2,
         ),
       )..show(context);
+      return;
     }
     _searchAndZoomOnNearestHydrant(filteredHydrants);
   }
