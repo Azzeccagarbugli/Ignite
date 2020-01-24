@@ -18,7 +18,6 @@ class LoadingView extends StatefulWidget {
 class _LoadingViewState extends State<LoadingView> {
   bool _isFireman;
   bool _isFirstAccess;
-  String _userMail;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -59,16 +58,11 @@ class _LoadingViewState extends State<LoadingView> {
     if (_isFirstAccess) {
       return IntroductionTutorial(
         isFireman: this._isFireman,
-        userMail: this._userMail,
       );
     } else if (_isFireman) {
-      return FiremanScreen(
-        userMail: this._userMail,
-      );
+      return FiremanScreen();
     } else {
-      return CitizenScreen(
-        userMail: this._userMail,
-      );
+      return CitizenScreen();
     }
   }
 
@@ -76,12 +70,7 @@ class _LoadingViewState extends State<LoadingView> {
     await Future.wait([
       this._getIsFireman(),
       this._getIsFirstAccess(),
-      this._getUserMail(),
     ]);
-  }
-
-  Future _getUserMail() async {
-    _userMail = await Provider.of<AuthProvider>(context).getUserMail();
   }
 
   Future _getIsFireman() async {

@@ -214,21 +214,76 @@ class DbProvider extends ChangeNotifier {
   Future<User> getUserByDocumentReference(String ref) async {
     DocumentSnapshot ds = await _db.collection('users').document(ref).get();
     Map<String, dynamic> data = ds.data;
-    Timestamp time = data['birthday'];
     if (ds.data['isFireman'] == 'true') {
       DocumentReference department = data['department'];
 
       return new User(
           ref,
           data['email'],
-          time.toDate(),
+          data['birthday'],
           data['name'],
           data['surname'],
           data['residence_street_number'],
           data['cap'],
-          department.documentID);
+          department.documentID,
+          data['isFirstAccess'],
+          data['isGoogle'],
+          data['isFacebook'],
+          data['isFireman']);
     } else {
-      return new User.onlyMail(data['email']);
+      return new User(
+          ref,
+          data['email'],
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          data['isFirstAccess'],
+          data['isGoogle'],
+          data['isFacebook'],
+          data['isFireman']);
+    }
+  }
+
+  Future<User> getUserByMail(String mail) async {
+    QuerySnapshot qsReq = await _db
+        .collection('users')
+        .where('email', isEqualTo: mail)
+        .getDocuments();
+    DocumentSnapshot user = qsReq.documents[0];
+    DocumentReference ref = user.reference;
+    Map<String, dynamic> data = user.data;
+    if (user.data['isFireman'] == 'true') {
+      DocumentReference department = data['department'];
+      return new User(
+          ref.documentID,
+          data['email'],
+          data['birthday'],
+          data['name'],
+          data['surname'],
+          data['residence_street_number'],
+          data['cap'],
+          department.documentID,
+          data['isFirstAccess'],
+          data['isGoogle'],
+          data['isFacebook'],
+          data['isFireman']);
+    } else {
+      return new User(
+          ref.documentID,
+          data['email'],
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          data['isFirstAccess'],
+          data['isGoogle'],
+          data['isFacebook'],
+          data['isFireman']);
     }
   }
 

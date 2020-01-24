@@ -38,7 +38,6 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
   List<Hydrant> _approvedHydrants;
   List<Department> _departments;
   bool _isSatellite;
-  double _zoomCameraOnMe = 16.0;
 
   void setupPositionStream() {
     _positionStream = Geolocator()
@@ -235,7 +234,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
       markers: _markerSet.toSet(),
       initialCameraPosition: CameraPosition(
         target: _curloc,
-        zoom: _zoomCameraOnMe,
+        zoom: 16.0,
       ),
     );
   }
@@ -270,10 +269,10 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
         Padding(
           padding: const EdgeInsets.only(
             top: 30.0,
-            right: 15.0,
+            left: 15.0,
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -300,6 +299,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
           padding: const EdgeInsets.only(
             top: 30.0,
             right: 15.0,
+            left: 15.0,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -359,7 +359,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
       CameraPosition(
         bearing: 0,
         target: LatLng(_curloc.latitude, _curloc.longitude),
-        zoom: _zoomCameraOnMe,
+        zoom: 16.0,
       ),
     ));
   }

@@ -10,23 +10,16 @@ import 'package:theme_provider/theme_provider.dart';
 import 'citizen_screen_views/citizen_screen.dart';
 
 class IntroductionTutorial extends StatelessWidget {
-  IntroductionTutorial({@required this.isFireman, @required this.userMail});
+  IntroductionTutorial({@required this.isFireman});
 
   final bool isFireman;
-  final String userMail;
 
   void _onIntroEnd(context) async {
     Provider.of<DbProvider>(context).setFirstAccessToFalse(
         await Provider.of<AuthProvider>(context).getUser());
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => isFireman
-            ? FiremanScreen(
-                userMail: this.userMail,
-              )
-            : CitizenScreen(
-                userMail: this.userMail,
-              ),
+        builder: (context) => isFireman ? FiremanScreen() : CitizenScreen(),
       ),
     );
   }

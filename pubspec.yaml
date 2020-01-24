@@ -63,6 +63,9 @@ flutter:
     - assets/general/gps_rotation.flr
     - assets/general/maps.flr
     - assets/general/user.flr
+    - assets/images/profile_ignite.png
+    - assets/images/profile_google.png
+    - assets/images/profile_facebook.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

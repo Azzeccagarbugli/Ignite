@@ -45,7 +45,6 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   List<String> _vehicleValues;
   List<String> _openingValues;
   bool _isSatellite;
-  double _zoomCameraOnMe = 16.0;
 
   void setupPositionStream() {
     _positionStream = Geolocator()
@@ -249,7 +248,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       markers: _markerSet.toSet(),
       initialCameraPosition: CameraPosition(
         target: _curloc,
-        zoom: _zoomCameraOnMe,
+        zoom: 16.0,
       ),
     );
   }
@@ -384,7 +383,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       CameraPosition(
         bearing: 0,
         target: LatLng(_curloc.latitude, _curloc.longitude),
-        zoom: _zoomCameraOnMe,
+        zoom: 16.0,
       ),
     ));
   }
@@ -468,7 +467,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       CameraPosition(
         bearing: 0,
         target: LatLng(targetLat, targetLong),
-        zoom: _zoomCameraOnMe,
+        zoom: 16.0,
       ),
     ));
     Flushbar(

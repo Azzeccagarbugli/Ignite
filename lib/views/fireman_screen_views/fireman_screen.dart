@@ -10,10 +10,6 @@ import '../new_request_screen.dart';
 import 'fireman_screen_map.dart';
 
 class FiremanScreen extends StatefulWidget {
-  String userMail;
-  FiremanScreen({
-    @required this.userMail,
-  });
   @override
   _FiremanScreenState createState() => _FiremanScreenState();
 }
@@ -34,7 +30,6 @@ class _FiremanScreenState extends State<FiremanScreen> {
   Widget _profileSettingsBody() {
     return ProfileSettingsScreen(
       jsonFaq: 'assets/general/faqFireman.json',
-      userEmail: widget.userMail,
     );
   }
 

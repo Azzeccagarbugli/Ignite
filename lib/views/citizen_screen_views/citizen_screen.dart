@@ -10,11 +10,6 @@ import 'package:theme_provider/theme_provider.dart';
 import '../../main.dart';
 
 class CitizenScreen extends StatefulWidget {
-  String userMail;
-  CitizenScreen({
-    @required this.userMail,
-  });
-
   @override
   _CitizenScreenState createState() => _CitizenScreenState();
 }
@@ -31,7 +26,6 @@ class _CitizenScreenState extends State<CitizenScreen> {
   Widget _profileSettingsBody() {
     return ProfileSettingsScreen(
       jsonFaq: 'assets/general/faqCitizen.json',
-      userEmail: widget.userMail,
     );
   }
 
