@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ignite/dbcontrollers/firebasecontroller.dart';
 import 'package:ignite/models/user.dart';
 
-class UsersFirebaseController extends FirebaseController {
+class UsersFirebaseController extends FirebaseController<User> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('users').document(id).delete();
@@ -18,7 +18,7 @@ class UsersFirebaseController extends FirebaseController {
   }
 
   @override
-  Future get(String id) async {
+  Future<User> get(String id) async {
     DocumentSnapshot ds = await this.db.collection('users').document(id).get();
     Map<String, dynamic> data = ds.data;
     if (data['isFireman'] == 'true') {
@@ -48,7 +48,7 @@ class UsersFirebaseController extends FirebaseController {
   }
 
   @override
-  Future<List> getAll() async {
+  Future<List<User>> getAll() async {
     QuerySnapshot qsUsers = await this.db.collection('users').getDocuments();
     List<User> users = new List<User>();
     for (DocumentSnapshot ds in qsUsers.documents) {
@@ -59,7 +59,7 @@ class UsersFirebaseController extends FirebaseController {
   }
 
   @override
-  Future insert(object) async {
+  Future<User> insert(object) async {
     DocumentReference ref = await this.db.collection('users').add({
       'birthday': object.getBirthday(),
       'cap': object.getCap(),
@@ -77,7 +77,7 @@ class UsersFirebaseController extends FirebaseController {
   }
 
   @override
-  Future update(object) async {
+  Future<User> update(object) async {
     await this.db.collection('hydrants').document(object.getId()).updateData({
       'birthday': object.getBirthday(),
       'cap': object.getCap(),

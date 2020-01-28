@@ -2,10 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ignite/dbcontrollers/firebasecontroller.dart';
 import 'package:ignite/models/hydrant.dart';
 
-class HydrantsFirebaseController extends FirebaseController {
+class HydrantsFirebaseController extends FirebaseController<Hydrant> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('hydrants').document(id).delete();
+  }
+
+  @override
+  Future<void> deleteAll() async {
+    this.db.collection('hydrants').getDocuments().then((snapshot) {
+      for (DocumentSnapshot doc in snapshot.documents) {
+        doc.reference.delete();
+      }
+    });
   }
 
   @override
@@ -84,14 +93,5 @@ class HydrantsFirebaseController extends FirebaseController {
       'vehicle': object.getVehicle(),
     });
     return this.get(object.getId());
-  }
-
-  @override
-  Future<void> deleteAll() async {
-    this.db.collection('hydrants').getDocuments().then((snapshot) {
-      for (DocumentSnapshot doc in snapshot.documents) {
-        doc.reference.delete();
-      }
-    });
   }
 }
