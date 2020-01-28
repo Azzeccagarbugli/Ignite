@@ -15,7 +15,7 @@ class IntroductionTutorial extends StatelessWidget {
   final bool isFireman;
 
   void _onIntroEnd(context) async {
-    Provider.of<DbProvider>(context).setFirstAccessToFalse(
+    DbProvider().setFirstAccessToFalse(
         await Provider.of<AuthProvider>(context).getUser());
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(

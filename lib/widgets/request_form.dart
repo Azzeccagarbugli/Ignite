@@ -71,8 +71,7 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   Future getIsFireman() async {
-    _isFireman =
-        await Provider.of<DbProvider>(context).isCurrentUserFireman(_user);
+    _isFireman = await DbProvider().isCurrentUserFireman(_user);
   }
 
   Future getUser() async {
@@ -91,15 +90,12 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   Future<void> buildValues() async {
-    widget._attackValues = await Provider.of<DbProvider>(context).getAttacks();
-    widget._colorValues = await Provider.of<DbProvider>(context).getColors();
-    widget._typeValues = await Provider.of<DbProvider>(context).getTypes();
-    widget._vehicleValues =
-        await Provider.of<DbProvider>(context).getVehicles();
-    widget._openingValues =
-        await Provider.of<DbProvider>(context).getOpenings();
-    widget._pressureValues =
-        await Provider.of<DbProvider>(context).getPressures();
+    widget._attackValues = await DbProvider().getAttacks();
+    widget._colorValues = await DbProvider().getColors();
+    widget._typeValues = await DbProvider().getTypes();
+    widget._vehicleValues = await DbProvider().getVehicles();
+    widget._openingValues = await DbProvider().getOpenings();
+    widget._pressureValues = await DbProvider().getPressures();
   }
 
   List<Widget> buildListTileList(List<Placemark> placemark) {
@@ -560,14 +556,14 @@ class _RequestFormState extends State<RequestForm> {
                   );
             Provider.of<AuthProvider>(context).getUser().then((user) {
               if (widget.isNewRequest) {
-                Provider.of<DbProvider>(context).addRequest(
+                DbProvider().addRequest(
                   newHydrant,
                   _isFireman,
                   user,
                 );
               } else {
                 newHydrant.setId(widget.oldHydrant.getId());
-                Provider.of<DbProvider>(context)
+                DbProvider()
                     .approveRequest(newHydrant, widget.oldRequest, user);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();

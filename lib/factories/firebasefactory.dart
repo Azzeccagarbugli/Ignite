@@ -1,5 +1,7 @@
 import 'package:ignite/dbcontrollers/dbcontroller.dart';
+import 'package:ignite/dbcontrollers/departments_firebasecontroller.dart';
 import 'package:ignite/dbcontrollers/hydrants_firebasecontroller.dart';
+import 'package:ignite/dbcontrollers/requests_firebasecontroller.dart';
 import 'package:ignite/dbcontrollers/users_firebasecontroller.dart';
 import 'package:ignite/dbcontrollers/values_firebasecontroller.dart';
 import 'package:ignite/factories/dbfactory.dart';
@@ -20,14 +22,7 @@ class FirebaseFactory extends DbFactory {
 
   @override
   DbController<Department> getDepartmentsController() {
-    // TODO: implement getDepartmentsController
-    throw UnimplementedError();
-  }
-
-  @override
-  DbController getEnumsController() {
-    // TODO: implement getEnumsController
-    throw UnimplementedError();
+    return new DepartmentsFirebaseController();
   }
 
   @override
@@ -37,8 +32,7 @@ class FirebaseFactory extends DbFactory {
 
   @override
   DbController<Request> getRequestsController() {
-    // TODO: implement getRequestsController
-    throw UnimplementedError();
+    return new RequestFirebaseController();
   }
 
   @override

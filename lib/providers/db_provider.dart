@@ -1,157 +1,123 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ignite/dbcontrollers/dbcontroller.dart';
+import 'package:ignite/factories/dbfactory.dart';
 import 'package:ignite/models/department.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/models/user.dart';
+import 'package:ignite/models/values.dart';
 
-class DbProvider extends ChangeNotifier {
-  final Firestore _db = Firestore.instance;
+class DbProvider {
+  static final DbProvider _singleton = DbProvider._internal();
+
+  factory DbProvider() {
+    return _singleton;
+  }
+
+  DbProvider._internal();
+
+  DbFactory _dbFactory;
+  DbController<Hydrant> _hydrantsController;
+  DbController<Department> _departmentsController;
+  DbController<User> _usersController;
+  DbController<Request> _requestsController;
+  DbController<Values> _valuesController;
+
+  void setFactory(DbFactory factory) {
+    this._dbFactory = factory;
+    this._hydrantsController = _dbFactory.getHydrantsController();
+    this._departmentsController = _dbFactory.getDepartmentsController();
+    this._usersController = _dbFactory.getUsersController();
+    this._requestsController = _dbFactory.getRequestsController();
+    this._valuesController = _dbFactory.getValuesController();
+  }
 
   Future<bool> isCurrentUserFireman(FirebaseUser curUser) async {
-    QuerySnapshot querySnap = await _db
-        .collection('users')
-        .where('email', isEqualTo: "${curUser.email}")
-        .getDocuments();
-    return querySnap.documents[0]["isFireman"];
+    List<User> users = await this._usersController.getAll();
+    for (User user in users) {
+      if (user.getMail() == curUser.email) return user.isFireman();
+    }
+    return false;
   }
 
   Future<bool> isFirstAccess(FirebaseUser curUser) async {
-    QuerySnapshot querySnap = await _db
-        .collection('users')
-        .where('email', isEqualTo: "${curUser.email}")
-        .getDocuments();
-    return querySnap.documents[0]["isFirstAccess"];
+    List<User> users = await this._usersController.getAll();
+    for (User user in users) {
+      if (user.getMail() == curUser.email) return user.isFirstAccess();
+    }
+    return false;
   }
 
   void setFirstAccessToFalse(FirebaseUser curUser) async {
-    QuerySnapshot querySnap = await _db
-        .collection('users')
-        .where('email', isEqualTo: "${curUser.email}")
-        .getDocuments();
-    querySnap.documents[0].documentID;
-    await _db
-        .collection('users')
-        .document(querySnap.documents[0].documentID)
-        .updateData({'isFirstAccess': false});
+    List<User> users = await this._usersController.getAll();
+    for (User user in users) {
+      if (user.getMail() == curUser.email) {
+        user.setFirstAccess(false);
+        this._usersController.update(user);
+      }
+    }
   }
 
   Future<List<Request>> getRequests() async {
-    QuerySnapshot qsRequests = await _db.collection('requests').getDocuments();
-    List<Request> requests = new List<Request>();
-
-    for (DocumentSnapshot ds in qsRequests.documents) {
-      DocumentReference approvedBy = ds.data['approved_by'];
-      DocumentReference hydrant = ds.data['hydrant'];
-      DocumentReference requestedBy = ds.data['requested_by'];
-      Request newRequest = Request(
-        ds.documentID,
-        ds.data['approved'],
-        ds.data['open'],
-        (approvedBy == null) ? null : approvedBy.documentID,
-        hydrant.documentID,
-        requestedBy.documentID,
-      );
-      requests.add(newRequest);
-    }
-    return requests;
+    return await _requestsController.getAll();
   }
 
   Future<List<Request>> getRequestsByDistance(LatLng position) async {
-    QuerySnapshot qsRequests = await _db.collection('requests').getDocuments();
-    List<Request> requests = new List<Request>();
+    List<Request> allRequests = await _requestsController.getAll();
+    List<Request> filteredRequests = new List<Request>();
 
-    for (DocumentSnapshot ds in qsRequests.documents) {
-      DocumentReference approvedBy = ds.data['approved_by'];
-      DocumentReference hydrant = ds.data['hydrant'];
-      DocumentReference requestedBy = ds.data['requested_by'];
-      Request newRequest = Request(
-        ds.documentID,
-        ds.data['approved'],
-        ds.data['open'],
-        (approvedBy == null) ? null : approvedBy.documentID,
-        hydrant.documentID,
-        requestedBy.documentID,
-      );
-      Hydrant newHydrant =
-          await getHydrantByDocumentReference(newRequest.getHydrantId());
+    for (Request request in allRequests) {
+      Hydrant hydrant = await getHydrantById(request.getHydrantId());
       double distance = await Geolocator().distanceBetween(position.latitude,
-          position.longitude, newHydrant.getLat(), newHydrant.getLong());
-      if (distance < 20000) {
-        requests.add(newRequest);
-      }
+          position.longitude, hydrant.getLat(), hydrant.getLong());
+      if (distance < 20000) filteredRequests.add(request);
     }
-    return requests;
+    return filteredRequests;
   }
 
   Future<List<Request>> getPendingRequestsByDistance(LatLng position) async {
-    List<Request> requests = await this.getRequestsByDistance(position);
-    List<Request> pending = new List<Request>();
-    for (Request re in requests) {
-      if (re.isOpen() && !re.getApproved()) {
-        pending.add(re);
-      }
+    List<Request> allRequests = await this.getRequestsByDistance(position);
+    List<Request> pendingRequests = new List<Request>();
+    for (Request request in allRequests) {
+      if (request.isOpen() && !request.getApproved())
+        pendingRequests.add(request);
     }
-    return pending;
+    return pendingRequests;
   }
 
   Future<List<Request>> getApprovedRequests() async {
-    List<Request> requests = await this.getRequests();
-    List<Request> approved = new List<Request>();
-    for (Request re in requests) {
-      if (!re.isOpen() && re.getApproved()) {
-        approved.add(re);
+    List<Request> allRequests = await this.getRequests();
+    List<Request> approvedRequests = new List<Request>();
+    for (Request request in allRequests) {
+      if (!request.isOpen() && request.getApproved()) {
+        approvedRequests.add(request);
       }
     }
-    return approved;
+    return approvedRequests;
   }
 
   Future<List<Hydrant>> getApprovedHydrants() async {
-    List<Hydrant> hydrants = new List<Hydrant>();
-    List<Request> requests = await getApprovedRequests();
-    for (Request r in requests) {
-      Hydrant newHydrant =
-          await getHydrantByDocumentReference(r.getHydrantId());
-      hydrants.add(newHydrant);
+    List<Hydrant> approvedHydrants = new List<Hydrant>();
+    List<Request> approvedRequests = await getApprovedRequests();
+    for (Request request in approvedRequests) {
+      Hydrant hydrant = await getHydrantById(request.getHydrantId());
+      approvedHydrants.add(hydrant);
     }
-    return hydrants;
+    return approvedHydrants;
   }
 
   Future<List<Department>> getDepartments() async {
-    List<Department> deps = new List<Department>();
-    QuerySnapshot qsDepartments =
-        await _db.collection('departments').getDocuments();
-    for (DocumentSnapshot ds in qsDepartments.documents) {
-      GeoPoint geo = ds.data['geopoint'];
-      deps.add(Department(
-        ds.documentID,
-        ds.data['cap'],
-        ds.data['city'],
-        geo.latitude,
-        geo.longitude,
-        ds.data['mail'],
-        ds.data['phone_number'],
-        ds.data['street'],
-        ds.data['number'],
-      ));
-    }
-    return deps;
+    return await _departmentsController.getAll();
   }
 
   Future<List<String>> _getEnumByName(String name) async {
-    List<String> attacks = new List<String>();
-    QuerySnapshot qs = await _db
-        .collection('enums')
-        .where('name', isEqualTo: name)
-        .getDocuments();
-    DocumentSnapshot document = qs.documents[0];
-    for (String value in document['values']) {
-      attacks.add(value);
+    List<Values> valueList = await _valuesController.getAll();
+    for (Values value in valueList) {
+      if (value.getName() == name) return value.getValues();
     }
-    return attacks;
+    return List<String>();
   }
 
   Future<List<String>> getColors() async {
@@ -178,182 +144,47 @@ class DbProvider extends ChangeNotifier {
     return _getEnumByName('pressure');
   }
 
-  Future<Request> getRequestByDocumentReference(String ref) async {
-    DocumentSnapshot ds = await _db.collection('requests').document(ref).get();
-    Map<String, dynamic> data = ds.data;
-    DocumentReference approvedBy = data['approved_by'];
-    DocumentReference hydrant = data['hydrant'];
-    DocumentReference requestedBy = data['requested_by'];
-    return new Request(ref, data['approved'], data["open"],
-        approvedBy.documentID, hydrant.documentID, requestedBy.documentID);
+  Future<Request> getRequestById(String id) async {
+    return await _requestsController.get(id);
   }
 
-  Future<Hydrant> getHydrantByDocumentReference(String ref) async {
-    DocumentSnapshot ds = await _db.collection('hydrants').document(ref).get();
-    Map<String, dynamic> data = ds.data;
-    Timestamp time = data['last_check'];
-    GeoPoint geo = data['geopoint'];
-    return new Hydrant(
-        ref,
-        data['attack'][0],
-        data['attack'][1],
-        data['bar'],
-        data['cap'],
-        data['city'],
-        geo.latitude,
-        geo.longitude,
-        data['color'],
-        time.toDate(),
-        data['notes'],
-        data['opening'],
-        data['street'],
-        data['number'],
-        data['type'],
-        data['vehicle']);
+  Future<Hydrant> getHydrantById(String id) async {
+    return await _hydrantsController.get(id);
   }
 
-  Future<User> getUserByDocumentReference(String ref) async {
-    DocumentSnapshot ds = await _db.collection('users').document(ref).get();
-    Map<String, dynamic> data = ds.data;
-    if (ds.data['isFireman'] == 'true') {
-      DocumentReference department = data['department'];
-
-      return new User(
-          ref,
-          data['email'],
-          data['birthday'],
-          data['name'],
-          data['surname'],
-          data['residence_street_number'],
-          data['cap'],
-          department.documentID,
-          data['isFirstAccess'],
-          data['isGoogle'],
-          data['isFacebook'],
-          data['isFireman']);
-    } else {
-      return new User(
-          ref,
-          data['email'],
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          data['isFirstAccess'],
-          data['isGoogle'],
-          data['isFacebook'],
-          data['isFireman']);
-    }
+  Future<User> getUserById(String id) async {
+    return await _usersController.get(id);
   }
 
   Future<User> getUserByMail(String mail) async {
-    QuerySnapshot qsReq = await _db
-        .collection('users')
-        .where('email', isEqualTo: mail)
-        .getDocuments();
-    DocumentSnapshot user = qsReq.documents[0];
-    DocumentReference ref = user.reference;
-    Map<String, dynamic> data = user.data;
-    if (user.data['isFireman'] == 'true') {
-      DocumentReference department = data['department'];
-      return new User(
-          ref.documentID,
-          data['email'],
-          data['birthday'],
-          data['name'],
-          data['surname'],
-          data['residence_street_number'],
-          data['cap'],
-          department.documentID,
-          data['isFirstAccess'],
-          data['isGoogle'],
-          data['isFacebook'],
-          data['isFireman']);
-    } else {
-      return new User(
-          ref.documentID,
-          data['email'],
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          data['isFirstAccess'],
-          data['isGoogle'],
-          data['isFacebook'],
-          data['isFireman']);
+    List<User> usersList = await _usersController.getAll();
+    for (User user in usersList) {
+      if (user.getMail() == mail) return user;
     }
+    return null;
   }
 
   void approveRequest(
       Hydrant hydrant, Request request, FirebaseUser curUser) async {
-    await _db.collection('hydrants').document(hydrant.getId()).updateData({
-      'attack': [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
-      'bar': hydrant.getPressure(),
-      'cap': hydrant.getCap(),
-      'city': hydrant.getCity(),
-      'color': hydrant.getColor(),
-      'geopoint': GeoPoint(hydrant.getLat(), hydrant.getLong()),
-      'last_check': hydrant.getLastCheck(),
-      'notes': hydrant.getNotes(),
-      'opening': hydrant.getOpening(),
-      'street': hydrant.getStreet(),
-      'number': hydrant.getNumber(),
-      'type': hydrant.getType(),
-      'vehicle': hydrant.getVehicle(),
-    });
-
-    QuerySnapshot qsApprove = await _db
-        .collection('users')
-        .where('email', isEqualTo: curUser.email)
-        .getDocuments();
-
-    DocumentReference refApprove = qsApprove.documents[0].reference;
-    await _db.collection('requests').document(request.getId()).updateData(
-        {'approved': true, 'open': false, 'approved_by': refApprove});
+    await _hydrantsController.update(hydrant);
+    User approvedBy = await this.getUserByMail(curUser.email);
+    request.setApproved(true);
+    request.setOpen(false);
+    request.setApprovedByUserId(approvedBy.getId());
+    await _requestsController.update(request);
   }
 
   void denyRequest(Request request) async {
-    await _db.collection('hydrants').document(request.getHydrantId()).delete();
-    await _db.collection('requests').document(request.getId()).delete();
+    await _hydrantsController.delete(request.getHydrantId());
+    await _requestsController.delete(request.getId());
   }
 
   void addRequest(Hydrant hydrant, bool isFireman, FirebaseUser curUser) async {
-    DocumentReference newHydrant = await _db.collection('hydrants').add({
-      'attack': [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
-      'bar': hydrant.getPressure(),
-      'cap': hydrant.getCap(),
-      'city': hydrant.getCity(),
-      'color': hydrant.getColor(),
-      'geopoint': GeoPoint(hydrant.getLat(), hydrant.getLong()),
-      'last_check': hydrant.getLastCheck(),
-      'notes': hydrant.getNotes(),
-      'opening': hydrant.getOpening(),
-      'street': hydrant.getStreet(),
-      'number': hydrant.getNumber(),
-      'type': hydrant.getType(),
-      'vehicle': hydrant.getVehicle(),
-    });
-
-    QuerySnapshot qsReq = await _db
-        .collection('users')
-        .where('email', isEqualTo: curUser.email)
-        .getDocuments();
-    DocumentReference reqBy = qsReq.documents[0].reference;
-    DocumentReference newRequest = await _db.collection('requests').add({
-      'approved': isFireman,
-      'hydrant': newHydrant,
-      'open': !isFireman,
-      'requested_by': reqBy,
-    });
-    if (isFireman) {
-      await _db
-          .collection('requests')
-          .document(newRequest.documentID)
-          .updateData({'approved_by': reqBy});
-    }
+    Hydrant addedHydrant = await _hydrantsController.insert(hydrant);
+    User requestedBy = await this.getUserByMail(curUser.email);
+    Request newRequest = new Request(
+        isFireman, !isFireman, addedHydrant.getId(), requestedBy.getId());
+    if (isFireman) newRequest.setApprovedByUserId(requestedBy.getId());
+    await _requestsController.insert(newRequest);
   }
 }

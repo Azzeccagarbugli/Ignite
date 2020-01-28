@@ -57,12 +57,11 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> getApprovedHydrants() async {
-    _approvedHydrants =
-        await Provider.of<DbProvider>(context).getApprovedHydrants();
+    _approvedHydrants = await DbProvider().getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
-    _departments = await Provider.of<DbProvider>(context).getDepartments();
+    _departments = await DbProvider().getDepartments();
   }
 
   Future<void> firstFutureInit() async {
@@ -86,9 +85,9 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> _buildValues() async {
-    _attackValues = await Provider.of<DbProvider>(context).getAttacks();
-    _vehicleValues = await Provider.of<DbProvider>(context).getVehicles();
-    _openingValues = await Provider.of<DbProvider>(context).getOpenings();
+    _attackValues = await DbProvider().getAttacks();
+    _vehicleValues = await DbProvider().getVehicles();
+    _openingValues = await DbProvider().getOpenings();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

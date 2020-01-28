@@ -37,8 +37,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   }
 
   Future<void> getDBUser() async {
-    this._user = await Provider.of<DbProvider>(context)
-        .getUserByMail(this._fireUser.email);
+    this._user = await DbProvider().getUserByMail(this._fireUser.email);
   }
 
   Future<void> setImageURL() async {

@@ -74,6 +74,10 @@ class User {
     return _isFirstAccess;
   }
 
+  void setFirstAccess(bool isFirstAccess) {
+    this._isFirstAccess = isFirstAccess;
+  }
+
   String getBirthday() {
     return _birthday;
   }

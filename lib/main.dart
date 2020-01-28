@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ignite/factories/firebasefactory.dart';
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/views/login_screen.dart';
@@ -14,6 +15,7 @@ void main() {
 class Ignite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    DbProvider().setFactory(FirebaseFactory());
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -22,9 +24,6 @@ class Ignite extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           builder: (context) => AuthProvider(),
-        ),
-        ChangeNotifierProvider(
-          builder: (context) => DbProvider(),
         ),
       ],
       child: App(),

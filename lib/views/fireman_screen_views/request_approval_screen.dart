@@ -43,8 +43,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
     ));
     return Scaffold(
       body: FutureBuilder<Hydrant>(
-        future: Provider.of<DbProvider>(context)
-            .getHydrantByDocumentReference(widget.request.getHydrantId()),
+        future: DbProvider().getHydrantById(widget.request.getHydrantId()),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -321,7 +320,7 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           onPressed: () async {
             FirebaseUser user =
                 await Provider.of<AuthProvider>(context).getUser();
-            Provider.of<DbProvider>(context).denyRequest(this.request);
+            DbProvider().denyRequest(this.request);
             Navigator.pop(context);
             Flushbar(
               flushbarStyle: FlushbarStyle.GROUNDED,

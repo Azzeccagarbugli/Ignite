@@ -22,7 +22,7 @@ class RequestFirebaseController extends FirebaseController<Request> {
     DocumentSnapshot ds =
         await this.db.collection('requests').document(id).get();
     Map<String, dynamic> data = ds.data;
-    return new Request(
+    return new Request.complete(
         id,
         data['approved'],
         data["open"],

@@ -31,8 +31,7 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
   }
 
   Future _getRequests() async {
-    _requests = await Provider.of<DbProvider>(context)
-        .getPendingRequestsByDistance(_curloc);
+    _requests = await DbProvider().getPendingRequestsByDistance(_curloc);
   }
 
   Future initFuture() async {
@@ -211,8 +210,7 @@ class _RequestCardState extends State<RequestCard> {
           vertical: 6,
         ),
         child: FutureBuilder<Hydrant>(
-          future: Provider.of<DbProvider>(context)
-              .getHydrantByDocumentReference(widget.request.getHydrantId()),
+          future: DbProvider().getHydrantById(widget.request.getHydrantId()),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:

@@ -50,12 +50,11 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
   }
 
   Future<void> getApprovedHydrants() async {
-    _approvedHydrants =
-        await Provider.of<DbProvider>(context).getApprovedHydrants();
+    _approvedHydrants = await DbProvider().getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
-    _departments = await Provider.of<DbProvider>(context).getDepartments();
+    _departments = await DbProvider().getDepartments();
   }
 
   Future<void> firstFutureInit() async {

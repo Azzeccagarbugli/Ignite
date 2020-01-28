@@ -75,14 +75,13 @@ class _LoadingViewState extends State<LoadingView> {
 
   Future _getIsFireman() async {
     FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
-    _isFireman =
-        await Provider.of<DbProvider>(context).isCurrentUserFireman(user);
+    _isFireman = await DbProvider().isCurrentUserFireman(user);
     print("L\'utente ${user.email} è un pompiere: ${_isFireman}");
   }
 
   Future _getIsFirstAccess() async {
     FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
-    _isFirstAccess = await Provider.of<DbProvider>(context).isFirstAccess(user);
+    _isFirstAccess = await DbProvider().isFirstAccess(user);
     print("L\'utente ${user.email} è al primo accesso: ${_isFirstAccess}");
   }
 }
