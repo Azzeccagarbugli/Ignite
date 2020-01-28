@@ -56,7 +56,7 @@ class HydrantsFirebaseController extends FirebaseController<Hydrant> {
   }
 
   @override
-  Future<Hydrant> insert(object) async {
+  Future<Hydrant> insert(Hydrant object) async {
     DocumentReference ref = await this.db.collection('hydrants').add({
       'attack': [object.getFirstAttack(), object.getSecondAttack()],
       'bar': object.getPressure(),
@@ -76,7 +76,7 @@ class HydrantsFirebaseController extends FirebaseController<Hydrant> {
   }
 
   @override
-  Future<Hydrant> update(object) async {
+  Future<Hydrant> update(Hydrant object) async {
     await this.db.collection('hydrants').document(object.getId()).updateData({
       'attack': [object.getFirstAttack(), object.getSecondAttack()],
       'bar': object.getPressure(),

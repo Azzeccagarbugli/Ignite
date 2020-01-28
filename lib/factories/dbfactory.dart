@@ -9,5 +9,5 @@ abstract class DbFactory {
   DbController<Hydrant> getHydrantsController();
   DbController<Request> getRequestsController();
   DbController<Department> getDepartmentsController();
-  DbController getEnumsController();
+  DbController<Values> getValuesController();
 }

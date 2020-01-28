@@ -59,7 +59,7 @@ class UsersFirebaseController extends FirebaseController<User> {
   }
 
   @override
-  Future<User> insert(object) async {
+  Future<User> insert(User object) async {
     DocumentReference ref = await this.db.collection('users').add({
       'birthday': object.getBirthday(),
       'cap': object.getCap(),
@@ -77,7 +77,7 @@ class UsersFirebaseController extends FirebaseController<User> {
   }
 
   @override
-  Future<User> update(object) async {
+  Future<User> update(User object) async {
     await this.db.collection('hydrants').document(object.getId()).updateData({
       'birthday': object.getBirthday(),
       'cap': object.getCap(),
