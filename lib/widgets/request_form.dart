@@ -566,7 +566,7 @@ class _RequestFormState extends State<RequestForm> {
                   user,
                 );
               } else {
-                newHydrant.setDBReference(widget.oldHydrant.getDBReference());
+                newHydrant.setId(widget.oldHydrant.getId());
                 Provider.of<DbProvider>(context)
                     .approveRequest(newHydrant, widget.oldRequest, user);
                 Navigator.of(context).pop();

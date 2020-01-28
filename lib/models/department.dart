@@ -1,7 +1,7 @@
 class Department {
-  Department(String ref, String cap, String city, double lat, double long,
+  Department(String id, String cap, String city, double lat, double long,
       String mail, String phonenumber, String street, String number) {
-    this._reference = ref;
+    this._id = id;
     this._cap = cap;
     this._city = city;
     this._lat = lat;
@@ -11,7 +11,7 @@ class Department {
     this._street = street;
     this._number = number;
   }
-  String _reference;
+  String _id;
   String _cap;
   String _city;
   double _lat;
@@ -53,7 +53,7 @@ class Department {
     return _number;
   }
 
-  String getDBReference() {
-    return _reference;
+  String getId() {
+    return _id;
   }
 }

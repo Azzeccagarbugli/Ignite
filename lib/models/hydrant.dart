@@ -1,6 +1,6 @@
 class Hydrant {
   Hydrant(
-      String ref,
+      String id,
       String firstAttack,
       String secondAttack,
       String pressure,
@@ -16,7 +16,7 @@ class Hydrant {
       String number,
       String type,
       String vehicle) {
-    this._reference = ref;
+    this._id = id;
     this._firstAttack = firstAttack;
     this._secondAttack = secondAttack;
     this._pressure = pressure;
@@ -43,7 +43,7 @@ class Hydrant {
     String street,
     String number,
   ) {
-    this._reference = "";
+    this._id = "";
     this._firstAttack = "";
     this._secondAttack = "";
     this._pressure = "";
@@ -77,7 +77,7 @@ class Hydrant {
       String number,
       String type,
       String vehicle) {
-    this._reference = "";
+    this._id = "";
     this._firstAttack = firstAttack;
     this._secondAttack = secondAttack;
     this._pressure = pressure;
@@ -95,7 +95,7 @@ class Hydrant {
     this._color = color;
   }
 
-  String _reference;
+  String _id;
   String _firstAttack;
   String _secondAttack;
   String _pressure;
@@ -172,11 +172,11 @@ class Hydrant {
     return _vehicle;
   }
 
-  String getDBReference() {
-    return _reference;
+  String getId() {
+    return _id;
   }
 
-  void setDBReference(String ref) {
-    this._reference = ref;
+  void setId(String id) {
+    this._id = id;
   }
 }

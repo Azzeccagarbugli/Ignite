@@ -212,7 +212,7 @@ class _RequestCardState extends State<RequestCard> {
         ),
         child: FutureBuilder<Hydrant>(
           future: Provider.of<DbProvider>(context)
-              .getHydrantByDocumentReference(widget.request.getHydrant()),
+              .getHydrantByDocumentReference(widget.request.getHydrantId()),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:

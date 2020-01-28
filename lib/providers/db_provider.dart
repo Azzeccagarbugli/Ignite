@@ -77,7 +77,7 @@ class DbProvider extends ChangeNotifier {
         requestedBy.documentID,
       );
       Hydrant newHydrant =
-          await getHydrantByDocumentReference(newRequest.getHydrant());
+          await getHydrantByDocumentReference(newRequest.getHydrantId());
       double distance = await Geolocator().distanceBetween(position.latitude,
           position.longitude, newHydrant.getLat(), newHydrant.getLong());
       if (distance < 20000) {
@@ -91,7 +91,7 @@ class DbProvider extends ChangeNotifier {
     List<Request> requests = await this.getRequestsByDistance(position);
     List<Request> pending = new List<Request>();
     for (Request re in requests) {
-      if (re.getOpen() && !re.getApproved()) {
+      if (re.isOpen() && !re.getApproved()) {
         pending.add(re);
       }
     }
@@ -102,7 +102,7 @@ class DbProvider extends ChangeNotifier {
     List<Request> requests = await this.getRequests();
     List<Request> approved = new List<Request>();
     for (Request re in requests) {
-      if (!re.getOpen() && re.getApproved()) {
+      if (!re.isOpen() && re.getApproved()) {
         approved.add(re);
       }
     }
@@ -113,7 +113,8 @@ class DbProvider extends ChangeNotifier {
     List<Hydrant> hydrants = new List<Hydrant>();
     List<Request> requests = await getApprovedRequests();
     for (Request r in requests) {
-      Hydrant newHydrant = await getHydrantByDocumentReference(r.getHydrant());
+      Hydrant newHydrant =
+          await getHydrantByDocumentReference(r.getHydrantId());
       hydrants.add(newHydrant);
     }
     return hydrants;
@@ -289,11 +290,7 @@ class DbProvider extends ChangeNotifier {
 
   void approveRequest(
       Hydrant hydrant, Request request, FirebaseUser curUser) async {
-    print("ERRORE: " + hydrant.getDBReference().toString());
-    await _db
-        .collection('hydrants')
-        .document(hydrant.getDBReference())
-        .updateData({
+    await _db.collection('hydrants').document(hydrant.getId()).updateData({
       'attack': [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
       'bar': hydrant.getPressure(),
       'cap': hydrant.getCap(),
@@ -315,19 +312,13 @@ class DbProvider extends ChangeNotifier {
         .getDocuments();
 
     DocumentReference refApprove = qsApprove.documents[0].reference;
-    await _db
-        .collection('requests')
-        .document(request.getDBReference())
-        .updateData(
-            {'approved': true, 'open': false, 'approved_by': refApprove});
+    await _db.collection('requests').document(request.getId()).updateData(
+        {'approved': true, 'open': false, 'approved_by': refApprove});
   }
 
   void denyRequest(Request request) async {
-    await _db.collection('hydrants').document(request.getHydrant()).delete();
-    await _db
-        .collection('requests')
-        .document(request.getDBReference())
-        .delete();
+    await _db.collection('hydrants').document(request.getHydrantId()).delete();
+    await _db.collection('requests').document(request.getId()).delete();
   }
 
   void addRequest(Hydrant hydrant, bool isFireman, FirebaseUser curUser) async {

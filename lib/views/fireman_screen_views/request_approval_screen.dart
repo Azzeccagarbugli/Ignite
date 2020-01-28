@@ -44,7 +44,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
     return Scaffold(
       body: FutureBuilder<Hydrant>(
         future: Provider.of<DbProvider>(context)
-            .getHydrantByDocumentReference(widget.request.getHydrant()),
+            .getHydrantByDocumentReference(widget.request.getHydrantId()),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:

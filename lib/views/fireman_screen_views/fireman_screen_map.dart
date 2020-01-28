@@ -154,7 +154,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
               );
             }));
           },
-          markerId: MarkerId(h.getDBReference()),
+          markerId: MarkerId(h.getId()),
           position: LatLng(
             h.getLat(),
             h.getLong(),
@@ -202,7 +202,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
               );
             }));
           },
-          markerId: MarkerId(d.getDBReference()),
+          markerId: MarkerId(d.getId()),
           position: LatLng(
             d.getLat(),
             d.getLong(),

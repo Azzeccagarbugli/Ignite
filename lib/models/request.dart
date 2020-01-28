@@ -1,45 +1,41 @@
 class Request {
-  Request(String ref, bool approved, bool open, String approvedBy,
-      String hydrant, String requestedBy) {
-    this._reference = ref;
+  Request(String ref, bool approved, bool open, String approvedByUserId,
+      String hydrantId, String requestedByUserId) {
+    this._id = ref;
     this._approved = approved;
-    this._approvedBy = approvedBy;
-    this._hydrant = hydrant;
-    this._requestedBy = requestedBy;
+    this._approvedByUserId = approvedByUserId;
+    this._hydrantId = hydrantId;
+    this._requestedByUserId = requestedByUserId;
     this._open = open;
   }
-  String _reference;
+  String _id;
   bool _approved;
   bool _open;
-  String _approvedBy;
-  String _hydrant;
-  String _requestedBy;
+  String _approvedByUserId;
+  String _hydrantId;
+  String _requestedByUserId;
 
   bool getApproved() {
     return _approved;
   }
 
-  String getApprovedBy() {
-    return _approvedBy;
+  String getApprovedByUserId() {
+    return _approvedByUserId;
   }
 
-  String getHydrant() {
-    return _hydrant;
+  String getHydrantId() {
+    return _hydrantId;
   }
 
-  String getRequestedBy() {
-    return _requestedBy;
+  String getRequestedByUserId() {
+    return _requestedByUserId;
   }
 
-  String getDBReference() {
-    return _reference;
+  String getId() {
+    return _id;
   }
 
-  bool getOpen() {
+  bool isOpen() {
     return _open;
-  }
-
-  String toString() {
-    return "\n--------------------\nDETTAGLIO RICHIESTA\nRiferimento:{$_reference}\nApprovato:{$_approved}\nAperto:{$_open}\nApprovato da:{$_approvedBy}\nIdrante associato:${_hydrant}\nRichiesto da{$_requestedBy}\n--------------------\n";
   }
 }
