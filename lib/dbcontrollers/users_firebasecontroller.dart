@@ -21,9 +21,10 @@ class UsersFirebaseController extends FirebaseController<User> {
   Future<User> get(String id) async {
     DocumentSnapshot ds = await this.db.collection('users').document(id).get();
     Map<String, dynamic> data = ds.data;
-    if (data['isFireman'] == 'true') {
+
+    if (data['isFireman'] == true) {
       DocumentReference department = data['department'];
-      return new User(
+      return new User.fireman(
         id,
         data['email'],
         data['birthday'],
@@ -60,10 +61,12 @@ class UsersFirebaseController extends FirebaseController<User> {
 
   @override
   Future<User> insert(User object) async {
+    DocumentReference department =
+        this.db.collection('departments').document(object.getDepartmentId());
     DocumentReference ref = await this.db.collection('users').add({
       'birthday': object.getBirthday(),
       'cap': object.getCap(),
-      'department': object.getDepartmentId(),
+      'department': department,
       'email': object.getMail(),
       'isFacebook': object.isFacebook(),
       'isFireman': object.isFireman(),
@@ -78,10 +81,12 @@ class UsersFirebaseController extends FirebaseController<User> {
 
   @override
   Future<User> update(User object) async {
+    DocumentReference department =
+        this.db.collection('departments').document(object.getDepartmentId());
     await this.db.collection('hydrants').document(object.getId()).updateData({
       'birthday': object.getBirthday(),
       'cap': object.getCap(),
-      'department': object.getDepartmentId(),
+      'department': department,
       'email': object.getMail(),
       'isFacebook': object.isFacebook(),
       'isFireman': object.isFireman(),

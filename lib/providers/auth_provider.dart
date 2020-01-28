@@ -63,11 +63,6 @@ class AuthProvider extends ChangeNotifier {
         print("${user.email} ha effettuato il login con mail e password");
       });
       authMail = true;
-      /*AuthResult result = await _auth.createUserWithEmailAndPassword(
-          email: mail, password: pass);
-      getUser().then((user) {
-        this.updateUsersCollection(user.email, false);
-      });*/
     } catch (e) {
       throw e;
     }
@@ -92,13 +87,6 @@ class AuthProvider extends ChangeNotifier {
         print("${user.email} ha effettuato il login con Google");
       });
       authGoogle = true;
-      /*AuthResult result = await _auth.signInWithCredential(credential);
-      getUser().then((user) {
-        print(user.email);
-      });
-      getUser().then((user) {
-        this.updateUsersCollection(user.email, false);
-      });*/
     } catch (e) {
       throw e;
     }
@@ -121,13 +109,6 @@ class AuthProvider extends ChangeNotifier {
             print("${user.email} ha effettuato il login con Facebook");
           });
           authFB = true;
-          /*AuthResult result = await _auth.signInWithCredential(credential);
-          print(result.user.email);
-          FirebaseUser user = await getUser();
-          print(user.email);
-          getUser().then((user) {
-            this.updateUsersCollection(user.email, false);
-          });*/
 
           break;
         case FacebookLoginStatus.cancelledByUser:

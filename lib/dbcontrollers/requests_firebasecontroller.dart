@@ -22,13 +22,17 @@ class RequestFirebaseController extends FirebaseController<Request> {
     DocumentSnapshot ds =
         await this.db.collection('requests').document(id).get();
     Map<String, dynamic> data = ds.data;
+    print("ID: $id");
+    DocumentReference approvedBy = data['approved_by'];
+    DocumentReference hydrant = data['hydrant'];
+    DocumentReference requestedBy = data['requested_by'];
     return new Request.complete(
         id,
         data['approved'],
         data["open"],
-        data['approved_by'].documentID,
-        data['hydrant'].documentID,
-        data['requested_by'].documentID);
+        (data['approved_by'] == null) ? null : approvedBy.documentID,
+        hydrant.documentID,
+        requestedBy.documentID);
   }
 
   @override
@@ -45,24 +49,36 @@ class RequestFirebaseController extends FirebaseController<Request> {
 
   @override
   Future<Request> insert(object) async {
+    DocumentReference userApBy =
+        this.db.collection('users').document(object.getApprovedByUserId());
+    DocumentReference userReqBy =
+        this.db.collection('users').document(object.getRequestedByUserId());
+    DocumentReference hydrant =
+        this.db.collection('hydrants').document(object.getHydrantId());
     DocumentReference ref = await this.db.collection('requests').add({
       'approved': object.getApproved(),
-      'approved_by': object.getApprovedByUserId(),
-      'hydrant': object.getHydrantId(),
+      'approved_by': userApBy,
+      'hydrant': hydrant,
       'open': object.isOpen(),
-      'requested_by': object.getRequestedByUserId(),
+      'requested_by': userReqBy,
     });
     return this.get(ref.documentID);
   }
 
   @override
   Future<Request> update(object) async {
-    await this.db.collection('requests').document(object.getId()).updateData({
+    DocumentReference userApBy =
+        this.db.collection('users').document(object.getApprovedByUserId());
+    DocumentReference userReqBy =
+        this.db.collection('users').document(object.getRequestedByUserId());
+    DocumentReference hydrant =
+        this.db.collection('hydrants').document(object.getHydrantId());
+    this.db.collection('requests').document(object.getId()).updateData({
       'approved': object.getApproved(),
-      'approved_by': object.getApprovedByUserId(),
-      'hydrant': object.getHydrantId(),
+      'approved_by': userApBy,
+      'hydrant': hydrant,
       'open': object.isOpen(),
-      'requested_by': object.getRequestedByUserId(),
+      'requested_by': userReqBy,
     });
     return this.get(object.getId());
   }

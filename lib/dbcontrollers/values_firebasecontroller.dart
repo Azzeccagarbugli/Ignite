@@ -21,7 +21,11 @@ class ValuesFirebaseController extends FirebaseController<Values> {
   Future<Values> get(String id) async {
     DocumentSnapshot ds = await this.db.collection('enums').document(id).get();
     Map<String, dynamic> data = ds.data;
-    return new Values(id, data['name'], data['values']);
+    List<String> values = List<String>();
+    for (String val in data['values']) {
+      values.add(val);
+    }
+    return new Values(id, data['name'], values);
   }
 
   @override

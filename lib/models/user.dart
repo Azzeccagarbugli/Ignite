@@ -1,5 +1,5 @@
 class User {
-  User(
+  User.fireman(
       String id,
       String mail,
       String birthday,

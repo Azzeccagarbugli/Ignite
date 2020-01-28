@@ -184,7 +184,9 @@ class DbProvider {
     User requestedBy = await this.getUserByMail(curUser.email);
     Request newRequest = new Request(
         isFireman, !isFireman, addedHydrant.getId(), requestedBy.getId());
-    if (isFireman) newRequest.setApprovedByUserId(requestedBy.getId());
+    if (isFireman) {
+      newRequest.setApprovedByUserId(requestedBy.getId());
+    }
     await _requestsController.insert(newRequest);
   }
 }
