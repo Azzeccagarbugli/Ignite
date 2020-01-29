@@ -3,9 +3,9 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/fireman_screen_views/fireman_screen_add_information.dart';
 import 'package:ignite/widgets/button_decline_approve.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
@@ -33,7 +33,9 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
         child: FutureBuilder<Hydrant>(
-          future: DbProvider().getHydrantById(widget.request.getHydrantId()),
+          future: Provider.of<ServicesProvider>(context)
+              .getHydrantsServices()
+              .getHydrantById(widget.request.getHydrantId()),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -308,7 +310,9 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           onPressed: () async {
             FirebaseUser user =
                 await Provider.of<AuthProvider>(context).getUser();
-            DbProvider().denyRequest(this.request);
+            Provider.of<ServicesProvider>(context)
+                .getRequestsServices()
+                .denyRequest(this.request);
             Navigator.pop(context);
             Flushbar(
               flushbarStyle: FlushbarStyle.GROUNDED,

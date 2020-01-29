@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/request_form_dropdownlisttile.dart';
@@ -71,7 +71,9 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   Future getIsFireman() async {
-    _isFireman = await DbProvider().isCurrentUserFireman(_user);
+    _isFireman = await Provider.of<ServicesProvider>(context)
+        .getUsersServices()
+        .isUserFiremanByMail(_user.email);
   }
 
   Future getUser() async {
@@ -90,12 +92,24 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   Future<void> buildValues() async {
-    widget._attackValues = await DbProvider().getAttacks();
-    widget._colorValues = await DbProvider().getColors();
-    widget._typeValues = await DbProvider().getTypes();
-    widget._vehicleValues = await DbProvider().getVehicles();
-    widget._openingValues = await DbProvider().getOpenings();
-    widget._pressureValues = await DbProvider().getPressures();
+    widget._attackValues = await Provider.of<ServicesProvider>(context)
+        .getValuesServices()
+        .getAttacks();
+    widget._colorValues = await Provider.of<ServicesProvider>(context)
+        .getValuesServices()
+        .getColors();
+    widget._typeValues = await Provider.of<ServicesProvider>(context)
+        .getValuesServices()
+        .getTypes();
+    widget._vehicleValues = await Provider.of<ServicesProvider>(context)
+        .getValuesServices()
+        .getVehicles();
+    widget._openingValues = await Provider.of<ServicesProvider>(context)
+        .getValuesServices()
+        .getOpenings();
+    widget._pressureValues = await Provider.of<ServicesProvider>(context)
+        .getValuesServices()
+        .getPressures();
   }
 
   List<Widget> buildListTileList(List<Placemark> placemark) {
@@ -556,15 +570,18 @@ class _RequestFormState extends State<RequestForm> {
                   );
             Provider.of<AuthProvider>(context).getUser().then((user) {
               if (widget.isNewRequest) {
-                DbProvider().addRequest(
-                  newHydrant,
-                  _isFireman,
-                  user,
-                );
+                Provider.of<ServicesProvider>(context)
+                    .getRequestsServices()
+                    .addRequest(
+                      newHydrant,
+                      _isFireman,
+                      user.email,
+                    );
               } else {
                 newHydrant.setId(widget.oldHydrant.getId());
-                DbProvider()
-                    .approveRequest(newHydrant, widget.oldRequest, user);
+                Provider.of<ServicesProvider>(context)
+                    .getRequestsServices()
+                    .approveRequest(newHydrant, widget.oldRequest, user.email);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();

@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/fireman_screen_views/fireman_screen.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,8 +15,10 @@ class IntroductionTutorial extends StatelessWidget {
   final bool isFireman;
 
   void _onIntroEnd(context) async {
-    DbProvider().setFirstAccessToFalse(
-        await Provider.of<AuthProvider>(context).getUser());
+    FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
+    Provider.of<ServicesProvider>(context)
+        .getUsersServices()
+        .setFirstAccessToFalseByMail(user.email);
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => isFireman ? FiremanScreen() : CitizenScreen(),

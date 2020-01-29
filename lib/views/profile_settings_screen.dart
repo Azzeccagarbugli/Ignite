@@ -5,7 +5,7 @@ import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:ignite/models/user.dart';
 import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/faq.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/views/loading_view.dart';
@@ -37,7 +37,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   }
 
   Future<void> getDBUser() async {
-    this._user = await DbProvider().getUserByMail(this._fireUser.email);
+    this._user = await Provider.of<ServicesProvider>(context)
+        .getUsersServices()
+        .getUserByMail(this._fireUser.email);
   }
 
   Future<void> setImageURL() async {

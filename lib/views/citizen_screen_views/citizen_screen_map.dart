@@ -9,7 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ignite/helper/map_launcher.dart';
 import 'package:ignite/models/department.dart';
 import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/department_screen.dart';
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
 import 'package:ignite/views/loading_screen.dart';
@@ -50,11 +50,15 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
   }
 
   Future<void> getApprovedHydrants() async {
-    _approvedHydrants = await DbProvider().getApprovedHydrants();
+    _approvedHydrants = await Provider.of<ServicesProvider>(context)
+        .getHydrantsServices()
+        .getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
-    _departments = await DbProvider().getDepartments();
+    _departments = await Provider.of<ServicesProvider>(context)
+        .getDepartmentsServices()
+        .getDepartments();
   }
 
   Future<void> firstFutureInit() async {

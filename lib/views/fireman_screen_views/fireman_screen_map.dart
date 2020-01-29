@@ -11,9 +11,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ignite/helper/map_launcher.dart';
 import 'package:ignite/main.dart';
 import 'package:ignite/models/department.dart';
-
+import 'package:provider/provider.dart';
 import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/department_screen.dart';
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
 import 'package:ignite/views/loading_screen.dart';
@@ -57,11 +57,15 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> getApprovedHydrants() async {
-    _approvedHydrants = await DbProvider().getApprovedHydrants();
+    _approvedHydrants = await Provider.of<ServicesProvider>(context)
+        .getHydrantsServices()
+        .getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
-    _departments = await DbProvider().getDepartments();
+    _departments = await Provider.of<ServicesProvider>(context)
+        .getDepartmentsServices()
+        .getDepartments();
   }
 
   Future<void> firstFutureInit() async {
@@ -85,9 +89,15 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> _buildValues() async {
-    _attackValues = await DbProvider().getAttacks();
-    _vehicleValues = await DbProvider().getVehicles();
-    _openingValues = await DbProvider().getOpenings();
+    _attackValues = await Provider.of<ServicesProvider>(context)
+        .getValuesServices()
+        .getAttacks();
+    _vehicleValues = await Provider.of<ServicesProvider>(context)
+        .getValuesServices()
+        .getVehicles();
+    _openingValues = await Provider.of<ServicesProvider>(context)
+        .getValuesServices()
+        .getOpenings();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ignite/dbcontrollers/firebasecontroller.dart';
 import 'package:ignite/models/values.dart';
 
-class ValuesFirebaseController extends FirebaseController<Values> {
+class FirebaseValuesController extends FirebaseController<Values> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('enums').document(id).delete();
