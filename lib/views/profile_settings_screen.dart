@@ -182,9 +182,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.light,
-    ));
     return FutureBuilder(
       future: initFuture(),
       builder: (context, data) {
@@ -204,155 +201,174 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
             );
           case ConnectionState.done:
             return Scaffold(
-              body: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(_urlImage),
-                    fit: BoxFit.cover,
-                  ),
+              body: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  statusBarIconBrightness: Brightness.light,
                 ),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(_urlImage),
+                      fit: BoxFit.cover,
                     ),
-                    child: SafeArea(
-                      bottom: false,
-                      minimum: EdgeInsets.only(
-                        top: 62,
+                  ),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.4),
                       ),
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.height,
-                            padding: EdgeInsets.only(
-                              top: Consts.avatarRadius + Consts.padding,
-                            ),
-                            margin: EdgeInsets.only(top: Consts.avatarRadius),
-                            decoration: new BoxDecoration(
-                              color: ThemeProvider.themeOf(context).id == "main"
-                                  ? Colors.white
-                                  : Colors.grey[900],
-                              shape: BoxShape.rectangle,
-                              borderRadius:
-                                  BorderRadius.circular(Consts.padding),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 10.0,
-                                  offset: Offset(0.0, 10.0),
-                                ),
-                              ],
-                            ),
-                            child: ScrollConfiguration(
-                              behavior: RemoveGlow(),
-                              child: ListView(
-                                children: <Widget>[
-                                  Center(
-                                    child: Text(
-                                      this._fireUser.email,
-                                      style: TextStyle(
-                                        fontSize: 24.0,
-                                        fontWeight: FontWeight.w700,
-                                        color:
-                                            ThemeProvider.themeOf(context).id ==
-                                                    "main"
-                                                ? Colors.grey[800]
-                                                : Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  this.getChip(),
-                                  SizedBox(height: 16.0),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 24,
-                                    ),
-                                    child: Text(
-                                      "Di seguito potrai accedere alle impostazioni messe a disposizione da Ignite",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        color:
-                                            ThemeProvider.themeOf(context).id ==
-                                                    "main"
-                                                ? Colors.grey[700]
-                                                : Colors.grey[200],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 16.0),
-                                  SettingsButton(
-                                    icon: Icon(
-                                      Icons.device_unknown,
-                                      color: Colors.white,
-                                    ),
-                                    title: "F.A.Q",
-                                    subtitlte:
-                                        "Se hai dei dubbi, questo fa al caso tuo!",
-                                    onTap: () {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return FaqScreen(
-                                          jsonPath: widget.jsonFaq,
-                                        );
-                                      }));
-                                    },
-                                  ),
-                                  SettingsButton(
-                                    icon: Icon(
-                                      Icons.brightness_4,
-                                      color: Colors.white,
-                                    ),
-                                    title: ThemeProvider.themeOf(context).id ==
-                                            "main"
-                                        ? "Dark mode"
-                                        : "Light mode",
-                                    subtitlte: ThemeProvider.themeOf(context)
-                                                .id ==
-                                            "main"
-                                        ? "Salva i tuoi occhi e la batteria del tuo device!"
-                                        : "Ripristina la modalità di visualizzazione",
-                                    onTap: () {
-                                      ThemeProvider.controllerOf(context)
-                                          .nextTheme();
-                                      Navigator.pushReplacement(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return LoadingView();
-                                      }));
-                                    },
-                                  ),
-                                  getResetButton(),
-                                  SettingsButton(
-                                    icon: Icon(
-                                      Icons.exit_to_app,
-                                      color: Colors.white,
-                                    ),
-                                    title: "Logout",
-                                    subtitlte:
-                                        "Effettua il logout, ma torna presto eh!",
-                                    onTap: () async {
-                                      Provider.of<AuthProvider>(context)
-                                          .logOut(context);
-                                      Navigator.pushReplacement(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return LoginScreen();
-                                      }));
-                                    },
+                      child: SafeArea(
+                        bottom: false,
+                        minimum: EdgeInsets.only(
+                          top: 62,
+                        ),
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              height: MediaQuery.of(context).size.height,
+                              padding: EdgeInsets.only(
+                                top: Consts.avatarRadius + Consts.padding,
+                              ),
+                              margin: EdgeInsets.only(top: Consts.avatarRadius),
+                              decoration: new BoxDecoration(
+                                color:
+                                    ThemeProvider.themeOf(context).id == "main"
+                                        ? Colors.white
+                                        : Colors.grey[900],
+                                shape: BoxShape.rectangle,
+                                borderRadius:
+                                    BorderRadius.circular(Consts.padding),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 10.0,
+                                    offset: Offset(0.0, 10.0),
                                   ),
                                 ],
                               ),
+                              child: ScrollConfiguration(
+                                behavior: RemoveGlow(),
+                                child: ListView(
+                                  children: <Widget>[
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                        ),
+                                        child: Text(
+                                          this._fireUser.email,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 24.0,
+                                            fontWeight: FontWeight.w700,
+                                            color:
+                                                ThemeProvider.themeOf(context)
+                                                            .id ==
+                                                        "main"
+                                                    ? Colors.grey[800]
+                                                    : Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 4.0),
+                                    this.getChip(),
+                                    SizedBox(height: 8.0),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                      ),
+                                      child: Text(
+                                        "Di seguito potrai accedere alle impostazioni messe a disposizione da Ignite",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: ThemeProvider.themeOf(context)
+                                                      .id ==
+                                                  "main"
+                                              ? Colors.grey[700]
+                                              : Colors.grey[200],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 16.0),
+                                    SettingsButton(
+                                      icon: Icon(
+                                        Icons.device_unknown,
+                                        color: Colors.white,
+                                      ),
+                                      title: "F.A.Q",
+                                      subtitlte:
+                                          "Se hai dei dubbi, questo fa al caso tuo!",
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return FaqScreen(
+                                            jsonPath: widget.jsonFaq,
+                                          );
+                                        }));
+                                      },
+                                    ),
+                                    SettingsButton(
+                                      icon: Icon(
+                                        Icons.brightness_4,
+                                        color: Colors.white,
+                                      ),
+                                      title:
+                                          ThemeProvider.themeOf(context).id ==
+                                                  "main"
+                                              ? "Dark mode"
+                                              : "Light mode",
+                                      subtitlte: ThemeProvider.themeOf(context)
+                                                  .id ==
+                                              "main"
+                                          ? "Salva i tuoi occhi e la batteria del tuo device!"
+                                          : "Ripristina la modalità di visualizzazione",
+                                      onTap: () {
+                                        ThemeProvider.controllerOf(context)
+                                            .nextTheme();
+                                        Navigator.pushReplacement(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return LoadingView();
+                                        }));
+                                      },
+                                    ),
+                                    getResetButton(),
+                                    SettingsButton(
+                                      icon: Icon(
+                                        Icons.exit_to_app,
+                                        color: Colors.white,
+                                      ),
+                                      title: "Logout",
+                                      subtitlte:
+                                          "Effettua il logout, ma torna presto eh!",
+                                      onTap: () async {
+                                        Provider.of<AuthProvider>(context)
+                                            .logOut(context);
+                                        Navigator.pushReplacement(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return LoginScreen();
+                                        }));
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(_urlImage),
-                              radius: Consts.avatarRadius,
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(_urlImage),
+                                radius: Consts.avatarRadius,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

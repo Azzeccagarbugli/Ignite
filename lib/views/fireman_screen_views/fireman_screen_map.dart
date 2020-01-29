@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -19,7 +20,6 @@ import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/widgets/custom_dialog_search.dart';
 
 import 'package:ignite/widgets/homepage_button.dart';
-import 'package:provider/provider.dart';
 
 import 'dart:ui' as ui;
 
@@ -291,7 +291,21 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   HomePageButton(
-                    function: _setSatellite,
+                    function: () {
+                      return AnimatedContainer(
+                        duration: Duration(milliseconds: 400),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 40.0,
+                            left: 15.0,
+                          ),
+                          child: Container(
+                            height: 300,
+                            width: 100,
+                          ),
+                        ),
+                      );
+                    },
                     icon: Icons.filter_hdr,
                     heroTag: 'SATELLITE',
                   ),
@@ -303,6 +317,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       ],
     );
   }
+
+  bool isVisible = false;
 
   Widget _buildLoadedMap() {
     return Stack(
@@ -319,10 +335,33 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  HomePageButton(
-                    function: _setSatellite,
-                    icon: Icons.filter_hdr,
-                    heroTag: 'SATELLITE',
+                  Stack(
+                    alignment: Alignment.topCenter,
+                    children: <Widget>[
+                      isVisible
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: AnimatedContainer(
+                                duration: Duration(milliseconds: 400),
+                                child: Container(
+                                  color: ThemeProvider.themeOf(context).id ==
+                                          "main"
+                                      ? Colors.grey[350]
+                                      : Colors.grey[850],
+                                  height: 140,
+                                  width: 40,
+                                ),
+                              ),
+                            )
+                          : SizedBox(),
+                      HomePageButton(
+                        function: () {
+                          isVisible = true;
+                        },
+                        icon: Icons.filter_hdr,
+                        heroTag: 'SATELLITE',
+                      ),
+                    ],
                   ),
                 ],
               ),

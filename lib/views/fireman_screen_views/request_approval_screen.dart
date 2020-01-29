@@ -29,40 +29,31 @@ class RequestApprovalScreen extends StatefulWidget {
 class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: ThemeProvider.themeOf(context).id == 'main'
-          ? Colors.white
-          : Colors.black,
-      systemNavigationBarIconBrightness:
-          ThemeProvider.themeOf(context).id == 'main'
-              ? Brightness.dark
-              : Brightness.light,
-      systemNavigationBarDividerColor:
-          ThemeProvider.themeOf(context).data.primaryColor,
-    ));
     return Scaffold(
-      body: FutureBuilder<Hydrant>(
-        future: DbProvider().getHydrantById(widget.request.getHydrantId()),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return new LoadingShimmer();
-            case ConnectionState.active:
-            case ConnectionState.waiting:
-              return new LoadingShimmer();
-            case ConnectionState.done:
-              if (snapshot.hasError) return new LoadingShimmer();
-              return new RequestScreenRecap(
-                hydrant: snapshot.data,
-                buttonBar: ButtonAppBarDeclineConfirm(
-                  request: widget.request,
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
+        child: FutureBuilder<Hydrant>(
+          future: DbProvider().getHydrantById(widget.request.getHydrantId()),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return new LoadingShimmer();
+              case ConnectionState.active:
+              case ConnectionState.waiting:
+                return new LoadingShimmer();
+              case ConnectionState.done:
+                if (snapshot.hasError) return new LoadingShimmer();
+                return new RequestScreenRecap(
                   hydrant: snapshot.data,
-                ),
-              );
-          }
-          return null;
-        },
+                  buttonBar: ButtonAppBarDeclineConfirm(
+                    request: widget.request,
+                    hydrant: snapshot.data,
+                  ),
+                );
+            }
+            return null;
+          },
+        ),
       ),
     );
   }
@@ -81,9 +72,6 @@ class RequestScreenRecap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.light,
-    ));
     return Scaffold(
       body: SlidingUpPanel(
         borderRadius: BorderRadius.only(
