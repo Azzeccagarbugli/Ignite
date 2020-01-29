@@ -57,15 +57,13 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> getApprovedHydrants() async {
-    _approvedHydrants = await ServicesProvider()
-        .getHydrantsServices()
-        .getApprovedHydrants();
+    _approvedHydrants =
+        await ServicesProvider().getHydrantsServices().getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
-    _departments = await ServicesProvider()
-        .getDepartmentsServices()
-        .getDepartments();
+    _departments =
+        await ServicesProvider().getDepartmentsServices().getDepartments();
   }
 
   Future<void> firstFutureInit() async {
@@ -89,15 +87,9 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> _buildValues() async {
-    _attackValues = await ServicesProvider()
-        .getValuesServices()
-        .getAttacks();
-    _vehicleValues = await ServicesProvider()
-        .getValuesServices()
-        .getVehicles();
-    _openingValues = await ServicesProvider()
-        .getValuesServices()
-        .getOpenings();
+    _attackValues = await ServicesProvider().getValuesServices().getAttacks();
+    _vehicleValues = await ServicesProvider().getValuesServices().getVehicles();
+    _openingValues = await ServicesProvider().getValuesServices().getOpenings();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -594,6 +586,12 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
               nameAnimation: "anim",
             );
           case ConnectionState.done:
+            if (data.hasError)
+              return new LoadingScreen(
+                message: "Errore",
+                pathFlare: "assets/general/maps.flr",
+                nameAnimation: "anim",
+              );
             return FutureBuilder(
               future: secondFutureInit(),
               builder: (context, data) {

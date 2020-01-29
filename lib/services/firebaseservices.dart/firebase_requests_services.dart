@@ -5,16 +5,18 @@ import 'package:ignite/factories/servicesfactories/firebaseservicesfactory.dart'
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/models/user.dart';
-import 'package:ignite/services/hydrants_services.dart';
+import 'package:ignite/services/firebaseservices.dart/firebase_hydrants_services.dart';
+import 'package:ignite/services/firebaseservices.dart/firebase_users_services.dart';
 import 'package:ignite/services/requests_services.dart';
-import 'package:ignite/services/users_services.dart';
 
 class FirebaseRequestsServices implements RequestsServices {
   FirebaseRequestController _requestsController =
       FirebaseControllerFactory().getRequestsController();
-  UsersServices _usersServices = FirebaseServicesFactory().getUsersServices();
-  HydrantsServices _hydrantsServices =
+  FirebaseUsersServices _usersServices =
+      FirebaseServicesFactory().getUsersServices();
+  FirebaseHydrantsServices _hydrantsServices =
       FirebaseServicesFactory().getHydrantsServices();
+
   @override
   Future<void> addRequest(
       Hydrant hydrant, bool isFireman, String userMail) async {

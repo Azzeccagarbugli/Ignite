@@ -75,6 +75,12 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                   nameAnimation: "rotate",
                 );
               case ConnectionState.done:
+                if (snapshot.hasError)
+                  return new LoadingScreen(
+                    message: "Errore",
+                    pathFlare: "assets/general/gps_rotation.flr",
+                    nameAnimation: "rotate",
+                  );
                 if (_requests.isEmpty) {
                   return new Center(
                     child: Padding(

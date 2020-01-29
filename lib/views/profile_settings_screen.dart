@@ -43,7 +43,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   }
 
   Future<void> setImageURL() async {
-    print("Utente ${_user.isFacebook()}");
     if (_user.isFacebook() || _user.isGoogle()) {
       _urlImage = _fireUser.photoUrl;
     } else {

@@ -31,12 +31,12 @@ class FirebaseValuesController extends FirebaseController<Values> {
   @override
   Future<List<Values>> getAll() async {
     QuerySnapshot qsValues = await this.db.collection('enums').getDocuments();
-    List<Values> users = new List<Values>();
+    List<Values> values = new List<Values>();
     for (DocumentSnapshot ds in qsValues.documents) {
       Values v = await this.get(ds.documentID);
-      users.add(v);
+      values.add(v);
     }
-    return users;
+    return values;
   }
 
   @override

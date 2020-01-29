@@ -23,16 +23,14 @@ class FirebaseRequestController extends FirebaseController<Request> {
         await this.db.collection('requests').document(id).get();
     Map<String, dynamic> data = ds.data;
     print("ID: $id");
-    DocumentReference approvedBy = data['approved_by'];
-    DocumentReference hydrant = data['hydrant'];
-    DocumentReference requestedBy = data['requested_by'];
     return new Request.complete(
-        id,
-        data['approved'],
-        data["open"],
-        (data['approved_by'] == null) ? null : approvedBy.documentID,
-        hydrant.documentID,
-        requestedBy.documentID);
+      id,
+      data['approved'],
+      data["open"],
+      (data['approved_by'] == null) ? null : data['approved_by'].documentID,
+      (data['hydrant'] == null) ? null : data['hydrant'].documentID,
+      (data['requested_by'] == null) ? null : data['requested_by'].documentID,
+    );
   }
 
   @override
@@ -48,13 +46,16 @@ class FirebaseRequestController extends FirebaseController<Request> {
   }
 
   @override
-  Future<Request> insert(object) async {
-    DocumentReference userApBy =
-        this.db.collection('users').document(object.getApprovedByUserId());
-    DocumentReference userReqBy =
-        this.db.collection('users').document(object.getRequestedByUserId());
-    DocumentReference hydrant =
-        this.db.collection('hydrants').document(object.getHydrantId());
+  Future<Request> insert(Request object) async {
+    DocumentReference userApBy = (object.getApprovedByUserId() == null)
+        ? null
+        : this.db.collection('users').document(object.getApprovedByUserId());
+    DocumentReference userReqBy = (object.getRequestedByUserId() == null)
+        ? null
+        : this.db.collection('users').document(object.getRequestedByUserId());
+    DocumentReference hydrant = (object.getHydrantId() == null)
+        ? null
+        : this.db.collection('hydrants').document(object.getHydrantId());
     DocumentReference ref = await this.db.collection('requests').add({
       'approved': object.getApproved(),
       'approved_by': userApBy,
@@ -66,13 +67,16 @@ class FirebaseRequestController extends FirebaseController<Request> {
   }
 
   @override
-  Future<Request> update(object) async {
-    DocumentReference userApBy =
-        this.db.collection('users').document(object.getApprovedByUserId());
-    DocumentReference userReqBy =
-        this.db.collection('users').document(object.getRequestedByUserId());
-    DocumentReference hydrant =
-        this.db.collection('hydrants').document(object.getHydrantId());
+  Future<Request> update(Request object) async {
+    DocumentReference userApBy = (object.getApprovedByUserId() == null)
+        ? null
+        : this.db.collection('users').document(object.getApprovedByUserId());
+    DocumentReference userReqBy = (object.getRequestedByUserId() == null)
+        ? null
+        : this.db.collection('users').document(object.getRequestedByUserId());
+    DocumentReference hydrant = (object.getHydrantId() == null)
+        ? null
+        : this.db.collection('hydrants').document(object.getHydrantId());
     this.db.collection('requests').document(object.getId()).updateData({
       'approved': object.getApproved(),
       'approved_by': userApBy,

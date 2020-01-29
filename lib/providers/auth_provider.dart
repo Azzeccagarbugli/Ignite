@@ -71,7 +71,7 @@ class AuthProvider {
         password: pass,
       ))
           .user;
-      this.updateUsersCollection(user.email, false, false, false);
+      await this.updateUsersCollection(user.email, false, false, false);
       getUser().then((user) {
         print("${user.email} ha effettuato il login con mail e password");
       });
@@ -91,10 +91,11 @@ class AuthProvider {
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
-      final FirebaseUser user =
-          (await _auth.signInWithCredential(credential)).user;
-      this.updateUsersCollection(user.email, false, true, false);
-      await _auth.signInWithCredential(credential);
+      AuthResult res = await _auth.signInWithCredential(credential);
+      final FirebaseUser user = res.user;
+      await Future.wait(
+          [this.updateUsersCollection(user.email, false, true, false)]);
+      // await _auth.signInWithCredential(credential);
       getUser().then((user) {
         print("${user.email} ha effettuato il login con Google");
       });
@@ -112,10 +113,12 @@ class AuthProvider {
           FacebookAccessToken myToken = fbResult.accessToken;
           AuthCredential credential =
               FacebookAuthProvider.getCredential(accessToken: myToken.token);
-          final FirebaseUser user =
-              (await _auth.signInWithCredential(credential)).user;
-          this.updateUsersCollection(user.email, false, false, true);
-          await _auth.signInWithCredential(credential);
+          AuthResult res = await _auth.signInWithCredential(credential);
+          final FirebaseUser user = res.user;
+          await Future.wait(
+              [this.updateUsersCollection(user.email, false, false, true)]);
+
+          // await _auth.signInWithCredential(credential);
           getUser().then((user) {
             print("${user.email} ha effettuato il login con Facebook");
           });

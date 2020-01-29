@@ -50,15 +50,13 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
   }
 
   Future<void> getApprovedHydrants() async {
-    _approvedHydrants = await ServicesProvider()
-        .getHydrantsServices()
-        .getApprovedHydrants();
+    _approvedHydrants =
+        await ServicesProvider().getHydrantsServices().getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
-    _departments = await ServicesProvider()
-        .getDepartmentsServices()
-        .getDepartments();
+    _departments =
+        await ServicesProvider().getDepartmentsServices().getDepartments();
   }
 
   Future<void> firstFutureInit() async {
@@ -78,6 +76,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
       this._getPosition(),
     ]);
     this.setupPositionStream();
+    _approvedHydrants = List<Hydrant>();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -395,6 +394,12 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
               nameAnimation: "anim",
             );
           case ConnectionState.done:
+            if (data.hasError)
+              return new LoadingScreen(
+                message: "Errore",
+                pathFlare: "assets/general/maps.flr",
+                nameAnimation: "anim",
+              );
             return FutureBuilder(
               future: secondFutureInit(),
               builder: (context, data) {
