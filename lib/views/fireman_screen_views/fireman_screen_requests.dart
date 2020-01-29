@@ -31,7 +31,7 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
   }
 
   Future _getRequests() async {
-    _requests = await Provider.of<ServicesProvider>(context)
+    _requests = await ServicesProvider()
         .getRequestsServices()
         .getPendingRequestsByDistance(_curloc.latitude, _curloc.longitude);
   }
@@ -212,7 +212,7 @@ class _RequestCardState extends State<RequestCard> {
           vertical: 6,
         ),
         child: FutureBuilder<Hydrant>(
-          future: Provider.of<ServicesProvider>(context)
+          future: ServicesProvider()
               .getHydrantsServices()
               .getHydrantById(widget.request.getHydrantId()),
           builder: (context, snapshot) {

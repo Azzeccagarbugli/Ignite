@@ -36,4 +36,16 @@ class BackendUsersServices implements UsersServices {
     // TODO: implement setFirstAccessToFalseByMail
     throw UnimplementedError();
   }
+
+  @override
+  Future<User> addUser(User newUser) {
+    // TODO: implement addUser
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<User> updateUser(User updatedUser) {
+    // TODO: implement updateUser
+    throw UnimplementedError();
+  }
 }

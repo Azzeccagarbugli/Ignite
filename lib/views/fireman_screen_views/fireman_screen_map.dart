@@ -57,13 +57,13 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> getApprovedHydrants() async {
-    _approvedHydrants = await Provider.of<ServicesProvider>(context)
+    _approvedHydrants = await ServicesProvider()
         .getHydrantsServices()
         .getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
-    _departments = await Provider.of<ServicesProvider>(context)
+    _departments = await ServicesProvider()
         .getDepartmentsServices()
         .getDepartments();
   }
@@ -89,13 +89,13 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> _buildValues() async {
-    _attackValues = await Provider.of<ServicesProvider>(context)
+    _attackValues = await ServicesProvider()
         .getValuesServices()
         .getAttacks();
-    _vehicleValues = await Provider.of<ServicesProvider>(context)
+    _vehicleValues = await ServicesProvider()
         .getValuesServices()
         .getVehicles();
-    _openingValues = await Provider.of<ServicesProvider>(context)
+    _openingValues = await ServicesProvider()
         .getValuesServices()
         .getOpenings();
   }

@@ -8,38 +8,36 @@ import 'package:ignite/services/values_services.dart';
 
 class ServicesProvider extends ChangeNotifier {
   ServicesFactory _factory;
-  DepartmentsServices _departmentsServices;
-  HydrantsServices _hydrantsServices;
-  RequestsServices _requestsServices;
-  UsersServices _usersServices;
-  ValuesServices _valuesServices;
 
-  ServicesProvider(ServicesFactory newFactory) {
+  static final ServicesProvider _singleton = ServicesProvider._internal();
+
+  factory ServicesProvider() {
+    return _singleton;
+  }
+
+  ServicesProvider._internal();
+
+  void setFactory(ServicesFactory newFactory) {
     this._factory = newFactory;
-    this._departmentsServices = this._factory.getDepartmentsServices();
-    this._hydrantsServices = this._factory.getHydrantsServices();
-    this._requestsServices = this._factory.getRequestsServices();
-    this._usersServices = this._factory.getUsersServices();
-    this._valuesServices = this._factory.getValuesServices();
   }
 
   DepartmentsServices getDepartmentsServices() {
-    return this._departmentsServices;
+    return this._factory.getDepartmentsServices();
   }
 
   HydrantsServices getHydrantsServices() {
-    return this._hydrantsServices;
+    return this._factory.getHydrantsServices();
   }
 
   RequestsServices getRequestsServices() {
-    return this._requestsServices;
+    return this._factory.getRequestsServices();
   }
 
   UsersServices getUsersServices() {
-    return this._usersServices;
+    return this._factory.getUsersServices();
   }
 
   ValuesServices getValuesServices() {
-    return this._valuesServices;
+    return this._factory.getValuesServices();
   }
 }

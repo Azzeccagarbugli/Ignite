@@ -36,8 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<String> _authUser(LoginData login) async {
     try {
-      await Provider.of<AuthProvider>(context)
-          .authMailPassword(login.name, login.password);
+      await AuthProvider().authMailPassword(login.name, login.password);
     } catch (e) {
       switch (e.code) {
         case 'ERROR_USER_NOT_FOUND':
@@ -61,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<String> _authSignInGoogle() async {
     try {
-      await Provider.of<AuthProvider>(context).signInWithGoogle();
+      await AuthProvider().signInWithGoogle();
     } catch (e) {
       switch (e.code) {
         case 'ERROR_INVALID_CREDENTIAL':
@@ -90,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<String> _authSignInFacebook() async {
     try {
-      await Provider.of<AuthProvider>(context).signInWithFacebook();
+      await AuthProvider().signInWithFacebook();
     } catch (e) {
       switch (e.code) {
         case 'ERROR_INVALID_CREDENTIAL':
@@ -123,8 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<String> _newUser(LoginData login) async {
     try {
-      await Provider.of<AuthProvider>(context)
-          .newMailPassword(login.name, login.password);
+      await AuthProvider().newMailPassword(login.name, login.password);
     } catch (e) {
       switch (e.code) {
         case 'ERROR_INVALID_EMAIL':
@@ -138,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<String> _recoverPassword(String currentEmail) async {
     try {
-      Provider.of<AuthProvider>(context).recoverPassword(currentEmail);
+      AuthProvider().recoverPassword(currentEmail);
     } catch (e) {
       switch (e.code) {
         case 'ERROR_INVALID_EMAIL':

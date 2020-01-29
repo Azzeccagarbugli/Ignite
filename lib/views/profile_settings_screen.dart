@@ -33,11 +33,11 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   FirebaseUser _fireUser;
 
   Future<void> getFireUser() async {
-    this._fireUser = await Provider.of<AuthProvider>(context).getUser();
+    this._fireUser = await AuthProvider().getUser();
   }
 
   Future<void> getDBUser() async {
-    this._user = await Provider.of<ServicesProvider>(context)
+    this._user = await ServicesProvider()
         .getUsersServices()
         .getUserByMail(this._fireUser.email);
   }
@@ -134,9 +134,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       label: Text("Conferma",
                           style: TextStyle(color: Colors.white)),
                       onPressed: () {
-                        Provider.of<AuthProvider>(context)
-                            .recoverPassword(this._fireUser.email);
-                        Provider.of<AuthProvider>(context).logOut(context);
+                        AuthProvider().recoverPassword(this._fireUser.email);
+                        AuthProvider().logOut(context);
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
                           return LoginScreen();
@@ -349,8 +348,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                                       subtitlte:
                                           "Effettua il logout, ma torna presto eh!",
                                       onTap: () async {
-                                        Provider.of<AuthProvider>(context)
-                                            .logOut(context);
+                                        AuthProvider().logOut(context);
                                         Navigator.pushReplacement(context,
                                             MaterialPageRoute(
                                                 builder: (context) {

@@ -33,7 +33,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
         child: FutureBuilder<Hydrant>(
-          future: Provider.of<ServicesProvider>(context)
+          future: ServicesProvider()
               .getHydrantsServices()
               .getHydrantById(widget.request.getHydrantId()),
           builder: (context, snapshot) {
@@ -309,8 +309,8 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           text: "Declina",
           onPressed: () async {
             FirebaseUser user =
-                await Provider.of<AuthProvider>(context).getUser();
-            Provider.of<ServicesProvider>(context)
+                await AuthProvider().getUser();
+                ServicesProvider()
                 .getRequestsServices()
                 .denyRequest(this.request);
             Navigator.pop(context);

@@ -71,13 +71,13 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   Future getIsFireman() async {
-    _isFireman = await Provider.of<ServicesProvider>(context)
+    _isFireman = await ServicesProvider()
         .getUsersServices()
         .isUserFiremanByMail(_user.email);
   }
 
   Future getUser() async {
-    _user = await Provider.of<AuthProvider>(context).getUser();
+    _user = await AuthProvider().getUser();
   }
 
   Future initFuture() async {
@@ -92,24 +92,18 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   Future<void> buildValues() async {
-    widget._attackValues = await Provider.of<ServicesProvider>(context)
-        .getValuesServices()
-        .getAttacks();
-    widget._colorValues = await Provider.of<ServicesProvider>(context)
-        .getValuesServices()
-        .getColors();
-    widget._typeValues = await Provider.of<ServicesProvider>(context)
-        .getValuesServices()
-        .getTypes();
-    widget._vehicleValues = await Provider.of<ServicesProvider>(context)
-        .getValuesServices()
-        .getVehicles();
-    widget._openingValues = await Provider.of<ServicesProvider>(context)
-        .getValuesServices()
-        .getOpenings();
-    widget._pressureValues = await Provider.of<ServicesProvider>(context)
-        .getValuesServices()
-        .getPressures();
+    widget._attackValues =
+        await ServicesProvider().getValuesServices().getAttacks();
+    widget._colorValues =
+        await ServicesProvider().getValuesServices().getColors();
+    widget._typeValues =
+        await ServicesProvider().getValuesServices().getTypes();
+    widget._vehicleValues =
+        await ServicesProvider().getValuesServices().getVehicles();
+    widget._openingValues =
+        await ServicesProvider().getValuesServices().getOpenings();
+    widget._pressureValues =
+        await ServicesProvider().getValuesServices().getPressures();
   }
 
   List<Widget> buildListTileList(List<Placemark> placemark) {
@@ -568,18 +562,16 @@ class _RequestFormState extends State<RequestForm> {
                     widget._street,
                     widget._number,
                   );
-            Provider.of<AuthProvider>(context).getUser().then((user) {
+            AuthProvider().getUser().then((user) {
               if (widget.isNewRequest) {
-                Provider.of<ServicesProvider>(context)
-                    .getRequestsServices()
-                    .addRequest(
+                ServicesProvider().getRequestsServices().addRequest(
                       newHydrant,
                       _isFireman,
                       user.email,
                     );
               } else {
                 newHydrant.setId(widget.oldHydrant.getId());
-                Provider.of<ServicesProvider>(context)
+                ServicesProvider()
                     .getRequestsServices()
                     .approveRequest(newHydrant, widget.oldRequest, user.email);
                 Navigator.of(context).pop();

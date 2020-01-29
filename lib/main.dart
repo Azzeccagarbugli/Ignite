@@ -5,7 +5,6 @@ import 'package:ignite/factories/servicesfactories/firebaseservicesfactory.dart'
 import 'package:ignite/providers/auth_provider.dart';
 import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/login_screen.dart';
-import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 void main() {
@@ -15,21 +14,13 @@ void main() {
 class Ignite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    AuthProvider().setFactory(FirebaseServicesFactory());
+    ServicesProvider().setFactory(FirebaseServicesFactory());
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => AuthProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => ServicesProvider(FirebaseServicesFactory()),
-        ),
-      ],
-      child: App(),
-    );
+    return App();
   }
 }
 

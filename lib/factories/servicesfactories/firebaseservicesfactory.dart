@@ -10,7 +10,7 @@ import 'package:ignite/services/requests_services.dart';
 import 'package:ignite/services/users_services.dart';
 import 'package:ignite/services/values_services.dart';
 
-class FirebaseServicesFactory implements ServicesFactory {
+class FirebaseServicesFactory extends ServicesFactory {
   static final FirebaseServicesFactory _singleton =
       FirebaseServicesFactory._internal();
 

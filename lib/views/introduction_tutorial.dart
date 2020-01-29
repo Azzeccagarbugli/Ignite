@@ -15,8 +15,8 @@ class IntroductionTutorial extends StatelessWidget {
   final bool isFireman;
 
   void _onIntroEnd(context) async {
-    FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
-    Provider.of<ServicesProvider>(context)
+    FirebaseUser user = await AuthProvider().getUser();
+    ServicesProvider()
         .getUsersServices()
         .setFirstAccessToFalseByMail(user.email);
     Navigator.of(context).pushReplacement(

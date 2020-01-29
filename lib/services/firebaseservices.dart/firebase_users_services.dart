@@ -48,4 +48,14 @@ class FirebaseUsersServices implements UsersServices {
       }
     }
   }
+
+  @override
+  Future<User> addUser(User newUser) async {
+    return await _usersController.insert(newUser);
+  }
+
+  @override
+  Future<User> updateUser(User updatedUser) async {
+    return await _usersController.update(updatedUser);
+  }
 }
