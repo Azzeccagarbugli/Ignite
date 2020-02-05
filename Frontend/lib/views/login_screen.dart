@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
-import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/views/loading_view.dart';
-import 'package:ignite/widgets/social_chip.dart';
-import 'package:provider/provider.dart';
-import 'package:ignite/views/loading_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../providers/auth_provider.dart';
+import '../widgets/social_chip.dart';
+import 'loading_view.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

@@ -1,6 +1,6 @@
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/models/request.dart';
-import 'package:ignite/services/requests_services.dart';
+import '../../models/hydrant.dart';
+import '../../models/request.dart';
+import '../requests_services.dart';
 
 class BackendRequestsServices implements RequestsServices {
   String _ip;

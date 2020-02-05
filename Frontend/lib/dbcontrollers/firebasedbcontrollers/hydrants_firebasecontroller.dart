@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ignite/dbcontrollers/firebasecontroller.dart';
-import 'package:ignite/models/hydrant.dart';
+
+import '../../models/hydrant.dart';
+import '../firebasecontroller.dart';
 
 class FirebaseHydrantsController extends FirebaseController<Hydrant> {
   @override

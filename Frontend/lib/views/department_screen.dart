@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/models/department.dart';
-import 'package:ignite/widgets/remove_glow.dart';
-import 'package:ignite/widgets/request_map.dart';
-import 'package:ignite/widgets/row_marker_details.dart';
+
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';
+
+import '../models/department.dart';
+import '../widgets/remove_glow.dart';
+import '../widgets/request_map.dart';
+import '../widgets/row_marker_details.dart';
 
 class DepartmentScreen extends StatelessWidget {
   final Department department;

@@ -1,13 +1,12 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/models/request.dart';
-import 'package:ignite/widgets/clipping_class.dart';
-import 'package:ignite/widgets/top_button_request.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:ignite/widgets/request_form.dart';
 
-import '../new_request_screen.dart';
+import '../../models/hydrant.dart';
+import '../../models/request.dart';
+import '../../widgets/clipping_class.dart';
+import '../../widgets/request_form.dart';
+import '../../widgets/top_button_request.dart';
 
 class FiremanAddInformation extends StatefulWidget {
   final Hydrant hydrant;

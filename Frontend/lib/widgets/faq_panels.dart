@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
-import 'package:ignite/views/faq.dart';
 import 'package:theme_provider/theme_provider.dart';
+
+import '../views/faq.dart';
 
 class FAQPanel extends StatelessWidget {
   final List<FAQ> listFaqs;

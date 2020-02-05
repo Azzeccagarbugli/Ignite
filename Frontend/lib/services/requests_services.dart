@@ -1,5 +1,5 @@
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/models/request.dart';
+import '../models/hydrant.dart';
+import '../models/request.dart';
 
 abstract class RequestsServices {
   Future<List<Request>> getRequests();

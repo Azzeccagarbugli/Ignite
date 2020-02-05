@@ -1,15 +1,14 @@
-import 'package:ignite/dbcontrollers/dbcontroller.dart';
-import 'package:ignite/dbcontrollers/firebasedbcontrollers/departments_firebasecontroller.dart';
-import 'package:ignite/dbcontrollers/firebasedbcontrollers/hydrants_firebasecontroller.dart';
-import 'package:ignite/dbcontrollers/firebasedbcontrollers/requests_firebasecontroller.dart';
-import 'package:ignite/dbcontrollers/firebasedbcontrollers/users_firebasecontroller.dart';
-import 'package:ignite/dbcontrollers/firebasedbcontrollers/values_firebasecontroller.dart';
-import 'package:ignite/models/department.dart';
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/models/request.dart';
-import 'package:ignite/models/user.dart';
-import 'package:ignite/models/values.dart';
-
+import '../../dbcontrollers/dbcontroller.dart';
+import '../../dbcontrollers/firebasedbcontrollers/departments_firebasecontroller.dart';
+import '../../dbcontrollers/firebasedbcontrollers/hydrants_firebasecontroller.dart';
+import '../../dbcontrollers/firebasedbcontrollers/requests_firebasecontroller.dart';
+import '../../dbcontrollers/firebasedbcontrollers/users_firebasecontroller.dart';
+import '../../dbcontrollers/firebasedbcontrollers/values_firebasecontroller.dart';
+import '../../models/department.dart';
+import '../../models/hydrant.dart';
+import '../../models/request.dart';
+import '../../models/user.dart';
+import '../../models/values.dart';
 import 'controllerfactory.dart';
 
 class FirebaseControllerFactory implements ControllerFactory {

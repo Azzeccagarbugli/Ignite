@@ -1,7 +1,7 @@
-import 'package:ignite/dbcontrollers/firebasedbcontrollers/users_firebasecontroller.dart';
-import 'package:ignite/factories/controllerfactories/firebasecontrollerfactory.dart';
-import 'package:ignite/models/user.dart';
-import 'package:ignite/services/users_services.dart';
+import '../../dbcontrollers/firebasedbcontrollers/users_firebasecontroller.dart';
+import '../../factories/controllerfactories/firebasecontrollerfactory.dart';
+import '../../models/user.dart';
+import '../users_services.dart';
 
 class FirebaseUsersServices implements UsersServices {
   FirebaseUsersController _usersController =

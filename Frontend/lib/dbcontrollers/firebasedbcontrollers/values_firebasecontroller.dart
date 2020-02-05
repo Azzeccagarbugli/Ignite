@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ignite/dbcontrollers/firebasecontroller.dart';
-import 'package:ignite/models/values.dart';
+
+import '../../models/values.dart';
+import '../firebasecontroller.dart';
 
 class FirebaseValuesController extends FirebaseController<Values> {
   @override

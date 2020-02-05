@@ -1,9 +1,9 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:ignite/widgets/remove_glow.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'button_decline_approve.dart';
+import 'remove_glow.dart';
 
 class CustomDialog extends StatefulWidget {
   CustomDialog(

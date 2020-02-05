@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ignite/dbcontrollers/firebasecontroller.dart';
-import 'package:ignite/models/department.dart';
+
+import '../../models/department.dart';
+import '../firebasecontroller.dart';
 
 class FirebaseDepartmentsController extends FirebaseController<Department> {
   @override

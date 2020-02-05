@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:ignite/factories/servicesfactories/firebaseservicesfactory.dart';
-import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/services_provider.dart';
-import 'package:ignite/views/login_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
+
+import 'factories/servicesfactories/firebaseservicesfactory.dart';
+import 'providers/auth_provider.dart';
+import 'providers/services_provider.dart';
+import 'views/login_screen.dart';
 
 void main() {
   runApp(Ignite());

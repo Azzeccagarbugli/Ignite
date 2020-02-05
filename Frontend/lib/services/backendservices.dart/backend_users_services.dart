@@ -1,5 +1,5 @@
-import 'package:ignite/models/user.dart';
-import 'package:ignite/services/users_services.dart';
+import '../../models/user.dart';
+import '../users_services.dart';
 
 class BackendUsersServices implements UsersServices {
   String _ip;

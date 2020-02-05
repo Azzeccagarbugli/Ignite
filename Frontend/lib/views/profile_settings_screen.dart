@@ -3,18 +3,17 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
-import 'package:ignite/models/user.dart';
-import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/services_provider.dart';
-import 'package:ignite/views/faq.dart';
-import 'package:ignite/views/loading_screen.dart';
-import 'package:ignite/views/loading_view.dart';
-import 'package:ignite/widgets/remove_glow.dart';
-import 'package:ignite/widgets/settings_button.dart';
 import 'package:simple_gravatar/simple_gravatar.dart';
-import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import '../models/user.dart';
+import '../providers/auth_provider.dart';
+import '../providers/services_provider.dart';
+import '../widgets/remove_glow.dart';
+import '../widgets/settings_button.dart';
+import 'faq.dart';
+import 'loading_screen.dart';
+import 'loading_view.dart';
 import 'login_screen.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {

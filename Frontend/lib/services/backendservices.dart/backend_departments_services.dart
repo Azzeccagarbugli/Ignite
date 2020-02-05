@@ -1,5 +1,5 @@
-import 'package:ignite/models/department.dart';
-import 'package:ignite/services/departments_services.dart';
+import '../../models/department.dart';
+import '../departments_services.dart';
 
 class BackendDepartmentsServices implements DepartmentsServices {
   String _ip;

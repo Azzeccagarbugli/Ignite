@@ -6,20 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:ignite/helper/map_launcher.dart';
-import 'package:ignite/models/department.dart';
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/providers/services_provider.dart';
-import 'package:ignite/views/department_screen.dart';
-import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
-import 'package:ignite/views/loading_screen.dart';
-import 'package:ignite/widgets/homepage_button.dart';
-import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'dart:ui' as ui;
 
+import '../../helper/map_launcher.dart';
 import '../../main.dart';
+import '../../models/department.dart';
+import '../../models/hydrant.dart';
+import '../../providers/services_provider.dart';
+import '../../widgets/homepage_button.dart';
+import '../department_screen.dart';
+import '../fireman_screen_views/request_approval_screen.dart';
+import '../loading_screen.dart';
 
 const double kStartupLat = 41.9038243;
 const double kStartupLong = 12.4476838;

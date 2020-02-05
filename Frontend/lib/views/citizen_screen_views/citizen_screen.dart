@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/views/citizen_screen_views/citizen_screen_map.dart';
-import 'package:ignite/views/new_request_screen.dart';
-import 'package:ignite/views/profile_settings_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import '../../main.dart';
+import '../new_request_screen.dart';
+import '../profile_settings_screen.dart';
+import 'citizen_screen_map.dart';
 
 class CitizenScreen extends StatefulWidget {
   @override

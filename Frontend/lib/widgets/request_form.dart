@@ -3,17 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/models/request.dart';
-import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/services_provider.dart';
-import 'package:ignite/widgets/loading_shimmer.dart';
-import 'package:ignite/widgets/remove_glow.dart';
-import 'package:ignite/widgets/request_form_dropdownlisttile.dart';
-import 'package:ignite/widgets/request_form_textlisttile.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+
+import '../models/hydrant.dart';
+import '../models/request.dart';
+import '../providers/auth_provider.dart';
+import '../providers/services_provider.dart';
+import 'loading_shimmer.dart';
+import 'remove_glow.dart';
+import 'request_form_dropdownlisttile.dart';
+import 'request_form_textlisttile.dart';
 
 class RequestForm extends StatefulWidget {
   Request oldRequest;
@@ -461,6 +461,12 @@ class _RequestFormState extends State<RequestForm> {
                     ),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
+                ),
+                style: TextStyle(
+                  color: ThemeProvider.themeOf(context).id == "main"
+                      ? Colors.grey
+                      : Colors.white,
+                  fontFamily: 'Nunito',
                 ),
                 format: DateFormat("dd-MM-yyyy"),
                 onShowPicker: (context, value) {

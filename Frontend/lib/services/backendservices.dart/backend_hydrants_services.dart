@@ -1,5 +1,5 @@
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/services/hydrants_services.dart';
+import '../../models/hydrant.dart';
+import '../hydrants_services.dart';
 
 class BackendHydrantsServices implements HydrantsServices {
   String _ip;

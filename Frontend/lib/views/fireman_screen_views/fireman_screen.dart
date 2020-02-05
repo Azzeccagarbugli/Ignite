@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/views/fireman_screen_views/fireman_screen_requests.dart';
-import 'package:ignite/views/profile_settings_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../../main.dart';
 
 import '../new_request_screen.dart';
+import '../profile_settings_screen.dart';
 import 'fireman_screen_map.dart';
+import 'fireman_screen_requests.dart';
 
 class FiremanScreen extends StatefulWidget {
   @override

@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ignite/widgets/clipping_class.dart';
-import 'package:ignite/widgets/top_button_request.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:ignite/widgets/request_form.dart';
 
-import 'loading_screen.dart';
+import '../widgets/clipping_class.dart';
+import '../widgets/request_form.dart';
+import '../widgets/top_button_request.dart';
 
 const double kStartupLat = 41.9038243;
 const double kStartupLong = 12.4476838;

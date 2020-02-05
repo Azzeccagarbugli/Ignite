@@ -1,9 +1,9 @@
-import 'package:ignite/dbcontrollers/dbcontroller.dart';
-import 'package:ignite/models/department.dart';
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/models/request.dart';
-import 'package:ignite/models/user.dart';
-import 'package:ignite/models/values.dart';
+import '../../dbcontrollers/dbcontroller.dart';
+import '../../models/department.dart';
+import '../../models/hydrant.dart';
+import '../../models/request.dart';
+import '../../models/user.dart';
+import '../../models/values.dart';
 
 abstract class ControllerFactory {
   DbController<User> getUsersController();

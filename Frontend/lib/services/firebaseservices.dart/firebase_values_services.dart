@@ -1,7 +1,7 @@
-import 'package:ignite/dbcontrollers/firebasedbcontrollers/values_firebasecontroller.dart';
-import 'package:ignite/factories/controllerfactories/firebasecontrollerfactory.dart';
-import 'package:ignite/models/values.dart';
-import 'package:ignite/services/values_services.dart';
+import '../../dbcontrollers/firebasedbcontrollers/values_firebasecontroller.dart';
+import '../../factories/controllerfactories/firebasecontrollerfactory.dart';
+import '../../models/values.dart';
+import '../values_services.dart';
 
 class FirebaseValuesServices implements ValuesServices {
   FirebaseValuesController _valuesController =

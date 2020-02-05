@@ -1,4 +1,4 @@
-import 'package:ignite/models/hydrant.dart';
+import '../models/hydrant.dart';
 
 abstract class HydrantsServices {
   Future<List<Hydrant>> getApprovedHydrants();

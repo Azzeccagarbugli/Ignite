@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ignite/dbcontrollers/firebasecontroller.dart';
-import 'package:ignite/models/user.dart';
+
+import '../../models/user.dart';
+import '../firebasecontroller.dart';
 
 class FirebaseUsersController extends FirebaseController<User> {
   @override

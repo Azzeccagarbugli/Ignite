@@ -2,20 +2,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/models/request.dart';
-import 'package:ignite/providers/services_provider.dart';
-import 'package:ignite/views/fireman_screen_views/fireman_screen_add_information.dart';
-import 'package:ignite/widgets/button_decline_approve.dart';
-import 'package:ignite/widgets/loading_shimmer.dart';
-import 'package:ignite/widgets/remove_glow.dart';
-import 'package:ignite/widgets/request_map.dart';
-import 'package:ignite/widgets/row_marker_details.dart';
 
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:provider/provider.dart';
+
+import '../../models/hydrant.dart';
+import '../../models/request.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/services_provider.dart';
+import '../../widgets/button_decline_approve.dart';
+import '../../widgets/loading_shimmer.dart';
+import '../../widgets/remove_glow.dart';
+import '../../widgets/request_map.dart';
+import '../../widgets/row_marker_details.dart';
+import 'fireman_screen_add_information.dart';
 
 class RequestApprovalScreen extends StatefulWidget {
   final Request request;
@@ -308,11 +308,8 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           ),
           text: "Declina",
           onPressed: () async {
-            FirebaseUser user =
-                await AuthProvider().getUser();
-                ServicesProvider()
-                .getRequestsServices()
-                .denyRequest(this.request);
+            FirebaseUser user = await AuthProvider().getUser();
+            ServicesProvider().getRequestsServices().denyRequest(this.request);
             Navigator.pop(context);
             Flushbar(
               flushbarStyle: FlushbarStyle.GROUNDED,

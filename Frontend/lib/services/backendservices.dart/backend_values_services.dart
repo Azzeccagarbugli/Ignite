@@ -1,4 +1,4 @@
-import 'package:ignite/services/values_services.dart';
+import '../values_services.dart';
 
 class BackendValuesServices implements ValuesServices {
   String _ip;

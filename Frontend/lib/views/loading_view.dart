@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/services_provider.dart';
-import 'package:ignite/views/introduction_tutorial.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:ignite/views/citizen_screen_views/citizen_screen.dart';
-import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
+import '../providers/services_provider.dart';
+import 'citizen_screen_views/citizen_screen.dart';
 import 'fireman_screen_views/fireman_screen.dart';
+import 'introduction_tutorial.dart';
 import 'loading_screen.dart';
 
 class LoadingView extends StatefulWidget {

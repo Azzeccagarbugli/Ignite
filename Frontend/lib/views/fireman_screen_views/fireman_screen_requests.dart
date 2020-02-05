@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/models/request.dart';
-import 'package:ignite/providers/services_provider.dart';
-import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
-import 'package:ignite/views/loading_screen.dart';
-import 'package:ignite/widgets/loading_shimmer.dart';
-import 'package:ignite/widgets/painter.dart';
-import 'package:ignite/widgets/remove_glow.dart';
+
 import 'package:theme_provider/theme_provider.dart';
-import 'package:provider/provider.dart';
+
+import '../../models/hydrant.dart';
+import '../../models/request.dart';
+import '../../providers/services_provider.dart';
+import '../../widgets/loading_shimmer.dart';
+import '../../widgets/painter.dart';
+import '../../widgets/remove_glow.dart';
+import '../loading_screen.dart';
+import 'request_approval_screen.dart';
 
 class FiremanScreenRequests extends StatefulWidget {
   @override

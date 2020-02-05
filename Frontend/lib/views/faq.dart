@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ignite/widgets/faq_panels.dart';
 import 'dart:convert';
-import 'package:ignite/widgets/header.dart';
-import 'package:ignite/widgets/remove_glow.dart';
 import 'package:theme_provider/theme_provider.dart';
+
+import '../widgets/faq_panels.dart';
+import '../widgets/header.dart';
+import '../widgets/remove_glow.dart';
 
 class FAQ {
   String question;

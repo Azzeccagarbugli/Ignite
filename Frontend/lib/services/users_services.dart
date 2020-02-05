@@ -1,4 +1,4 @@
-import 'package:ignite/models/user.dart';
+import '../models/user.dart';
 
 abstract class UsersServices {
   Future<bool> isUserFiremanByMail(String mail);
