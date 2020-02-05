@@ -11,9 +11,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ignite/helper/map_launcher.dart';
 import 'package:ignite/main.dart';
 import 'package:ignite/models/department.dart';
-
+import 'package:provider/provider.dart';
 import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/department_screen.dart';
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
 import 'package:ignite/views/loading_screen.dart';
@@ -57,11 +57,13 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> getApprovedHydrants() async {
-    _approvedHydrants = await DbProvider().getApprovedHydrants();
+    _approvedHydrants =
+        await ServicesProvider().getHydrantsServices().getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
-    _departments = await DbProvider().getDepartments();
+    _departments =
+        await ServicesProvider().getDepartmentsServices().getDepartments();
   }
 
   Future<void> firstFutureInit() async {
@@ -85,9 +87,9 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> _buildValues() async {
-    _attackValues = await DbProvider().getAttacks();
-    _vehicleValues = await DbProvider().getVehicles();
-    _openingValues = await DbProvider().getOpenings();
+    _attackValues = await ServicesProvider().getValuesServices().getAttacks();
+    _vehicleValues = await ServicesProvider().getValuesServices().getVehicles();
+    _openingValues = await ServicesProvider().getValuesServices().getOpenings();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -442,7 +444,6 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
 
   List<Hydrant> _buildHydrantsFilteredForSearch(
       String attack, String vehicle, String opening) {
-    print(attack);
     List<Hydrant> filteredHydrants = List.from(_approvedHydrants);
     for (Hydrant h in _approvedHydrants) {
       if (attack == "" && vehicle == "" && opening == "") {
@@ -584,6 +585,12 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
               nameAnimation: "anim",
             );
           case ConnectionState.done:
+            if (data.hasError)
+              return new LoadingScreen(
+                message: "Errore",
+                pathFlare: "assets/general/maps.flr",
+                nameAnimation: "anim",
+              );
             return FutureBuilder(
               future: secondFutureInit(),
               builder: (context, data) {

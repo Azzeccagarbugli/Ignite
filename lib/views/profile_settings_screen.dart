@@ -5,7 +5,7 @@ import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:ignite/models/user.dart';
 import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/faq.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/views/loading_view.dart';
@@ -33,15 +33,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   FirebaseUser _fireUser;
 
   Future<void> getFireUser() async {
-    this._fireUser = await Provider.of<AuthProvider>(context).getUser();
+    this._fireUser = await AuthProvider().getUser();
   }
 
   Future<void> getDBUser() async {
-    this._user = await DbProvider().getUserByMail(this._fireUser.email);
+    this._user = await ServicesProvider()
+        .getUsersServices()
+        .getUserByMail(this._fireUser.email);
   }
 
   Future<void> setImageURL() async {
-    print("Utente ${_user.isFacebook()}");
     if (_user.isFacebook() || _user.isGoogle()) {
       _urlImage = _fireUser.photoUrl;
     } else {
@@ -132,9 +133,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       label: Text("Conferma",
                           style: TextStyle(color: Colors.white)),
                       onPressed: () {
-                        Provider.of<AuthProvider>(context)
-                            .recoverPassword(this._fireUser.email);
-                        Provider.of<AuthProvider>(context).logOut(context);
+                        AuthProvider().recoverPassword(this._fireUser.email);
+                        AuthProvider().logOut(context);
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
                           return LoginScreen();
@@ -347,8 +347,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                                       subtitlte:
                                           "Effettua il logout, ma torna presto eh!",
                                       onTap: () async {
-                                        Provider.of<AuthProvider>(context)
-                                            .logOut(context);
+                                        AuthProvider().logOut(context);
                                         Navigator.pushReplacement(context,
                                             MaterialPageRoute(
                                                 builder: (context) {

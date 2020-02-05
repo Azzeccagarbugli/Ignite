@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ignite/dbcontrollers/firebasecontroller.dart';
 import 'package:ignite/models/user.dart';
 
-class UsersFirebaseController extends FirebaseController<User> {
+class FirebaseUsersController extends FirebaseController<User> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('users').document(id).delete();
@@ -23,7 +23,6 @@ class UsersFirebaseController extends FirebaseController<User> {
     Map<String, dynamic> data = ds.data;
 
     if (data['isFireman'] == true) {
-      DocumentReference department = data['department'];
       return new User.fireman(
         id,
         data['email'],
@@ -32,7 +31,7 @@ class UsersFirebaseController extends FirebaseController<User> {
         data['surname'],
         data['residence_street_number'],
         data['cap'],
-        department.documentID,
+        (data['department'] == null) ? null : data['department'].documentID,
         data['isFirstAccess'],
         data['isGoogle'],
         data['isFacebook'],
@@ -61,8 +60,9 @@ class UsersFirebaseController extends FirebaseController<User> {
 
   @override
   Future<User> insert(User object) async {
-    DocumentReference department =
-        this.db.collection('departments').document(object.getDepartmentId());
+    DocumentReference department = object.getDepartmentId() == null
+        ? null
+        : this.db.collection('departments').document(object.getDepartmentId());
     DocumentReference ref = await this.db.collection('users').add({
       'birthday': object.getBirthday(),
       'cap': object.getCap(),
@@ -81,9 +81,10 @@ class UsersFirebaseController extends FirebaseController<User> {
 
   @override
   Future<User> update(User object) async {
-    DocumentReference department =
-        this.db.collection('departments').document(object.getDepartmentId());
-    await this.db.collection('hydrants').document(object.getId()).updateData({
+    DocumentReference department = object.getDepartmentId() == null
+        ? null
+        : this.db.collection('departments').document(object.getDepartmentId());
+    await this.db.collection('users').document(object.getId()).updateData({
       'birthday': object.getBirthday(),
       'cap': object.getCap(),
       'department': department,

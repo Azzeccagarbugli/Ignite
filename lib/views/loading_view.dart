@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/introduction_tutorial.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:ignite/views/citizen_screen_views/citizen_screen.dart';
@@ -74,14 +74,18 @@ class _LoadingViewState extends State<LoadingView> {
   }
 
   Future _getIsFireman() async {
-    FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
-    _isFireman = await DbProvider().isCurrentUserFireman(user);
+    FirebaseUser user = await AuthProvider().getUser();
+    _isFireman = await ServicesProvider()
+        .getUsersServices()
+        .isUserFiremanByMail(user.email);
     print("L\'utente ${user.email} è un pompiere: ${_isFireman}");
   }
 
   Future _getIsFirstAccess() async {
-    FirebaseUser user = await Provider.of<AuthProvider>(context).getUser();
-    _isFirstAccess = await DbProvider().isFirstAccess(user);
+    FirebaseUser user = await AuthProvider().getUser();
+    _isFirstAccess = await ServicesProvider()
+        .getUsersServices()
+        .isUserFirstAccessByMail(user.email);
     print("L\'utente ${user.email} è al primo accesso: ${_isFirstAccess}");
   }
 }

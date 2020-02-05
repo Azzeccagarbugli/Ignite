@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ignite/providers/db_provider.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/views/fireman_screen_views/request_approval_screen.dart';
 import 'package:ignite/views/loading_screen.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
@@ -31,7 +31,9 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
   }
 
   Future _getRequests() async {
-    _requests = await DbProvider().getPendingRequestsByDistance(_curloc);
+    _requests = await ServicesProvider()
+        .getRequestsServices()
+        .getPendingRequestsByDistance(_curloc.latitude, _curloc.longitude);
   }
 
   Future initFuture() async {
@@ -73,6 +75,12 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
                   nameAnimation: "rotate",
                 );
               case ConnectionState.done:
+                if (snapshot.hasError)
+                  return new LoadingScreen(
+                    message: "Errore",
+                    pathFlare: "assets/general/gps_rotation.flr",
+                    nameAnimation: "rotate",
+                  );
                 if (_requests.isEmpty) {
                   return new Center(
                     child: Padding(
@@ -210,7 +218,9 @@ class _RequestCardState extends State<RequestCard> {
           vertical: 6,
         ),
         child: FutureBuilder<Hydrant>(
-          future: DbProvider().getHydrantById(widget.request.getHydrantId()),
+          future: ServicesProvider()
+              .getHydrantsServices()
+              .getHydrantById(widget.request.getHydrantId()),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:

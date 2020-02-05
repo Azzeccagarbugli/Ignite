@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ignite/models/hydrant.dart';
 import 'package:ignite/models/request.dart';
 import 'package:ignite/providers/auth_provider.dart';
-import 'package:ignite/providers/db_provider.dart';
+import 'package:ignite/providers/services_provider.dart';
 import 'package:ignite/widgets/loading_shimmer.dart';
 import 'package:ignite/widgets/remove_glow.dart';
 import 'package:ignite/widgets/request_form_dropdownlisttile.dart';
@@ -71,11 +71,13 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   Future getIsFireman() async {
-    _isFireman = await DbProvider().isCurrentUserFireman(_user);
+    _isFireman = await ServicesProvider()
+        .getUsersServices()
+        .isUserFiremanByMail(_user.email);
   }
 
   Future getUser() async {
-    _user = await Provider.of<AuthProvider>(context).getUser();
+    _user = await AuthProvider().getUser();
   }
 
   Future initFuture() async {
@@ -90,12 +92,18 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   Future<void> buildValues() async {
-    widget._attackValues = await DbProvider().getAttacks();
-    widget._colorValues = await DbProvider().getColors();
-    widget._typeValues = await DbProvider().getTypes();
-    widget._vehicleValues = await DbProvider().getVehicles();
-    widget._openingValues = await DbProvider().getOpenings();
-    widget._pressureValues = await DbProvider().getPressures();
+    widget._attackValues =
+        await ServicesProvider().getValuesServices().getAttacks();
+    widget._colorValues =
+        await ServicesProvider().getValuesServices().getColors();
+    widget._typeValues =
+        await ServicesProvider().getValuesServices().getTypes();
+    widget._vehicleValues =
+        await ServicesProvider().getValuesServices().getVehicles();
+    widget._openingValues =
+        await ServicesProvider().getValuesServices().getOpenings();
+    widget._pressureValues =
+        await ServicesProvider().getValuesServices().getPressures();
   }
 
   List<Widget> buildListTileList(List<Placemark> placemark) {
@@ -554,17 +562,18 @@ class _RequestFormState extends State<RequestForm> {
                     widget._street,
                     widget._number,
                   );
-            Provider.of<AuthProvider>(context).getUser().then((user) {
+            AuthProvider().getUser().then((user) {
               if (widget.isNewRequest) {
-                DbProvider().addRequest(
-                  newHydrant,
-                  _isFireman,
-                  user,
-                );
+                ServicesProvider().getRequestsServices().addRequest(
+                      newHydrant,
+                      _isFireman,
+                      user.email,
+                    );
               } else {
                 newHydrant.setId(widget.oldHydrant.getId());
-                DbProvider()
-                    .approveRequest(newHydrant, widget.oldRequest, user);
+                ServicesProvider()
+                    .getRequestsServices()
+                    .approveRequest(newHydrant, widget.oldRequest, user.email);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();

@@ -5,7 +5,7 @@ import 'package:ignite/models/request.dart';
 import 'package:ignite/models/user.dart';
 import 'package:ignite/models/values.dart';
 
-abstract class DbFactory {
+abstract class ControllerFactory {
   DbController<User> getUsersController();
   DbController<Hydrant> getHydrantsController();
   DbController<Request> getRequestsController();

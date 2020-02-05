@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ignite/dbcontrollers/firebasecontroller.dart';
 import 'package:ignite/models/department.dart';
 
-class DepartmentsFirebaseController extends FirebaseController<Department> {
+class FirebaseDepartmentsController extends FirebaseController<Department> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('departments').document(id).delete();
