@@ -43,7 +43,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   List<String> _attackValues;
   List<String> _vehicleValues;
   List<String> _openingValues;
-  bool _isSatellite;
+  MapType mapType;
 
   void setupPositionStream() {
     _positionStream = Geolocator()
@@ -226,7 +226,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
       onMapCreated: _onMapCreated,
-      mapType: _isSatellite ? MapType.satellite : MapType.normal,
+      mapType: mapType,
       markers: _markerSet.toSet(),
       initialCameraPosition: CameraPosition(
         target: LatLng(kStartupLat, kStartupLong),
@@ -243,7 +243,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       zoomGesturesEnabled: true,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
-      mapType: _isSatellite ? MapType.satellite : MapType.normal,
+      mapType: mapType,
       onMapCreated: _onMapCreated,
       markers: _markerSet.toSet(),
       initialCameraPosition: CameraPosition(
@@ -291,24 +291,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  HomePageButton(
-                    function: () {
-                      return AnimatedContainer(
-                        duration: Duration(milliseconds: 400),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 40.0,
-                            left: 15.0,
-                          ),
-                          child: Container(
-                            height: 300,
-                            width: 100,
-                          ),
-                        ),
-                      );
-                    },
-                    icon: Icons.filter_hdr,
-                    heroTag: 'SATELLITE',
+                  TopButtonRightMapChangeView(
+                    mapType: mapType,
                   ),
                 ],
               ),
@@ -318,8 +302,6 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       ],
     );
   }
-
-  bool isVisible = false;
 
   Widget _buildLoadedMap() {
     return Stack(
@@ -334,37 +316,8 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Stack(
-                    alignment: Alignment.topCenter,
-                    children: <Widget>[
-                      isVisible
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 20.0),
-                              child: AnimatedContainer(
-                                duration: Duration(milliseconds: 400),
-                                child: Container(
-                                  color: ThemeProvider.themeOf(context).id ==
-                                          "main"
-                                      ? Colors.grey[350]
-                                      : Colors.grey[850],
-                                  height: 140,
-                                  width: 40,
-                                ),
-                              ),
-                            )
-                          : SizedBox(),
-                      HomePageButton(
-                        function: () {
-                          isVisible = true;
-                        },
-                        icon: Icons.filter_hdr,
-                        heroTag: 'SATELLITE',
-                      ),
-                    ],
-                  ),
-                ],
+              TopButtonRightMapChangeView(
+                mapType: mapType,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,12 +346,6 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
         )
       ],
     );
-  }
-
-  void _setSatellite() {
-    setState(() {
-      _isSatellite = !_isSatellite;
-    });
   }
 
   void _animateCameraOnMe(bool isFirstLoad) {
@@ -561,7 +508,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     super.initState();
     _markerSet = List<Marker>();
     _curloc = LatLng(kStartupLat, kStartupLong);
-    _isSatellite = false;
+    mapType = MapType.normal;
   }
 
   @override
@@ -608,6 +555,151 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
         }
         return null;
       },
+    );
+  }
+}
+
+class TopButtonRightMapChangeView extends StatefulWidget {
+  MapType mapType;
+  TopButtonRightMapChangeView({
+    @required this.mapType,
+  });
+  @override
+  _TopButtonRightMapChangeViewState createState() =>
+      _TopButtonRightMapChangeViewState();
+}
+
+class _TopButtonRightMapChangeViewState
+    extends State<TopButtonRightMapChangeView>
+    with SingleTickerProviderStateMixin {
+  bool isVisible = false;
+  AnimationController _controller;
+  Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(max: 1);
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(-2.5, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticIn,
+    ));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        HomePageButton(
+          function: () {
+            setState(() {
+              isVisible = !isVisible;
+            });
+          },
+          icon: Icons.filter_hdr,
+          heroTag: 'SATELLITE',
+        ),
+        SizedBox(
+          height: 12,
+        ),
+        this.isVisible ? buildContainer() : SizedBox(),
+      ],
+    );
+  }
+
+  Widget buildContainer() {
+    return SlideTransition(
+      position: _offsetAnimation,
+      child: Center(
+        child: Card(
+          elevation: 12,
+          shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(52.0),
+            ),
+          ),
+          color: ThemeProvider.themeOf(context).id == "main"
+              ? Colors.white
+              : Colors.grey[850],
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    print("ciao 1");
+                    setState(() {
+                      widget.mapType = MapType.normal;
+                      this._controller.reverse();
+                      this._controller.dispose();
+                      this.isVisible = false;
+                    });
+                  },
+                  child: Icon(
+                    Icons.layers,
+                    color: ThemeProvider.themeOf(context).id == "main"
+                        ? Colors.red[600]
+                        : Colors.white,
+                    size: 28,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: GestureDetector(
+                    onTap: () {
+                      print("ciao 2");
+                      setState(() {
+                        widget.mapType = MapType.satellite;
+                        this._controller.reverse();
+                        this._controller.dispose();
+                        this.isVisible = false;
+                      });
+                    },
+                    child: Icon(
+                      Icons.satellite,
+                      color: ThemeProvider.themeOf(context).id == "main"
+                          ? Colors.red[600]
+                          : Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      print("ciao 3");
+                      widget.mapType = MapType.hybrid;
+                      this._controller.reverse();
+                      this._controller.dispose();
+                      this.isVisible = false;
+                    });
+                  },
+                  child: Icon(
+                    Icons.tonality,
+                    color: ThemeProvider.themeOf(context).id == "main"
+                        ? Colors.red[600]
+                        : Colors.white,
+                    size: 28,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
