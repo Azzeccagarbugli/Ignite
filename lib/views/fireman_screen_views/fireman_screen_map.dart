@@ -444,7 +444,6 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
 
   List<Hydrant> _buildHydrantsFilteredForSearch(
       String attack, String vehicle, String opening) {
-    print(attack);
     List<Hydrant> filteredHydrants = List.from(_approvedHydrants);
     for (Hydrant h in _approvedHydrants) {
       if (attack == "" && vehicle == "" && opening == "") {
