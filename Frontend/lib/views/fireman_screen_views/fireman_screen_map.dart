@@ -280,25 +280,25 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
             backgroundColor: Colors.white,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(
-            top: 30.0,
-            left: 15.0,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  TopButtonRightMapChangeView(
-                    mapType: mapType,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        )
+        // Padding(
+        //   padding: const EdgeInsets.only(
+        //     top: 30.0,
+        //     left: 15.0,
+        //   ),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.start,
+        //     children: <Widget>[
+        //       Column(
+        //         mainAxisAlignment: MainAxisAlignment.start,
+        //         children: <Widget>[
+        //           TopButtonRightMapChangeView(
+        //             mapType: mapType,
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // )
       ],
     );
   }
@@ -582,7 +582,7 @@ class _TopButtonRightMapChangeViewState
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
-    )..repeat(max: 1);
+    );
     _offsetAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(-2.5, 0.0),
@@ -606,6 +606,16 @@ class _TopButtonRightMapChangeViewState
           function: () {
             setState(() {
               isVisible = !isVisible;
+              if (isVisible) {
+                this._controller.reverse();
+              } else {
+                this._controller.forward();
+              }
+              this._controller.addStatusListener((status) {
+                if (status == AnimationStatus.completed) {
+                  this._controller.reset();
+                }
+              });
             });
           },
           icon: Icons.filter_hdr,
@@ -614,7 +624,7 @@ class _TopButtonRightMapChangeViewState
         SizedBox(
           height: 12,
         ),
-        this.isVisible ? buildContainer() : SizedBox(),
+        if (this.isVisible) buildContainer(),
       ],
     );
   }
@@ -644,7 +654,6 @@ class _TopButtonRightMapChangeViewState
                     setState(() {
                       widget.mapType = MapType.normal;
                       this._controller.reverse();
-                      this._controller.dispose();
                       this.isVisible = false;
                     });
                   },
@@ -657,14 +666,13 @@ class _TopButtonRightMapChangeViewState
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   child: GestureDetector(
                     onTap: () {
                       print("ciao 2");
                       setState(() {
                         widget.mapType = MapType.satellite;
                         this._controller.reverse();
-                        this._controller.dispose();
                         this.isVisible = false;
                       });
                     },
@@ -683,7 +691,6 @@ class _TopButtonRightMapChangeViewState
                       print("ciao 3");
                       widget.mapType = MapType.hybrid;
                       this._controller.reverse();
-                      this._controller.dispose();
                       this.isVisible = false;
                     });
                   },

@@ -267,27 +267,27 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
             backgroundColor: Colors.white,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(
-            top: 30.0,
-            left: 15.0,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  HomePageButton(
-                    function: _setSatellite,
-                    icon: Icons.filter_hdr,
-                    heroTag: 'SATELLITE',
-                  ),
-                ],
-              ),
-            ],
-          ),
-        )
+        // Padding(
+        //   padding: const EdgeInsets.only(
+        //     top: 30.0,
+        //     left: 15.0,
+        //   ),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.start,
+        //     children: <Widget>[
+        //       Column(
+        //         mainAxisAlignment: MainAxisAlignment.start,
+        //         children: <Widget>[
+        //           HomePageButton(
+        //             function: _setSatellite,
+        //             icon: Icons.filter_hdr,
+        //             heroTag: 'SATELLITE',
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // )
       ],
     );
   }
