@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:ignite/widgets/top_right_button_change_map.dart';
 
 import 'dart:ui' as ui;
 
@@ -317,7 +318,11 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               TopButtonRightMapChangeView(
-                mapType: mapType,
+                changeMapFunction: (newType) {
+                  setState(() {
+                    this.mapType = newType;
+                  });
+                },
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -555,158 +560,6 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
         }
         return null;
       },
-    );
-  }
-}
-
-class TopButtonRightMapChangeView extends StatefulWidget {
-  MapType mapType;
-  TopButtonRightMapChangeView({
-    @required this.mapType,
-  });
-  @override
-  _TopButtonRightMapChangeViewState createState() =>
-      _TopButtonRightMapChangeViewState();
-}
-
-class _TopButtonRightMapChangeViewState
-    extends State<TopButtonRightMapChangeView>
-    with SingleTickerProviderStateMixin {
-  bool isVisible = false;
-  AnimationController _controller;
-  Animation<Offset> _offsetAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-    _offsetAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(-2.5, 0.0),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticIn,
-    ));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        HomePageButton(
-          function: () {
-            setState(() {
-              isVisible = !isVisible;
-              if (isVisible) {
-                this._controller.reverse();
-              } else {
-                this._controller.forward();
-              }
-              this._controller.addStatusListener((status) {
-                if (status == AnimationStatus.completed) {
-                  this._controller.reset();
-                }
-              });
-            });
-          },
-          icon: Icons.filter_hdr,
-          heroTag: 'SATELLITE',
-        ),
-        SizedBox(
-          height: 12,
-        ),
-        if (this.isVisible) buildContainer(),
-      ],
-    );
-  }
-
-  Widget buildContainer() {
-    return SlideTransition(
-      position: _offsetAnimation,
-      child: Center(
-        child: Card(
-          elevation: 12,
-          shape: RoundedRectangleBorder(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(52.0),
-            ),
-          ),
-          color: ThemeProvider.themeOf(context).id == "main"
-              ? Colors.white
-              : Colors.grey[850],
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    print("ciao 1");
-                    setState(() {
-                      widget.mapType = MapType.normal;
-                      this._controller.reverse();
-                      this.isVisible = false;
-                    });
-                  },
-                  child: Icon(
-                    Icons.layers,
-                    color: ThemeProvider.themeOf(context).id == "main"
-                        ? Colors.red[600]
-                        : Colors.white,
-                    size: 28,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: GestureDetector(
-                    onTap: () {
-                      print("ciao 2");
-                      setState(() {
-                        widget.mapType = MapType.satellite;
-                        this._controller.reverse();
-                        this.isVisible = false;
-                      });
-                    },
-                    child: Icon(
-                      Icons.satellite,
-                      color: ThemeProvider.themeOf(context).id == "main"
-                          ? Colors.red[600]
-                          : Colors.white,
-                      size: 28,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      print("ciao 3");
-                      widget.mapType = MapType.hybrid;
-                      this._controller.reverse();
-                      this.isVisible = false;
-                    });
-                  },
-                  child: Icon(
-                    Icons.tonality,
-                    color: ThemeProvider.themeOf(context).id == "main"
-                        ? Colors.red[600]
-                        : Colors.white,
-                    size: 28,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
