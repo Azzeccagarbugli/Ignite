@@ -66,6 +66,11 @@ public class RequestServices {
 		return repository.findAll();
 	}
 
+	public List<Request> getPendingRequests() {
+		return this.getRequests().stream().filter(request -> request.isOpen() && !request.isApproved())
+				.collect(Collectors.toList());
+	}
+
 	public List<Request> getPendingRequestsByDistance(double latitude, double longitude, double distance) {
 		return this.getRequestsByDistance(latitude, longitude, distance).stream()
 				.filter(request -> request.isOpen() && !request.isApproved()).collect(Collectors.toList());
