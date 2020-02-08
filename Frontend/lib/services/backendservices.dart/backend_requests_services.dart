@@ -53,8 +53,14 @@ class BackendRequestsServices implements RequestsServices {
     var parsedJson = json.decode(controllerJson);
     List<Request> requests = new List<Request>();
     for (var request in parsedJson) {
-      requests.add(new Request(request["approved"], request["open"],
-          request["hydrant"], request["requestedBy"]));
+      requests.add(new Request.complete(
+        request["id"],
+        request["approved"],
+        request["open"],
+        null,
+        request["hydrant"],
+        request["requestedBy"],
+      ));
     }
     return requests;
   }
@@ -79,7 +85,8 @@ class BackendRequestsServices implements RequestsServices {
   @override
   Future<List<Request>> getRequestsByDistance(
       double latitude, double longitude) async {
-    String controllerJson = await _controller.getRequestsByDistance(latitude, longitude);
+    String controllerJson =
+        await _controller.getRequestsByDistance(latitude, longitude);
     var parsedJson = json.decode(controllerJson);
     List<Request> requests = new List<Request>();
     for (var request in parsedJson) {

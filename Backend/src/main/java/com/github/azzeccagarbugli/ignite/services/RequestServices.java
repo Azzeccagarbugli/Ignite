@@ -48,7 +48,7 @@ public class RequestServices {
 
 	public void denyRequest(Request request) {
 		hydrantServices.deleteHydrant(request.getHydrant());
-		repository.delete(request);
+		repository.deleteById(request.getId());
 	}
 
 	public List<Request> getApprovedRequests() {

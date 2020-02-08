@@ -551,7 +551,7 @@ class _RequestFormState extends State<RequestForm> {
                     widget.lat,
                     widget.long,
                     widget._color,
-                    widget._lastCheck,
+                    widget._lastCheck.toIso8601String(),
                     widget._notes,
                     widget._opening,
                     widget._street,

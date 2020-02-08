@@ -23,7 +23,6 @@ class FirebaseHydrantsController extends FirebaseController<Hydrant> {
     DocumentSnapshot ds =
         await this.db.collection('hydrants').document(id).get();
     Map<String, dynamic> data = ds.data;
-    Timestamp time = data['last_check'];
     GeoPoint geo = data['geopoint'];
     return new Hydrant(
         id,
@@ -35,7 +34,7 @@ class FirebaseHydrantsController extends FirebaseController<Hydrant> {
         geo.latitude,
         geo.longitude,
         data['color'],
-        time.toDate(),
+        data['last_check'],
         data['notes'],
         data['opening'],
         data['street'],

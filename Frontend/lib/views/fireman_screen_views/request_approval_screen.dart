@@ -212,7 +212,7 @@ class RequestScreenRecap extends StatelessWidget {
                           : SizedBox(),
                       RowMarkerDetails(
                         tag: 'Ultimo controllo',
-                        value: hydrant.getLastCheck().toIso8601String(),
+                        value: hydrant.getLastCheck(),
                       ),
                     ],
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ignite/factories/servicesfactories/backendservicesfactory.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'factories/servicesfactories/firebaseservicesfactory.dart';
@@ -15,8 +16,8 @@ void main() {
 class Ignite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AuthProvider().setFactory(FirebaseServicesFactory());
-    ServicesProvider().setFactory(FirebaseServicesFactory());
+    AuthProvider().setFactory(BackendServicesFactory("192.168.1.92"));
+    ServicesProvider().setFactory(BackendServicesFactory("192.168.1.92"));
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

@@ -16,11 +16,11 @@ class BackendHydrantsServices implements HydrantsServices {
     var parsedJson = json.decode(controllerJson);
     List<Hydrant> hydrants = new List<Hydrant>();
     for (var hydrant in parsedJson) {
-      hydrant.add(new Hydrant(
+      hydrants.add(new Hydrant(
           hydrant["id"],
-          hydrant["firstAttack"],
-          hydrant["secondAttack"],
-          hydrant["pressure"],
+          hydrant["attacks"][0],
+          hydrant["attacks"][1],
+          hydrant["bar"],
           hydrant["cap"],
           hydrant["city"],
           hydrant["geopoint"]["latitude"],
@@ -43,9 +43,9 @@ class BackendHydrantsServices implements HydrantsServices {
     var hydrant = json.decode(controllerJson);
     return new Hydrant(
         hydrant["id"],
-        hydrant["firstAttack"],
-        hydrant["secondAttack"],
-        hydrant["pressure"],
+        hydrant["attacks"][0],
+        hydrant["attacks"][1],
+        hydrant["bar"],
         hydrant["cap"],
         hydrant["city"],
         hydrant["geopoint"]["latitude"],
@@ -66,9 +66,9 @@ class BackendHydrantsServices implements HydrantsServices {
     var hydrant = json.decode(controllerJson);
     return new Hydrant(
         hydrant["id"],
-        hydrant["firstAttack"],
-        hydrant["secondAttack"],
-        hydrant["pressure"],
+        hydrant["attacks"][0],
+        hydrant["attacks"][1],
+        hydrant["bar"],
         hydrant["cap"],
         hydrant["city"],
         hydrant["geopoint"]["latitude"],
@@ -94,9 +94,9 @@ class BackendHydrantsServices implements HydrantsServices {
     var hydrant = json.decode(controllerJson);
     return new Hydrant(
         hydrant["id"],
-        hydrant["firstAttack"],
-        hydrant["secondAttack"],
-        hydrant["pressure"],
+        hydrant["attacks"][0],
+        hydrant["attacks"][1],
+        hydrant["bar"],
         hydrant["cap"],
         hydrant["city"],
         hydrant["geopoint"]["latitude"],

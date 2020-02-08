@@ -14,7 +14,7 @@ class BackendValuesServices implements ValuesServices {
     String controllerJson = await _controller.getAttacks();
     var parsedJson = json.decode(controllerJson);
     List<String> attacks = new List<String>();
-    for (String val in parsedJson["values"]) {
+    for (String val in parsedJson) {
       attacks.add(val);
     }
     return attacks;
@@ -25,7 +25,7 @@ class BackendValuesServices implements ValuesServices {
     String controllerJson = await _controller.getColors();
     var parsedJson = json.decode(controllerJson);
     List<String> colors = new List<String>();
-    for (String val in parsedJson["values"]) {
+    for (String val in parsedJson) {
       colors.add(val);
     }
     return colors;
@@ -36,7 +36,7 @@ class BackendValuesServices implements ValuesServices {
     String controllerJson = await _controller.getOpenings();
     var parsedJson = json.decode(controllerJson);
     List<String> openings = new List<String>();
-    for (String val in parsedJson["values"]) {
+    for (String val in parsedJson) {
       openings.add(val);
     }
     return openings;
@@ -47,7 +47,7 @@ class BackendValuesServices implements ValuesServices {
     String controllerJson = await _controller.getPressures();
     var parsedJson = json.decode(controllerJson);
     List<String> pressures = new List<String>();
-    for (String val in parsedJson["values"]) {
+    for (String val in parsedJson) {
       pressures.add(val);
     }
     return pressures;
@@ -58,7 +58,7 @@ class BackendValuesServices implements ValuesServices {
     String controllerJson = await _controller.getTypes();
     var parsedJson = json.decode(controllerJson);
     List<String> types = new List<String>();
-    for (String val in parsedJson["values"]) {
+    for (String val in parsedJson) {
       types.add(val);
     }
     return types;
@@ -69,7 +69,7 @@ class BackendValuesServices implements ValuesServices {
     String controllerJson = await _controller.getVehicles();
     var parsedJson = json.decode(controllerJson);
     List<String> vehicles = new List<String>();
-    for (String val in parsedJson["values"]) {
+    for (String val in parsedJson) {
       vehicles.add(val);
     }
     return vehicles;

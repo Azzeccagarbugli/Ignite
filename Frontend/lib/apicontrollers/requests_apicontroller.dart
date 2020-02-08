@@ -43,12 +43,8 @@ class RequestsApiController {
             "type": newHydrant.getType(),
             "vehicle": newHydrant.getVehicle(),
           },
-          "isFireman": {
-            isFireman,
-          },
-          "userMail": {
-            userMail,
-          }
+          "fireman": isFireman,
+          "userMail": userMail,
         }));
     return res.body;
   }

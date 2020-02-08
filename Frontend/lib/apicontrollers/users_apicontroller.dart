@@ -21,6 +21,9 @@ class UsersApiController {
       "$_baseUrl/id/$id",
       headers: _header,
     );
+    if (res.statusCode == 500) {
+      return null;
+    }
     return res.body;
   }
 
@@ -29,6 +32,9 @@ class UsersApiController {
       "$_baseUrl/mail/$mail",
       headers: _header,
     );
+    if (res.statusCode == 500) {
+      return null;
+    }
     return res.body;
   }
 
@@ -37,6 +43,9 @@ class UsersApiController {
       "$_baseUrl/isFireman/$mail",
       headers: _header,
     );
+    if (res.statusCode == 500) {
+      return null;
+    }
     return res.body;
   }
 
@@ -45,6 +54,9 @@ class UsersApiController {
       "$_baseUrl/isFirstAccess/$mail",
       headers: _header,
     );
+    if (res.statusCode == 500) {
+      return null;
+    }
     return res.body;
   }
 
@@ -53,6 +65,9 @@ class UsersApiController {
       Uri.encodeFull("$_baseUrl/setFirstAccess/$mail"),
       headers: _header,
     );
+    if (res.statusCode == 500) {
+      return null;
+    }
     return res.body;
   }
 
@@ -74,6 +89,9 @@ class UsersApiController {
         "facebook": newUser.isFacebook(),
       }),
     );
+    if (res.statusCode == 500) {
+      return null;
+    }
     return res.body;
   }
 
@@ -95,6 +113,9 @@ class UsersApiController {
         "facebook": updatedUser.isFacebook(),
       }),
     );
+    if (res.statusCode == 500) {
+      return null;
+    }
     return res.body;
   }
 }

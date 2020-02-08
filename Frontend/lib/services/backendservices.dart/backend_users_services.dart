@@ -13,59 +13,83 @@ class BackendUsersServices implements UsersServices {
   @override
   Future<User> getUserById(String id) async {
     String controllerJson = await _controller.getUserById(id);
+    if (controllerJson == null) {
+      return null;
+    }
     var user = json.decode(controllerJson);
-    if (user["isFireman"]) {
+    if (user["fireman"] == 'true') {
       return new User.fireman(
-          user["id"],
-          user["mail"],
-          user["birthday"],
-          user["name"],
-          user["surname"],
-          user["streetnumber"],
-          user["cap"],
-          user["departmentId"],
-          user["isFirstAccess"],
-          user["isGoogle"],
-          user["isFacebook"]);
+        user["id"],
+        user["mail"],
+        user["birthday"],
+        user["name"],
+        user["surname"],
+        user["streetNameNumber"],
+        user["cap"],
+        user["departmentId"],
+        user["firstAccess"],
+        user["google"],
+        user["facebook"],
+      );
     } else {
-      return new User.citizen(user["id"], user["mail"], user["isFirstAccess"],
-          user["isGoogle"], user["isFacebook"]);
+      return new User.citizen(
+        user["id"],
+        user["mail"],
+        user["firstAccess"],
+        user["google"],
+        user["facebook"],
+      );
     }
   }
 
   @override
   Future<User> getUserByMail(String mail) async {
     String controllerJson = await _controller.getUserByMail(mail);
+    if (controllerJson == null) {
+      return null;
+    }
     var user = json.decode(controllerJson);
-    if (user["isFireman"]) {
+    if (user["fireman"] == 'true') {
       return new User.fireman(
-          user["id"],
-          user["mail"],
-          user["birthday"],
-          user["name"],
-          user["surname"],
-          user["streetnumber"],
-          user["cap"],
-          user["departmentId"],
-          user["isFirstAccess"],
-          user["isGoogle"],
-          user["isFacebook"]);
+        user["id"],
+        user["mail"],
+        user["birthday"],
+        user["name"],
+        user["surname"],
+        user["streetNameNumber"],
+        user["cap"],
+        user["departmentId"],
+        user["firstAccess"],
+        user["google"],
+        user["facebook"],
+      );
     } else {
-      return new User.citizen(user["id"], user["mail"], user["isFirstAccess"],
-          user["isGoogle"], user["isFacebook"]);
+      return new User.citizen(
+        user["id"],
+        user["mail"],
+        user["firstAccess"],
+        user["google"],
+        user["facebook"],
+      );
     }
   }
 
   @override
   Future<bool> isUserFiremanByMail(String mail) async {
-    User user = await this.getUserByMail(mail);
-    return user.isFireman();
+    String controllerJson = await _controller.isUserFiremanByMail(mail);
+    if (controllerJson == null) {
+      return false;
+    }
+    return controllerJson == 'true';
   }
 
   @override
   Future<bool> isUserFirstAccessByMail(String mail) async {
-    User user = await this.getUserByMail(mail);
-    return user.isFirstAccess();
+    String controllerJson = await _controller.isUserFirstAccessByMail(mail);
+    if (controllerJson == null) {
+      return false;
+    }
+    return controllerJson == 'true';
   }
 
   @override
@@ -77,22 +101,28 @@ class BackendUsersServices implements UsersServices {
   Future<User> addUser(User newUser) async {
     String controllerJson = await _controller.addUser(newUser);
     var user = json.decode(controllerJson);
-    if (user["isFireman"]) {
+    if (user["fireman"] == 'true') {
       return new User.fireman(
-          user["id"],
-          user["mail"],
-          user["birthday"],
-          user["name"],
-          user["surname"],
-          user["streetnumber"],
-          user["cap"],
-          user["departmentId"],
-          user["isFirstAccess"],
-          user["isGoogle"],
-          user["isFacebook"]);
+        user["id"],
+        user["mail"],
+        user["birthday"],
+        user["name"],
+        user["surname"],
+        user["streetNameNumber"],
+        user["cap"],
+        user["departmentId"],
+        user["firstAccess"],
+        user["google"],
+        user["facebook"],
+      );
     } else {
-      return new User.citizen(user["id"], user["mail"], user["isFirstAccess"],
-          user["isGoogle"], user["isFacebook"]);
+      return new User.citizen(
+        user["id"],
+        user["mail"],
+        user["firstAccess"],
+        user["google"],
+        user["facebook"],
+      );
     }
   }
 
@@ -100,22 +130,28 @@ class BackendUsersServices implements UsersServices {
   Future<User> updateUser(User updatedUser) async {
     String controllerJson = await _controller.updateUser(updatedUser);
     var user = json.decode(controllerJson);
-    if (user["isFireman"]) {
+    if (user["fireman"] == 'true') {
       return new User.fireman(
-          user["id"],
-          user["mail"],
-          user["birthday"],
-          user["name"],
-          user["surname"],
-          user["streetnumber"],
-          user["cap"],
-          user["departmentId"],
-          user["isFirstAccess"],
-          user["isGoogle"],
-          user["isFacebook"]);
+        user["id"],
+        user["mail"],
+        user["birthday"],
+        user["name"],
+        user["surname"],
+        user["streetNameNumber"],
+        user["cap"],
+        user["departmentId"],
+        user["firstAccess"],
+        user["google"],
+        user["facebook"],
+      );
     } else {
-      return new User.citizen(user["id"], user["mail"], user["isFirstAccess"],
-          user["isGoogle"], user["isFacebook"]);
+      return new User.citizen(
+        user["id"],
+        user["mail"],
+        user["firstAccess"],
+        user["google"],
+        user["facebook"],
+      );
     }
   }
 }

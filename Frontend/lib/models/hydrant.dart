@@ -9,7 +9,7 @@ class Hydrant {
       double lat,
       double long,
       String color,
-      DateTime lastCheck,
+      String lastCheck,
       String notes,
       String opening,
       String street,
@@ -51,7 +51,7 @@ class Hydrant {
     this._city = city;
     this._lat = lat;
     this._long = long;
-    this._lastCheck = DateTime.now();
+    this._lastCheck = DateTime.now().toString();
     this._notes = notes;
     this._opening = "";
     this._street = street;
@@ -70,7 +70,7 @@ class Hydrant {
       double lat,
       double long,
       String color,
-      DateTime lastCheck,
+      String lastCheck,
       String notes,
       String opening,
       String street,
@@ -104,7 +104,7 @@ class Hydrant {
   double _lat;
   double _long;
   String _color;
-  DateTime _lastCheck;
+  String _lastCheck;
   String _notes;
   String _opening;
   String _street;
@@ -144,7 +144,7 @@ class Hydrant {
     return _long;
   }
 
-  DateTime getLastCheck() {
+  String getLastCheck() {
     return _lastCheck;
   }
 
