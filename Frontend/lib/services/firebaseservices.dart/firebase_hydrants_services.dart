@@ -33,7 +33,7 @@ class FirebaseHydrantsServices implements HydrantsServices {
   }
 
   @override
-  Future<bool> deleteHydrant(String id) {
+  Future<void> deleteHydrant(String id) {
     return _hydrantsController.delete(id);
   }
 

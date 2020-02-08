@@ -14,16 +14,12 @@ class BackendServicesFactory implements ServicesFactory {
   static final BackendServicesFactory _singleton =
       BackendServicesFactory._internal();
   String _ip;
-  factory BackendServicesFactory() {
+  factory BackendServicesFactory(String ip) {
+    _singleton._ip = ip;
     return _singleton;
   }
 
   BackendServicesFactory._internal();
-
-  //To call before using this factory
-  void setIpAddress(String ip) {
-    this._ip = ip;
-  }
 
   @override
   DepartmentsServices getDepartmentsServices() {

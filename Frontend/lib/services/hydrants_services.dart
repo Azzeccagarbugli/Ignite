@@ -5,5 +5,5 @@ abstract class HydrantsServices {
   Future<Hydrant> getHydrantById(String id);
   Future<Hydrant> addHydrant(Hydrant newHydrant);
   Future<Hydrant> updateHydrant(Hydrant updatedHydrant);
-  Future<bool> deleteHydrant(String id);
+  Future<void> deleteHydrant(String id);
 }

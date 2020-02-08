@@ -1,7 +1,7 @@
 package com.github.azzeccagarbugli.ignite.models;
 
 
-import java.awt.geom.Point2D;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -16,17 +16,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Document(collection = "department")
-public class Department {
+@Document(collection = "enum")
+public class ValueEnum {
 
 	@EqualsAndHashCode.Include
 	@Id
 	private UUID id;
-	private String cap;
-	private String city;
-	private Point2D.Double geopoint;
-	private String mail;
-	private String streetName;
-	private String streetNumber;
-	private String phoneNumber;
+	private String name;
+	private List<String> values;
 }
