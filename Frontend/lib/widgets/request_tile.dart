@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 
 class RequestTile extends StatelessWidget {
   final String attack1;

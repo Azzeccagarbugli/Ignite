@@ -1,9 +1,4 @@
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
-
-import 'button_decline_approve.dart';
-import 'remove_glow.dart';
 
 class CustomDialog extends StatefulWidget {
   CustomDialog({
@@ -23,10 +18,6 @@ class CustomDialog extends StatefulWidget {
 }
 
 class _CustomDialogState extends State<CustomDialog> {
-  String _attackFilter;
-  String _vehicleFilter;
-  String _openingFilter;
-
   List<DropdownMenuItem<String>> _attacksListDropdown = [];
   List<DropdownMenuItem<String>> _vehiclesListDropdown = [];
   List<DropdownMenuItem<String>> _openingsListDropdown = [];

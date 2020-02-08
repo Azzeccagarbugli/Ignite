@@ -53,10 +53,9 @@ class AuthProvider {
   }
 
   Future<void> authMailPassword(String mail, String pass) async {
-    print("Tentativo per ${mail} e ${pass}");
+    print("Tentativo per $mail e $pass");
     try {
-      AuthResult result =
-          await _auth.signInWithEmailAndPassword(email: mail, password: pass);
+      await _auth.signInWithEmailAndPassword(email: mail, password: pass);
     } catch (e) {
       throw e;
     }

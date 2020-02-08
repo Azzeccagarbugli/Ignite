@@ -34,7 +34,7 @@ class FirebaseHydrantsController extends FirebaseController<Hydrant> {
         geo.latitude,
         geo.longitude,
         data['color'],
-        data['last_check'],
+        data['last_check'].toDate(),
         data['notes'],
         data['opening'],
         data['street'],
@@ -56,42 +56,42 @@ class FirebaseHydrantsController extends FirebaseController<Hydrant> {
   }
 
   @override
-  Future<Hydrant> insert(Hydrant object) async {
+  Future<Hydrant> insert(Hydrant hydrant) async {
     DocumentReference ref = await this.db.collection('hydrants').add({
-      'attack': [object.getFirstAttack(), object.getSecondAttack()],
-      'bar': object.getPressure(),
-      'cap': object.getCap(),
-      'city': object.getCity(),
-      'color': object.getColor(),
-      'geopoint': GeoPoint(object.getLat(), object.getLong()),
-      'last_check': object.getLastCheck(),
-      'notes': object.getNotes(),
-      'opening': object.getOpening(),
-      'street': object.getStreet(),
-      'number': object.getNumber(),
-      'type': object.getType(),
-      'vehicle': object.getVehicle(),
+      'attack': [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
+      'bar': hydrant.getPressure(),
+      'cap': hydrant.getCap(),
+      'city': hydrant.getCity(),
+      'color': hydrant.getColor(),
+      'geopoint': GeoPoint(hydrant.getLat(), hydrant.getLong()),
+      'last_check': hydrant.getLastCheck(),
+      'notes': hydrant.getNotes(),
+      'opening': hydrant.getOpening(),
+      'street': hydrant.getStreet(),
+      'number': hydrant.getNumber(),
+      'type': hydrant.getType(),
+      'vehicle': hydrant.getVehicle(),
     });
     return this.get(ref.documentID);
   }
 
   @override
-  Future<Hydrant> update(Hydrant object) async {
-    await this.db.collection('hydrants').document(object.getId()).updateData({
-      'attack': [object.getFirstAttack(), object.getSecondAttack()],
-      'bar': object.getPressure(),
-      'cap': object.getCap(),
-      'city': object.getCity(),
-      'color': object.getColor(),
-      'geopoint': GeoPoint(object.getLat(), object.getLong()),
-      'last_check': object.getLastCheck(),
-      'notes': object.getNotes(),
-      'opening': object.getOpening(),
-      'street': object.getStreet(),
-      'number': object.getNumber(),
-      'type': object.getType(),
-      'vehicle': object.getVehicle(),
+  Future<Hydrant> update(Hydrant hydrant) async {
+    await this.db.collection('hydrants').document(hydrant.getId()).updateData({
+      'attack': [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
+      'bar': hydrant.getPressure(),
+      'cap': hydrant.getCap(),
+      'city': hydrant.getCity(),
+      'color': hydrant.getColor(),
+      'geopoint': GeoPoint(hydrant.getLat(), hydrant.getLong()),
+      'last_check': hydrant.getLastCheck(),
+      'notes': hydrant.getNotes(),
+      'opening': hydrant.getOpening(),
+      'street': hydrant.getStreet(),
+      'number': hydrant.getNumber(),
+      'type': hydrant.getType(),
+      'vehicle': hydrant.getVehicle(),
     });
-    return this.get(object.getId());
+    return this.get(hydrant.getId());
   }
 }

@@ -442,7 +442,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     double minDistance = double.maxFinite;
     double targetLat = _curloc.latitude;
     double targetLong = _curloc.longitude;
-    Hydrant targetHydrant = null;
+    Hydrant targetHydrant;
     for (Hydrant h in hydrants) {
       double distance = await Geolocator().distanceBetween(
           _curloc.latitude, _curloc.longitude, h.getLat(), h.getLong());

@@ -1,7 +1,5 @@
-import 'package:ignite/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
 
 class ValuesApiController {
   String _ip;

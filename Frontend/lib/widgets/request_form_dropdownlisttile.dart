@@ -24,7 +24,6 @@ class _RequestFormDropDownListTileState
     extends State<RequestFormDropDownListTile> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     widget._value = widget.values[0];
     widget.onChangedFunction(widget.values[0]);
@@ -149,7 +148,6 @@ class RequestFormDropDownButton extends StatefulWidget {
 class _RequestFormDropDownButtonState extends State<RequestFormDropDownButton> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     widget._value = widget.values[0];
     widget.onChangedFunction(widget.values[0]);

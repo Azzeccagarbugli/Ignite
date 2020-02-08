@@ -59,7 +59,7 @@ class _RequestFormState extends State<RequestForm> {
   bool _isFireman;
   FirebaseUser _user;
 
-  Future<List<Placemark>> getFuturePlacemark() async {
+  Future<void> getFuturePlacemark() async {
     try {
       _placeMarks = await Geolocator().placemarkFromCoordinates(
         widget.lat,
@@ -502,7 +502,6 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   final _key = GlobalKey<FormState>();
-  static TextEditingController textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -530,6 +529,7 @@ class _RequestFormState extends State<RequestForm> {
                 ),
               );
           }
+          return null;
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
@@ -551,7 +551,7 @@ class _RequestFormState extends State<RequestForm> {
                     widget.lat,
                     widget.long,
                     widget._color,
-                    widget._lastCheck.toIso8601String(),
+                    widget._lastCheck,
                     widget._notes,
                     widget._opening,
                     widget._street,

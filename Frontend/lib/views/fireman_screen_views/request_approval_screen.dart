@@ -1,11 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';
-
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
 import '../../providers/auth_provider.dart';
@@ -212,7 +209,7 @@ class RequestScreenRecap extends StatelessWidget {
                           : SizedBox(),
                       RowMarkerDetails(
                         tag: 'Ultimo controllo',
-                        value: hydrant.getLastCheck(),
+                        value: hydrant.getLastCheck().toString(),
                       ),
                     ],
                   ),
@@ -308,7 +305,7 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           ),
           text: "Declina",
           onPressed: () async {
-            FirebaseUser user = await AuthProvider().getUser();
+            await AuthProvider().getUser();
             ServicesProvider().getRequestsServices().denyRequest(this.request);
             Navigator.pop(context);
             Flushbar(

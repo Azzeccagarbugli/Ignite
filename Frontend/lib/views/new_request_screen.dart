@@ -68,7 +68,6 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     this._getPositionCalled = false;
   }
