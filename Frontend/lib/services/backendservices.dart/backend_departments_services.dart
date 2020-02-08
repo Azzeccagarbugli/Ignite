@@ -1,6 +1,5 @@
 import 'package:ignite/apicontrollers/departments_controller.dart';
 import 'dart:convert';
-
 import '../../models/department.dart';
 import '../departments_services.dart';
 
