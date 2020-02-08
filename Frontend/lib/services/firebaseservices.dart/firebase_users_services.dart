@@ -1,11 +1,9 @@
 import '../../dbcontrollers/firebasedbcontrollers/users_firebasecontroller.dart';
-import '../../factories/controllerfactories/firebasecontrollerfactory.dart';
 import '../../models/user.dart';
 import '../users_services.dart';
 
 class FirebaseUsersServices implements UsersServices {
-  FirebaseUsersController _usersController =
-      FirebaseControllerFactory().getUsersController();
+  FirebaseUsersController _usersController = new FirebaseUsersController();
   @override
   Future<User> getUserById(String id) async {
     return await _usersController.get(id);

@@ -1,7 +1,6 @@
 package com.github.azzeccagarbugli.ignite.models;
 
 
-import java.awt.geom.Point2D;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +28,7 @@ public class Hydrant {
 	private String cap;
 	private String city;
 	private String color;
-	private Point2D.Double geopoint;
+	private GeoLocation geopoint;
 	private Date lastCheck;
 	private String notes;
 	private String streetNumber;

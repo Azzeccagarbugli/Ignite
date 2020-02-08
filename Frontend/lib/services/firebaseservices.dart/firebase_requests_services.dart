@@ -1,7 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 
 import '../../dbcontrollers/firebasedbcontrollers/requests_firebasecontroller.dart';
-import '../../factories/controllerfactories/firebasecontrollerfactory.dart';
 import '../../factories/servicesfactories/firebaseservicesfactory.dart';
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
@@ -10,7 +9,7 @@ import '../requests_services.dart';
 
 class FirebaseRequestsServices implements RequestsServices {
   FirebaseRequestController _requestsController =
-      FirebaseControllerFactory().getRequestsController();
+      new FirebaseRequestController();
 
   @override
   Future<void> addRequest(

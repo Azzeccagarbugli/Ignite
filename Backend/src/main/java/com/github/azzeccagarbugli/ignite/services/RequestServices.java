@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.azzeccagarbugli.ignite.models.GeoLocation;
 import com.github.azzeccagarbugli.ignite.models.Hydrant;
 import com.github.azzeccagarbugli.ignite.models.Request;
 import com.github.azzeccagarbugli.ignite.repositories.RequestRepository;
@@ -58,7 +59,7 @@ public class RequestServices {
 	public List<Request> getRequestsByDistance(double latitude, double longitude, double distance) {
 		return repository.findAll().stream().filter(request -> {
 			Hydrant hydrant = hydrantServices.getHydrantById(request.getHydrant());
-			return (hydrant.getGeopoint().distance(latitude, longitude) < distance);
+			return (hydrant.getGeopoint().distanceFrom(new GeoLocation(latitude, longitude)) < distance);
 		}).collect(Collectors.toList());
 	}
 

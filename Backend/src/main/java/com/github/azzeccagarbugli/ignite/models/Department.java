@@ -1,7 +1,6 @@
 package com.github.azzeccagarbugli.ignite.models;
 
 
-import java.awt.geom.Point2D;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -24,7 +23,7 @@ public class Department {
 	private UUID id;
 	private String cap;
 	private String city;
-	private Point2D.Double geopoint;
+	private GeoLocation geopoint;
 	private String mail;
 	private String streetName;
 	private String streetNumber;

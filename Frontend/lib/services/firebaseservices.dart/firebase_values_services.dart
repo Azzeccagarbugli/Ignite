@@ -1,11 +1,9 @@
 import '../../dbcontrollers/firebasedbcontrollers/values_firebasecontroller.dart';
-import '../../factories/controllerfactories/firebasecontrollerfactory.dart';
 import '../../models/values.dart';
 import '../values_services.dart';
 
 class FirebaseValuesServices implements ValuesServices {
-  FirebaseValuesController _valuesController =
-      FirebaseControllerFactory().getValuesController();
+  FirebaseValuesController _valuesController = new FirebaseValuesController();
 
   Future<List<String>> _getEnumByName(String name) async {
     List<Values> valueList = await _valuesController.getAll();

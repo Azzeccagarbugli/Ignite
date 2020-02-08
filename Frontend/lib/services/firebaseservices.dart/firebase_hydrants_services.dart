@@ -1,5 +1,4 @@
 import '../../dbcontrollers/firebasedbcontrollers/hydrants_firebasecontroller.dart';
-import '../../factories/controllerfactories/firebasecontrollerfactory.dart';
 import '../../factories/servicesfactories/firebaseservicesfactory.dart';
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
@@ -7,7 +6,7 @@ import '../hydrants_services.dart';
 
 class FirebaseHydrantsServices implements HydrantsServices {
   FirebaseHydrantsController _hydrantsController =
-      FirebaseControllerFactory().getHydrantsController();
+      new FirebaseHydrantsController();
 
   @override
   Future<List<Hydrant>> getApprovedHydrants() async {
