@@ -26,22 +26,27 @@ public class ValueEnumController {
 
 	@GetMapping("/attacks")
 	public List<String> getAttacks() {
-		return valueEnumServices.getColors();
+		return valueEnumServices.getAttacks();
 	}
 
 	@GetMapping("/openings")
 	public List<String> getOpenings() {
-		return valueEnumServices.getColors();
+		return valueEnumServices.getOpenings();
 	}
 
 	@GetMapping("/types")
 	public List<String> getTypes() {
-		return valueEnumServices.getColors();
+		return valueEnumServices.getTypes();
 	}
 
 	@GetMapping("/pressures")
 	public List<String> getPressures() {
-		return valueEnumServices.getColors();
+		return valueEnumServices.getPressures();
+	}
+	
+	@GetMapping("/vehicles")
+	public List<String> getVehicles() {
+		return valueEnumServices.getVehicles();
 	}
 	
 	@PostMapping("/new")

@@ -26,7 +26,7 @@ class BackendHydrantsServices implements HydrantsServices {
   }
 
   @override
-  Future<bool> deleteHydrant(String id) {
+  Future<void> deleteHydrant(String id) {
     // TODO: implement deleteHydrant
     throw UnimplementedError();
   }

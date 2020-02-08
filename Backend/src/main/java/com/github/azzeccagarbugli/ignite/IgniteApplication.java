@@ -89,8 +89,7 @@ public class IgniteApplication implements CommandLineRunner {
 		pompiere.setFireman(true);
 		pompiere.setName("Francesco");
 		pompiere.setSurname("Stelluti");
-		pompiere.setStreetName("Via Coppi");
-		pompiere.setStreetNumber("30");
+		pompiere.setStreetNameNumber("Via Coppi 30");
 		UUID pompiereId = userServices.addUser(pompiere).getId();
 
 		User cittadino = new User();

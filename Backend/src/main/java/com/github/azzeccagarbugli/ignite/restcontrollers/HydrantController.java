@@ -31,6 +31,11 @@ public class HydrantController {
 	public Hydrant addHydrant(@RequestBody Hydrant newHydrant) {
 		return hydrantServices.addHydrant(newHydrant);
 	}
+	
+	@PostMapping("/update")
+	public Hydrant updateHydrant(@RequestBody Hydrant newHydrant) {
+		return hydrantServices.updateHydrant(newHydrant);
+	}
 
 	@DeleteMapping("/delete/{id}")
 	public void deleteHydrant(@PathVariable("id") String id) {

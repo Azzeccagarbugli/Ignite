@@ -39,6 +39,10 @@ public class ValueEnumServices {
 		return getEnumByName("pressure");
 	}
 
+	public List<String> getVehicles() {
+		return getEnumByName("vehicle");
+	}
+	
 	public ValueEnum addValues(ValueEnum valueEnum) {
 		valueEnum.setId(UUID.randomUUID());
 		return repository.insert(valueEnum);

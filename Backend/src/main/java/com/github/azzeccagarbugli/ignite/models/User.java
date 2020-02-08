@@ -28,8 +28,7 @@ public class User {
 
 	private String name;
 	private String surname;
-	private String streetName;
-	private String streetNumber;
+	private String streetNameNumber;
 	private boolean isFacebook;
 	private boolean isFireman;
 	private boolean isFirstAccess;
