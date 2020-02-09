@@ -26,44 +26,44 @@ public class UserController {
 	public User getUserById(@PathVariable("id") String id) {
 		return userServices.getUserById(UUID.fromString(id));
 	}
-	
+
 	@GetMapping("/mail/{mail}")
 	public User getUserByMail(@PathVariable("mail") String mail) {
 		return userServices.getUserByMail(mail);
 	}
-	
-	@GetMapping("/isFireman/{mail}")
-	public boolean isUserFiremanByMail(@PathVariable("mail") String mail) {
-		return userServices.isUserFiremanByMail(mail);
+
+	@GetMapping("/isFireman/{id}")
+	public boolean isUserFiremanByMail(@PathVariable("id") String id) {
+		return userServices.isUserFiremanById(UUID.fromString(id));
 	}
-	
-	@GetMapping("/isFirstAccess/{mail}")
-	public boolean isUserFirstAccessByMail(@PathVariable("mail") String mail) {
-		return userServices.isUserFirstAccessByMail(mail);
+
+	@GetMapping("/isFirstAccess/{id}")
+	public boolean isUserFirstAccessByMail(@PathVariable("id") String id) {
+		return userServices.isUserFirstAccessById(UUID.fromString(id));
 	}
-	
-	@PutMapping("/setFirstAccess/{mail}")
-	public void setFirstAccessToFalseByMail(@PathVariable("mail") String mail) {
-		userServices.setFirstAccessToFalseByMail(mail);
+
+	@PutMapping("/setFirstAccess/{id}")
+	public boolean setFirstAccessToFalseByMail(@PathVariable("id") String id) {
+		return userServices.setFirstAccessToFalseById(UUID.fromString(id));
 	}
-	
+
 	@PostMapping("/new")
 	public User addUser(@RequestBody User newUser) {
 		return userServices.addUser(newUser);
 	}
-	
+
 	@PostMapping("/update")
 	public User updateUser(@RequestBody User newUser) {
 		return userServices.updateUser(newUser);
 	}
-	
+
 	@DeleteMapping("/delete/{id}")
 	public void deleteUser(@PathVariable("id") String id) {
 		userServices.deleteUser(UUID.fromString(id));
 	}
-	
+
 	@PutMapping("/setFireman/{id}&{bool}")
-	public void setFireman(@PathVariable("id") String id, @PathVariable("bool") boolean bool) {
-		userServices.setFireman(UUID.fromString(id), bool);
+	public boolean setFireman(@PathVariable("id") String id, @PathVariable("bool") boolean bool) {
+		return userServices.toggleFireman(UUID.fromString(id));
 	}
 }

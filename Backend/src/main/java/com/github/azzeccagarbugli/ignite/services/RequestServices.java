@@ -1,6 +1,7 @@
 package com.github.azzeccagarbugli.ignite.services;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -10,7 +11,10 @@ import org.springframework.stereotype.Service;
 import com.github.azzeccagarbugli.ignite.models.GeoLocation;
 import com.github.azzeccagarbugli.ignite.models.Hydrant;
 import com.github.azzeccagarbugli.ignite.models.Request;
+import com.github.azzeccagarbugli.ignite.models.User;
 import com.github.azzeccagarbugli.ignite.repositories.RequestRepository;
+
+import lombok.NonNull;
 
 @Service
 public class RequestServices {
@@ -24,31 +28,56 @@ public class RequestServices {
 	@Autowired
 	private UserServices userServices;
 
-	public void addRequest(Hydrant hydrant, boolean isFireman, String userMail) {
-
+	public Request addRequest(@NonNull Hydrant hydrant, @NonNull String userMail) {
+		User requestingUser = userServices.getUserByMail(userMail);
+		if (requestingUser == null) {
+			return null;
+		}
 		Request newRequest = new Request();
-		newRequest.setApproved(isFireman);
-		newRequest.setOpen(!isFireman);
+		newRequest.setApproved(requestingUser.isFireman());
+		newRequest.setOpen(!requestingUser.isFireman());
 		newRequest.setHydrant(hydrantServices.addHydrant(hydrant).getId());
-		newRequest.setRequestedBy(userServices.getUserByMail(userMail).getId());
-		if (isFireman) {
-			newRequest.setApprovedBy(userServices.getUserByMail(userMail).getId());
+
+		newRequest.setRequestedBy(requestingUser.getId());
+		if (requestingUser.isFireman()) {
+			newRequest.setApprovedBy(requestingUser.getId());
 		}
 		newRequest.setId(UUID.randomUUID());
-		repository.insert(newRequest);
+		return repository.insert(newRequest);
 	}
 
-	public void approveRequest(Hydrant hydrant, Request request, String userMail) {
+	public boolean approveRequest(@NonNull Hydrant hydrant, @NonNull UUID requestId, @NonNull UUID userId) {
 		hydrantServices.updateHydrant(hydrant);
-		request.setApproved(true);
-		request.setOpen(false);
-		request.setApprovedBy(userServices.getUserByMail(userMail).getId());
-		repository.save(request);
+		User approvingUser = userServices.getUserById(userId);
+
+		Request toApprove = this.getRequestById(requestId);
+		if (toApprove == null || approvingUser == null || !hydrant.getId().equals(toApprove.getRequestedBy())
+				|| !approvingUser.isFireman()) {
+			return false;
+		}
+		toApprove.setApproved(true);
+		toApprove.setOpen(false);
+		toApprove.setApprovedBy(approvingUser.getId());
+		repository.save(toApprove);
+		return true;
 	}
 
-	public void denyRequest(Request request) {
-		hydrantServices.deleteHydrant(request.getHydrant());
-		repository.deleteById(request.getId());
+	public boolean denyRequest(@NonNull UUID requestId, @NonNull UUID userId) {
+		User approvingUser = userServices.getUserById(userId);
+		if (approvingUser == null || !approvingUser.isFireman()) {
+			return false;
+		}
+		Request requestToDeny = this.getRequestById(requestId);
+		if (requestToDeny == null) {
+			return false;
+		}
+		Hydrant hydrantToDeny = hydrantServices.getHydrantById(requestToDeny.getHydrant());
+		if (hydrantToDeny == null) {
+			return false;
+		}
+		hydrantServices.deleteHydrant(hydrantToDeny.getId());
+		repository.deleteById(requestToDeny.getId());
+		return true;
 	}
 
 	public List<Request> getApprovedRequests() {
@@ -75,5 +104,13 @@ public class RequestServices {
 	public List<Request> getPendingRequestsByDistance(double latitude, double longitude, double distance) {
 		return this.getRequestsByDistance(latitude, longitude, distance).stream()
 				.filter(request -> request.isOpen() && !request.isApproved()).collect(Collectors.toList());
+	}
+
+	private Request getRequestById(@NonNull UUID id) {
+		try {
+			return repository.findById(id).get();
+		} catch (NoSuchElementException e) {
+			return null;
+		}
 	}
 }

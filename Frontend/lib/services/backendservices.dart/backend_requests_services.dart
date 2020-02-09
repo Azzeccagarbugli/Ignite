@@ -12,9 +12,19 @@ class BackendRequestsServices implements RequestsServices {
   }
 
   @override
-  Future<void> addRequest(
+  Future<Request> addRequest(
       Hydrant hydrant, bool isFireman, String userMail) async {
-    await _controller.addRequest(hydrant, isFireman, userMail);
+    String controllerJson =
+        await _controller.addRequest(hydrant, isFireman, userMail);
+    var parsedJson = json.decode(controllerJson);
+    String approvedBy = isFireman ? parsedJson["approvedBy"] : null;
+    return new Request.complete(
+        parsedJson["id"],
+        parsedJson["approved"],
+        parsedJson["open"],
+        approvedBy,
+        parsedJson["hydrant"],
+        parsedJson["requestedBy"]);
   }
 
   @override

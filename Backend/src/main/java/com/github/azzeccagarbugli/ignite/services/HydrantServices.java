@@ -1,6 +1,7 @@
 package com.github.azzeccagarbugli.ignite.services;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.github.azzeccagarbugli.ignite.models.Hydrant;
 import com.github.azzeccagarbugli.ignite.repositories.HydrantRepository;
+
+import lombok.NonNull;
 
 @Service
 public class HydrantServices {
@@ -19,21 +22,37 @@ public class HydrantServices {
 	@Autowired
 	private RequestServices requestServices;
 
-	public Hydrant getHydrantById(UUID id) {
-		return repository.findById(id).get();
+	public Hydrant getHydrantById(@NonNull UUID id) {
+		try {
+			return repository.findById(id).get();
+		} catch (NoSuchElementException e) {
+			return null;
+		}
+
 	}
 
-	public Hydrant addHydrant(Hydrant newHydrant) {
+	public Hydrant addHydrant(@NonNull Hydrant newHydrant) {
 		newHydrant.setId(UUID.randomUUID());
 		return repository.insert(newHydrant);
 	}
 
-	public void deleteHydrant(UUID id) {
-		repository.deleteById(id);
+	public boolean deleteHydrant(@NonNull UUID id) {
+		if (repository.existsById(id)) {
+			repository.deleteById(id);
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
-	public Hydrant updateHydrant(Hydrant updatedHydrant) {
-		return repository.save(updatedHydrant);
+	public Hydrant updateHydrant(@NonNull Hydrant updatedHydrant) {
+		if (repository.existsById(updatedHydrant.getId())) {
+			return repository.save(updatedHydrant);
+		} else {
+			return null;
+		}
+
 	}
 
 	public List<Hydrant> getApprovedHydrants() {

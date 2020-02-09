@@ -12,7 +12,7 @@ class FirebaseRequestsServices implements RequestsServices {
       new FirebaseRequestController();
 
   @override
-  Future<void> addRequest(
+  Future<Request> addRequest(
       Hydrant hydrant, bool isFireman, String userMail) async {
     Hydrant addedHydrant = await FirebaseServicesFactory()
         .getHydrantsServices()
@@ -25,7 +25,7 @@ class FirebaseRequestsServices implements RequestsServices {
     if (isFireman) {
       newRequest.setApprovedByUserId(requestedBy.getId());
     }
-    await _requestsController.insert(newRequest);
+    return await _requestsController.insert(newRequest);
   }
 
   @override

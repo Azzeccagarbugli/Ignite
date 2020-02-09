@@ -11,5 +11,5 @@ abstract class RequestsServices {
   Future<void> approveRequest(
       Hydrant hydrant, Request request, String userMail);
   Future<void> denyRequest(Request request);
-  Future<void> addRequest(Hydrant hydrant, bool isFireman, String userMail);
+  Future<Request> addRequest(Hydrant hydrant, bool isFireman, String userMail);
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.github.azzeccagarbugli.ignite.models.Department;
 import com.github.azzeccagarbugli.ignite.repositories.DepartmentRepository;
 
+import lombok.NonNull;
+
 @Service
 public class DepartmentServices {
 
@@ -19,8 +21,10 @@ public class DepartmentServices {
 		return repository.findAll();
 	}
 
-	public Department addDepartment(Department newDepartment) {
+	public Department addDepartment(@NonNull Department newDepartment) {
 		newDepartment.setId(UUID.randomUUID());
 		return repository.insert(newDepartment);
 	}
+	
+	
 }
