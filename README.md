@@ -19,7 +19,7 @@
 
 - [Panoramica e funzionalità di base](#panoramica)
 - [Tecnologie di base](#tecno)
-- [Autori](#autori)
+- [Sito web completo e autori](#autori)
 
 # Panoramica e funzionalità di base <a name = "panoramica"></a>
 
@@ -45,7 +45,8 @@ La dashboard di amministrazione, raggiungibile tramite il seguente [indirizzo](h
 
 # Sito web completo e autori <a name = "autori"></a>
 
-  [Sito web](http://francescocoppola.me/Ignite-Homepage/)
+- [Sito web riassuntivo](http://francescocoppola.me/Ignite-Homepage/)
+- [Dashboard](https://ignitedashboard.netlify.com/)
 
 - [Francesco Coppola](https://github.com/azzeccagarbugli)
 - [Francesco Pio Stelluti](https://github.com/FrancisFire)
