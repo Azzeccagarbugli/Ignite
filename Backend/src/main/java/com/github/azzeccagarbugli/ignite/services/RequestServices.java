@@ -47,14 +47,16 @@ public class RequestServices {
 	}
 
 	public boolean approveRequest(@NonNull Hydrant hydrant, @NonNull UUID requestId, @NonNull UUID userId) {
-		hydrantServices.updateHydrant(hydrant);
+		
 		User approvingUser = userServices.getUserById(userId);
 
 		Request toApprove = this.getRequestById(requestId);
-		if (toApprove == null || approvingUser == null || !hydrant.getId().equals(toApprove.getRequestedBy())
+		if (toApprove == null || approvingUser == null || !hydrant.getId().equals(toApprove.getHydrant())
 				|| !approvingUser.isFireman()) {
 			return false;
 		}
+		
+		hydrantServices.updateHydrant(hydrant);
 		toApprove.setApproved(true);
 		toApprove.setOpen(false);
 		toApprove.setApprovedBy(approvingUser.getId());

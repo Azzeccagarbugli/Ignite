@@ -34,7 +34,7 @@ class RequestsApiController {
             "latitude": newHydrant.getLat(),
             "longitude": newHydrant.getLong()
           },
-          "lastCheck": newHydrant.getLastCheck(),
+          "lastCheck": newHydrant.getLastCheck().toIso8601String(),
           "notes": newHydrant.getNotes(),
           "streetNumber": newHydrant.getNumber(),
           "opening": newHydrant.getOpening(),
@@ -52,6 +52,7 @@ class RequestsApiController {
         await http.post(Uri.encodeFull("$_baseUrl/approve/$requestId&$userId"),
             headers: _header,
             body: json.encode({
+              "id": hydrant.getId(),
               "attacks": [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
               "bar": hydrant.getPressure(),
               "cap": hydrant.getCap(),
@@ -61,7 +62,7 @@ class RequestsApiController {
                 "latitude": hydrant.getLat(),
                 "longitude": hydrant.getLong()
               },
-              "lastCheck": hydrant.getLastCheck(),
+              "lastCheck": hydrant.getLastCheck().toIso8601String(),
               "notes": hydrant.getNotes(),
               "streetNumber": hydrant.getNumber(),
               "opening": hydrant.getOpening(),

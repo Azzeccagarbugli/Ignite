@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ignite/widgets/bottom_flushbar.dart';
+import 'package:ignite/widgets/top_right_button_change_map.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'dart:ui' as ui;
@@ -37,7 +38,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
   List<Marker> _markerSet;
   List<Hydrant> _approvedHydrants;
   List<Department> _departments;
-  bool _isSatellite;
+  MapType mapType;
 
   void setupPositionStream() {
     _positionStream = Geolocator()
@@ -214,7 +215,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
       onMapCreated: _onMapCreated,
-      mapType: _isSatellite ? MapType.satellite : MapType.normal,
+      mapType: mapType,
       markers: _markerSet.toSet(),
       initialCameraPosition: CameraPosition(
         target: LatLng(kStartupLat, kStartupLong),
@@ -231,7 +232,7 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
       zoomGesturesEnabled: true,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
-      mapType: _isSatellite ? MapType.satellite : MapType.normal,
+      mapType: mapType,
       onMapCreated: _onMapCreated,
       markers: _markerSet.toSet(),
       initialCameraPosition: CameraPosition(
@@ -268,27 +269,6 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
             backgroundColor: Colors.white,
           ),
         ),
-        // Padding(
-        //   padding: const EdgeInsets.only(
-        //     top: 30.0,
-        //     left: 15.0,
-        //   ),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.start,
-        //     children: <Widget>[
-        //       Column(
-        //         mainAxisAlignment: MainAxisAlignment.start,
-        //         children: <Widget>[
-        //           HomePageButton(
-        //             function: _setSatellite,
-        //             icon: Icons.filter_hdr,
-        //             heroTag: 'SATELLITE',
-        //           ),
-        //         ],
-        //       ),
-        //     ],
-        //   ),
-        // )
       ],
     );
   }
@@ -306,14 +286,12 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  HomePageButton(
-                    function: _setSatellite,
-                    icon: Icons.filter_hdr,
-                    heroTag: 'SATELLITE',
-                  ),
-                ],
+              TopButtonRightMapChangeView(
+                changeMapFunction: (newType) {
+                  setState(() {
+                    this.mapType = newType;
+                  });
+                },
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -332,12 +310,6 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
         )
       ],
     );
-  }
-
-  void _setSatellite() {
-    setState(() {
-      _isSatellite = !_isSatellite;
-    });
   }
 
   void _animateCameraOnMe(bool isFirstLoad) {
@@ -366,7 +338,6 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
     super.initState();
     _markerSet = List<Marker>();
     _curloc = LatLng(kStartupLat, kStartupLong);
-    _isSatellite = false;
   }
 
   @override

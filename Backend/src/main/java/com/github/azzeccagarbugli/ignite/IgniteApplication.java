@@ -130,7 +130,7 @@ public class IgniteApplication implements CommandLineRunner {
 		idranteDue.setType("Colonna");
 		idranteDue.setVehicle("ABP");
 
-		requestServices.addRequest(idranteUno, true, "pompiere@mail.com");
-		requestServices.addRequest(idranteDue, true, "pompiere@mail.com");
+		requestServices.addRequest(idranteUno, pompiereId);
+		requestServices.addRequest(idranteDue, pompiereId);
 	}
 }

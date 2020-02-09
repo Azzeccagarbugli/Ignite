@@ -89,6 +89,7 @@ class UsersApiController {
       Uri.encodeFull("$_baseUrl/update"),
       headers: _header,
       body: json.encode({
+        "id": updatedUser.getId(),
         "department": updatedUser.getDepartmentId(),
         "birthday": updatedUser.getBirthday(),
         "cap": updatedUser.getCap(),

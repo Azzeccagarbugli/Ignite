@@ -80,7 +80,8 @@ class _LoadingViewState extends State<LoadingView> {
     _isFireman = await ServicesProvider()
         .getUsersServices()
         .isUserFiremanById(user.getId());
-    print("L\'utente $userMail è un pompiere: $_isFireman");
+    print(
+        "L\'utente $userMail - id: ${user.getId()} - è un pompiere: $_isFireman");
   }
 
   Future _getIsFirstAccess() async {
@@ -89,7 +90,8 @@ class _LoadingViewState extends State<LoadingView> {
         await ServicesProvider().getUsersServices().getUserByMail(userMail);
     _isFirstAccess = await ServicesProvider()
         .getUsersServices()
-        .isUserFiremanById(user.getId());
-    print("L\'utente $userMail è al primo accesso: $_isFirstAccess");
+        .isUserFirstAccessById(user.getId());
+    print(
+        "L\'utente $userMail - id: ${user.getId()} - è al primo accesso: $_isFirstAccess");
   }
 }

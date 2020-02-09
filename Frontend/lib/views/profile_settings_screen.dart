@@ -61,7 +61,18 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
     await Future.wait([this.setImageURL()]);
   }
 
-  Widget getChip() {
+  Widget getRoleChip() {
+    return Chip(
+      elevation: 4,
+      label: Text(
+        (_user.isFireman()) ? "Dipendente VVF" : "Cittadino",
+        style: TextStyle(fontSize: 15.0),
+      ),
+      backgroundColor: Colors.white,
+    );
+  }
+
+  Widget getLoginChip() {
     return Chip(
       elevation: 4,
       avatar: CircleAvatar(
@@ -273,7 +284,14 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                                       ),
                                     ),
                                     SizedBox(height: 4.0),
-                                    this.getChip(),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        this.getRoleChip(),
+                                        this.getLoginChip(),
+                                      ],
+                                    ),
                                     SizedBox(height: 8.0),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(

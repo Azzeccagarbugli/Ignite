@@ -12,12 +12,13 @@ class BackendUsersServices implements UsersServices {
 
   @override
   Future<User> getUserById(String id) async {
+    print("UTENTE $id");
     String controllerJson = await _controller.getUserById(id);
     if (controllerJson == "") {
       return null;
     }
     var user = json.decode(controllerJson);
-    if (user["fireman"] == 'true') {
+    if (user["fireman"] == true) {
       return new User.fireman(
         user["id"],
         user["mail"],
@@ -49,7 +50,7 @@ class BackendUsersServices implements UsersServices {
       return null;
     }
     var user = json.decode(controllerJson);
-    if (user["fireman"] == 'true') {
+    if (user["fireman"] == true) {
       return new User.fireman(
         user["id"],
         user["mail"],

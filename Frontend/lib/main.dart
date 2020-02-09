@@ -8,6 +8,7 @@ import 'providers/auth_provider.dart';
 import 'providers/services_provider.dart';
 import 'views/login_screen.dart';
 
+const String kIp = "192.168.1.92";
 void main() {
   runApp(Ignite());
 }
@@ -15,8 +16,8 @@ void main() {
 class Ignite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AuthProvider().setFactory(FirebaseServicesFactory());
-    ServicesProvider().setFactory(FirebaseServicesFactory());
+    AuthProvider().setFactory(BackendServicesFactory(kIp));
+    ServicesProvider().setFactory(BackendServicesFactory(kIp));
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

@@ -11,40 +11,66 @@ import '../requests_services.dart';
 class FirebaseRequestsServices implements RequestsServices {
   FirebaseRequestController _requestsController =
       new FirebaseRequestController();
-  FirebaseHydrantsController _hydrantsController =
-      new FirebaseHydrantsController();
   @override
-  Future<Request> addRequest(
-      Hydrant hydrant, bool isFireman, String userMail) async {
-    Hydrant addedHydrant = await _hydrantsController.insert(hydrant);
-    User requestedBy = await FirebaseServicesFactory()
-        .getUsersServices()
-        .getUserByMail(userMail);
-    Request newRequest = new Request(
-        isFireman, !isFireman, addedHydrant.getId(), requestedBy.getId());
-    if (isFireman) {
+  Future<Request> addRequest(Hydrant hydrant, String userId) async {
+    Hydrant addedHydrant = await FirebaseServicesFactory()
+        .getHydrantsServices()
+        .addHydrant(hydrant);
+    User requestedBy =
+        await FirebaseServicesFactory().getUsersServices().getUserById(userId);
+    Request newRequest = new Request(requestedBy.isFireman(),
+        !requestedBy.isFireman(), addedHydrant.getId(), requestedBy.getId());
+    if (requestedBy.isFireman()) {
       newRequest.setApprovedByUserId(requestedBy.getId());
     }
     return await _requestsController.insert(newRequest);
   }
 
   @override
-  Future<void> approveRequest(
-      Hydrant hydrant, Request request, String userMail) async {
-    await _hydrantsController.update(hydrant);
-    User approvedBy = await FirebaseServicesFactory()
-        .getUsersServices()
-        .getUserByMail(userMail);
-    request.setApproved(true);
-    request.setOpen(false);
-    request.setApprovedByUserId(approvedBy.getId());
-    await _requestsController.update(request);
+  Future<bool> approveRequest(
+      Hydrant hydrant, String requestId, String userId) async {
+    await FirebaseServicesFactory()
+        .getHydrantsServices()
+        .updateHydrant(hydrant);
+    User approvedBy =
+        await FirebaseServicesFactory().getUsersServices().getUserById(userId);
+    Request toApprove = await _requestsController.get(requestId);
+    if (toApprove == null ||
+        approvedBy == null ||
+        !(hydrant.getId() == toApprove.getHydrantId()) ||
+        !approvedBy.isFireman()) {
+      return false;
+    }
+    toApprove.setApproved(true);
+    toApprove.setOpen(false);
+    toApprove.setApprovedByUserId(approvedBy.getId());
+    await _requestsController.update(toApprove);
+    return true;
   }
 
   @override
-  Future<void> denyRequest(Request request) async {
-    await _hydrantsController.delete(request.getHydrantId());
-    await _requestsController.delete(request.getId());
+  Future<bool> denyRequest(String requestId, String userId) async {
+    User approvedBy =
+        await FirebaseServicesFactory().getUsersServices().getUserById(userId);
+    if (approvedBy == null || !approvedBy.isFireman()) {
+      return false;
+    }
+    Request toDeny = await _requestsController.get(requestId);
+    if (toDeny == null) {
+      return false;
+    }
+    Hydrant hydrantToDeny = await FirebaseServicesFactory()
+        .getHydrantsServices()
+        .getHydrantById(toDeny.getHydrantId());
+    if (hydrantToDeny == null) {
+      return false;
+    }
+
+    await FirebaseServicesFactory()
+        .getHydrantsServices()
+        .deleteHydrant(toDeny.getHydrantId());
+    await _requestsController.delete(toDeny.getId());
+    return true;
   }
 
   @override

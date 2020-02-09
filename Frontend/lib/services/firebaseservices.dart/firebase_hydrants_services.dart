@@ -26,17 +26,14 @@ class FirebaseHydrantsServices implements HydrantsServices {
     return await _hydrantsController.get(id);
   }
 
-  @override
   Future<Hydrant> addHydrant(Hydrant newHydrant) {
     return _hydrantsController.insert(newHydrant);
   }
 
-  @override
-  Future<void> deleteHydrant(String id) {
+  Future<bool> deleteHydrant(String id) {
     return _hydrantsController.delete(id);
   }
 
-  @override
   Future<Hydrant> updateHydrant(Hydrant updatedHydrant) {
     return _hydrantsController.update(updatedHydrant);
   }

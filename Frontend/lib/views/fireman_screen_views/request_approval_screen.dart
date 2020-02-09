@@ -34,6 +34,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
   Future initFuture() async {
     await Future.wait([_getUserMail()]);
     await Future.wait([_getUser(), _getHydrant()]);
+    print("USER: ${_user.getId()}");
   }
 
   Future _getUserMail() async {
@@ -56,7 +57,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
-        child: FutureBuilder<Hydrant>(
+        child: FutureBuilder(
           future: this.initFuture(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {

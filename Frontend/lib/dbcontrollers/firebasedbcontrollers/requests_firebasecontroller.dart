@@ -23,7 +23,6 @@ class FirebaseRequestController extends FirebaseController<Request> {
     DocumentSnapshot ds =
         await this.db.collection('requests').document(id).get();
     Map<String, dynamic> data = ds.data;
-    print("ID: $id");
     return new Request.complete(
       id,
       data['approved'],

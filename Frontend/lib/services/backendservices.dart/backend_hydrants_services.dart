@@ -26,7 +26,7 @@ class BackendHydrantsServices implements HydrantsServices {
           hydrant["geopoint"]["latitude"],
           hydrant["geopoint"]["longitude"],
           hydrant["color"],
-          hydrant["lastCheck"],
+          DateTime.parse(hydrant["lastCheck"]),
           hydrant["notes"],
           hydrant["opening"],
           hydrant["streetName"],
@@ -40,6 +40,64 @@ class BackendHydrantsServices implements HydrantsServices {
   @override
   Future<Hydrant> getHydrantById(String id) async {
     String controllerJson = await _controller.getHydrantById(id);
+    if (controllerJson == "") {
+      return null;
+    }
+    var hydrant = json.decode(controllerJson);
+    return new Hydrant(
+        hydrant["id"],
+        hydrant["attacks"][0],
+        hydrant["attacks"][1],
+        hydrant["bar"],
+        hydrant["cap"],
+        hydrant["city"],
+        hydrant["geopoint"]["latitude"],
+        hydrant["geopoint"]["longitude"],
+        hydrant["color"],
+        DateTime.parse(hydrant["lastCheck"]),
+        hydrant["notes"],
+        hydrant["opening"],
+        hydrant["streetName"],
+        hydrant["streetNumber"],
+        hydrant["type"],
+        hydrant["vehicle"]);
+  }
+
+  @override
+  Future<Hydrant> addHydrant(Hydrant newHydrant) async {
+    String controllerJson = await _controller.addHydrant(newHydrant);
+    if (controllerJson == "") {
+      return null;
+    }
+    var hydrant = json.decode(controllerJson);
+    return new Hydrant(
+        hydrant["id"],
+        hydrant["attacks"][0],
+        hydrant["attacks"][1],
+        hydrant["bar"],
+        hydrant["cap"],
+        hydrant["city"],
+        hydrant["geopoint"]["latitude"],
+        hydrant["geopoint"]["longitude"],
+        hydrant["color"],
+        hydrant["lastCheck"],
+        hydrant["notes"],
+        hydrant["opening"],
+        hydrant["streetName"],
+        hydrant["streetNumber"],
+        hydrant["type"],
+        hydrant["vehicle"]);
+  }
+
+  @override
+  Future<bool> deleteHydrant(String id) async {
+    String controllerJson = await _controller.deleteHydrant(id);
+    return controllerJson == "true";
+  }
+
+  @override
+  Future<Hydrant> updateHydrant(Hydrant updatedHydrant) async {
+    String controllerJson = await _controller.updateHydrant(updatedHydrant);
     if (controllerJson == "") {
       return null;
     }

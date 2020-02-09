@@ -163,10 +163,14 @@ class AuthProvider {
 
   Future updateUsersCollection(
       String mail, bool isFireman, bool isGoogle, bool isFacebook) async {
-    User newUser = new User.citizen("", mail, true, isGoogle, isFacebook);
     User dbUser = await _usersServices.getUserByMail(mail);
     if (dbUser == null) {
-      await _usersServices.addUser(newUser);
+      await _usersServices
+          .addUser(new User.citizen("", mail, true, isGoogle, isFacebook));
+    } else {
+      print("ID: ${dbUser.getId()}");
+      await _usersServices.updateUser(new User.citizen(
+          dbUser.getId(), dbUser.getMail(), false, isGoogle, isFacebook));
     }
   }
 }

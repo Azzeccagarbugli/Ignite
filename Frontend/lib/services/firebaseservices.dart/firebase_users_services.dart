@@ -19,32 +19,34 @@ class FirebaseUsersServices implements UsersServices {
   }
 
   @override
-  Future<bool> isUserFiremanByMail(String mail) async {
+  Future<bool> isUserFiremanById(String id) async {
     List<User> users = await this._usersController.getAll();
     for (User user in users) {
-      if (user.getMail() == mail) return user.isFireman();
+      if (user.getId() == id) return user.isFireman();
     }
     return false;
   }
 
   @override
-  Future<bool> isUserFirstAccessByMail(String mail) async {
+  Future<bool> isUserFirstAccessById(String id) async {
     List<User> users = await this._usersController.getAll();
     for (User user in users) {
-      if (user.getMail() == mail) return user.isFirstAccess();
+      if (user.getId() == id) return user.isFirstAccess();
     }
     return false;
   }
 
   @override
-  Future<void> setFirstAccessToFalseByMail(String mail) async {
+  Future<bool> setFirstAccessToFalseById(String id) async {
     List<User> users = await this._usersController.getAll();
     for (User user in users) {
-      if (user.getMail() == mail) {
+      if (user.getId() == id) {
         user.setFirstAccess(false);
         this._usersController.update(user);
+        return true;
       }
     }
+    return false;
   }
 
   @override
