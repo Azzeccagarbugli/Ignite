@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:ignite/widgets/bottom_flushbar.dart';
 import 'package:ignite/widgets/top_right_button_change_map.dart';
 
 import 'dart:ui' as ui;
@@ -355,20 +356,15 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
 
   void _animateCameraOnMe(bool isFirstLoad) {
     if (!isFirstLoad) {
-      Flushbar(
-        flushbarStyle: FlushbarStyle.GROUNDED,
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
-        icon: Icon(
+      new BottomFlushbar(
+        "Posizione attuale",
+        "Verrà visualizzata la posizione attuale",
+        Icon(
           Icons.gps_fixed,
           color: Colors.white,
         ),
-        title: "Posizione attuale",
-        message: "Verrà visualizzata la posizione attuale",
-        duration: Duration(
-          seconds: 2,
-        ),
-      )..show(context);
+        context,
+      ).show();
     }
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
@@ -418,21 +414,15 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     List<Hydrant> filteredHydrants =
         _buildHydrantsFilteredForSearch(attack, vehicle, opening);
     if (filteredHydrants.isEmpty) {
-      Flushbar(
-        flushbarStyle: FlushbarStyle.GROUNDED,
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
-        icon: Icon(
+      new BottomFlushbar(
+        "Idrante non trovato",
+        "Non esistono idranti con queste caratteristiche all'interno della mappa",
+        Icon(
           Icons.explore,
           color: Colors.white,
         ),
-        title: "Idrante non trovato",
-        message:
-            "Non esistono idranti con queste caratteristiche all'interno della mappa",
-        duration: Duration(
-          seconds: 2,
-        ),
-      )..show(context);
+        context,
+      ).show();
       return;
     }
     _searchAndZoomOnNearestHydrant(filteredHydrants);
@@ -461,20 +451,16 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
         zoom: 16.0,
       ),
     ));
-    Flushbar(
-      flushbarStyle: FlushbarStyle.GROUNDED,
-      flushbarPosition: FlushbarPosition.BOTTOM,
-      backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
-      icon: Icon(
+    new BottomFlushbar(
+      "L'idrante più vicino",
+      "Verrà visualizzato l'idrante più vicino alla posizione attuale",
+      Icon(
         Icons.explore,
         color: Colors.white,
       ),
-      title: "L'idrante più vicino",
-      message: "Verrà visualizzato l'idrante più vicino alla posizione attuale",
-      duration: Duration(
-        seconds: 2,
-      ),
-    )..show(context);
+      context,
+    ).show();
+
     await Future.delayed(const Duration(milliseconds: 2000), () {});
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return RequestScreenRecap(

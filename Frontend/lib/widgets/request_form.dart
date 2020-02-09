@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:ignite/models/user.dart';
+import 'package:ignite/widgets/top_flushbar.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:intl/intl.dart';
 
@@ -57,7 +59,8 @@ class RequestForm extends StatefulWidget {
 class _RequestFormState extends State<RequestForm> {
   List<Placemark> _placeMarks;
   bool _isFireman;
-  FirebaseUser _user;
+  String _userMail;
+  User _user;
 
   Future<void> getFuturePlacemark() async {
     try {
@@ -73,18 +76,26 @@ class _RequestFormState extends State<RequestForm> {
   Future getIsFireman() async {
     _isFireman = await ServicesProvider()
         .getUsersServices()
-        .isUserFiremanByMail(_user.email);
+        .isUserFiremanById(_user.getId());
+  }
+
+  Future getUserMail() async {
+    _userMail = await AuthProvider().getUserMail();
   }
 
   Future getUser() async {
-    _user = await AuthProvider().getUser();
+    _user =
+        await ServicesProvider().getUsersServices().getUserByMail(_userMail);
   }
 
   Future initFuture() async {
     await Future.wait([
       this.getFuturePlacemark(),
-      this.getUser(),
+      this.getUserMail(),
       this.buildValues(),
+    ]);
+    await Future.wait([
+      this.getUser(),
     ]);
     await Future.wait([
       this.getIsFireman(),
@@ -568,58 +579,59 @@ class _RequestFormState extends State<RequestForm> {
                     widget._street,
                     widget._number,
                   );
-            AuthProvider().getUser().then((user) {
-              if (widget.isNewRequest) {
-                ServicesProvider().getRequestsServices().addRequest(
-                      newHydrant,
-                      _isFireman,
-                      user.email,
-                    );
-              } else {
-                newHydrant.setId(widget.oldHydrant.getId());
-                ServicesProvider()
-                    .getRequestsServices()
-                    .approveRequest(newHydrant, widget.oldRequest, user.email);
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              }
-            });
-            Flushbar(
-              flushbarStyle: FlushbarStyle.GROUNDED,
-              flushbarPosition: FlushbarPosition.TOP,
-              title: "Idrante registrato",
-              shouldIconPulse: true,
-              message: (_isFireman)
-                  ? "L'idrante è stato aggiunto con successo alla mappa!"
-                  : "La segnalazione dell'idrante è stata effettuata con successo!",
-              icon: Icon(
-                Icons.check_circle,
-                size: 28.0,
-                color: Colors.greenAccent,
-              ),
-              duration: Duration(
-                seconds: 4,
-              ),
-            )..show(context);
+            if (widget.isNewRequest) {
+              ServicesProvider()
+                  .getRequestsServices()
+                  .addRequest(
+                    newHydrant,
+                    _user.getId(),
+                  )
+                  .then((request) {
+                if (request == null) {
+                  new TopFlushbar("Errore",
+                          "Errore nell'aggiunta della richiesta", false)
+                      .show(context);
+                } else {
+                  new TopFlushbar(
+                          "Idrante registrato",
+                          (_isFireman)
+                              ? "L'idrante è stato aggiunto con successo alla mappa!"
+                              : "La segnalazione dell'idrante è stata effettuata con successo!",
+                          true)
+                      .show(context);
+                }
+              });
+            } else {
+              newHydrant.setId(widget.oldHydrant.getId());
+              ServicesProvider()
+                  .getRequestsServices()
+                  .approveRequest(
+                      newHydrant, widget.oldRequest.getId(), _user.getId())
+                  .then((status) {
+                if (status) {
+                  new TopFlushbar(
+                          "Idrante registrato",
+                          "La richiesta è stata approvata e l'idrante è stato aggiunto con successo alla mappa!",
+                          true)
+                      .show(context);
+                } else {
+                  new TopFlushbar("Errore",
+                          "Errore nell'approvazione della richiesta", false)
+                      .show(context);
+                }
+              });
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            }
+            //???
             setState(() {});
           } else {
-            Flushbar(
-              flushbarStyle: FlushbarStyle.GROUNDED,
-              flushbarPosition: FlushbarPosition.TOP,
-              title: "Compila tutti i campi!",
-              shouldIconPulse: true,
-              message:
-                  "Si prega di compilare tutti i campi affinchè la registazione di un nuovo idrante abbia esito positivo",
-              icon: Icon(
-                Icons.warning,
-                size: 28.0,
-                color: Colors.redAccent,
-              ),
-              duration: Duration(
-                seconds: 4,
-              ),
-            )..show(context);
+            new TopFlushbar(
+                    "Compila tutti i campi!",
+                    "Si prega di compilare tutti i campi affinchè la registazione di un nuovo idrante abbia esito positivo",
+                    false)
+                .show(context);
           }
         },
       ),

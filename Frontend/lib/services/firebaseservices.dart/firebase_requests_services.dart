@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:ignite/dbcontrollers/firebasedbcontrollers/hydrants_firebasecontroller.dart';
 
 import '../../dbcontrollers/firebasedbcontrollers/requests_firebasecontroller.dart';
 import '../../factories/servicesfactories/firebaseservicesfactory.dart';
@@ -10,13 +11,12 @@ import '../requests_services.dart';
 class FirebaseRequestsServices implements RequestsServices {
   FirebaseRequestController _requestsController =
       new FirebaseRequestController();
-
+  FirebaseHydrantsController _hydrantsController =
+      new FirebaseHydrantsController();
   @override
   Future<Request> addRequest(
       Hydrant hydrant, bool isFireman, String userMail) async {
-    Hydrant addedHydrant = await FirebaseServicesFactory()
-        .getHydrantsServices()
-        .addHydrant(hydrant);
+    Hydrant addedHydrant = await _hydrantsController.insert(hydrant);
     User requestedBy = await FirebaseServicesFactory()
         .getUsersServices()
         .getUserByMail(userMail);
@@ -31,9 +31,7 @@ class FirebaseRequestsServices implements RequestsServices {
   @override
   Future<void> approveRequest(
       Hydrant hydrant, Request request, String userMail) async {
-    await FirebaseServicesFactory()
-        .getHydrantsServices()
-        .updateHydrant(hydrant);
+    await _hydrantsController.update(hydrant);
     User approvedBy = await FirebaseServicesFactory()
         .getUsersServices()
         .getUserByMail(userMail);
@@ -45,9 +43,7 @@ class FirebaseRequestsServices implements RequestsServices {
 
   @override
   Future<void> denyRequest(Request request) async {
-    await FirebaseServicesFactory()
-        .getHydrantsServices()
-        .deleteHydrant(request.getHydrantId());
+    await _hydrantsController.delete(request.getHydrantId());
     await _requestsController.delete(request.getId());
   }
 

@@ -16,61 +16,52 @@ class UsersApiController {
     };
   }
 
+//User - body = "" -> null
   Future<String> getUserById(String id) async {
     http.Response res = await http.get(
       "$_baseUrl/id/$id",
       headers: _header,
     );
-    if (res.statusCode == 500) {
-      return null;
-    }
     return res.body;
   }
 
+//User - body = "" -> null
   Future<String> getUserByMail(String mail) async {
     http.Response res = await http.get(
       "$_baseUrl/mail/$mail",
       headers: _header,
     );
-    if (res.statusCode == 500) {
-      return null;
-    }
     return res.body;
   }
 
-  Future<String> isUserFiremanByMail(String mail) async {
+//bool
+  Future<String> isUserFiremanById(String id) async {
     http.Response res = await http.get(
-      "$_baseUrl/isFireman/$mail",
+      "$_baseUrl/isFireman/$id",
       headers: _header,
     );
-    if (res.statusCode == 500) {
-      return null;
-    }
     return res.body;
   }
 
-  Future<String> isUserFirstAccessByMail(String mail) async {
+//bool
+  Future<String> isUserFirstAccessById(String id) async {
     http.Response res = await http.get(
-      "$_baseUrl/isFirstAccess/$mail",
+      "$_baseUrl/isFirstAccess/$id",
       headers: _header,
     );
-    if (res.statusCode == 500) {
-      return null;
-    }
     return res.body;
   }
 
-  Future<String> setFirstAccessToFalseByMail(String mail) async {
+//bool
+  Future<String> setFirstAccessToFalseById(String id) async {
     http.Response res = await http.put(
-      Uri.encodeFull("$_baseUrl/setFirstAccess/$mail"),
+      Uri.encodeFull("$_baseUrl/setFirstAccess/$id"),
       headers: _header,
     );
-    if (res.statusCode == 500) {
-      return null;
-    }
     return res.body;
   }
 
+//User - body = "" -> null
   Future<String> addUser(User newUser) async {
     http.Response res = await http.post(
       Uri.encodeFull("$_baseUrl/new"),
@@ -89,12 +80,10 @@ class UsersApiController {
         "facebook": newUser.isFacebook(),
       }),
     );
-    if (res.statusCode == 500) {
-      return null;
-    }
     return res.body;
   }
 
+//User - body = "" -> null
   Future<String> updateUser(User updatedUser) async {
     http.Response res = await http.post(
       Uri.encodeFull("$_baseUrl/update"),
@@ -113,9 +102,6 @@ class UsersApiController {
         "facebook": updatedUser.isFacebook(),
       }),
     );
-    if (res.statusCode == 500) {
-      return null;
-    }
     return res.body;
   }
 }

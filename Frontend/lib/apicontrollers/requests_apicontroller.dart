@@ -17,85 +17,67 @@ class RequestsApiController {
     };
   }
 
-  Future<String> addRequest(
-      Hydrant newHydrant, bool isFireman, String userMail) async {
-    http.Response res = await http.post(Uri.encodeFull("$_baseUrl/new"),
+//Request - body = "" -> null
+  Future<String> addRequest(Hydrant newHydrant, String userId) async {
+    http.Response res = await http.post(Uri.encodeFull("$_baseUrl/new/$userId"),
         headers: _header,
         body: json.encode({
-          "hydrant": {
-            "attacks": [
-              newHydrant.getFirstAttack(),
-              newHydrant.getSecondAttack()
-            ],
-            "bar": newHydrant.getPressure(),
-            "cap": newHydrant.getCap(),
-            "city": newHydrant.getCity(),
-            "color": newHydrant.getColor(),
-            "geopoint": {
-              "latitude": newHydrant.getLat(),
-              "longitude": newHydrant.getLong()
-            },
-            "lastCheck": newHydrant.getLastCheck(),
-            "notes": newHydrant.getNotes(),
-            "streetNumber": newHydrant.getNumber(),
-            "opening": newHydrant.getOpening(),
-            "streetName": newHydrant.getStreet(),
-            "type": newHydrant.getType(),
-            "vehicle": newHydrant.getVehicle(),
+          "attacks": [
+            newHydrant.getFirstAttack(),
+            newHydrant.getSecondAttack()
+          ],
+          "bar": newHydrant.getPressure(),
+          "cap": newHydrant.getCap(),
+          "city": newHydrant.getCity(),
+          "color": newHydrant.getColor(),
+          "geopoint": {
+            "latitude": newHydrant.getLat(),
+            "longitude": newHydrant.getLong()
           },
-          "fireman": isFireman,
-          "userMail": userMail,
+          "lastCheck": newHydrant.getLastCheck(),
+          "notes": newHydrant.getNotes(),
+          "streetNumber": newHydrant.getNumber(),
+          "opening": newHydrant.getOpening(),
+          "streetName": newHydrant.getStreet(),
+          "type": newHydrant.getType(),
+          "vehicle": newHydrant.getVehicle(),
         }));
     return res.body;
   }
 
+//bool
   Future<String> approveRequest(
-      Hydrant hydrant, Request request, String userMail) async {
-    http.Response res = await http.post(Uri.encodeFull("$_baseUrl/approve"),
-        headers: _header,
-        body: json.encode({
-          "hydrant": {
-            "attacks": [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
-            "bar": hydrant.getPressure(),
-            "cap": hydrant.getCap(),
-            "city": hydrant.getCity(),
-            "color": hydrant.getColor(),
-            "geopoint": {
-              "latitude": hydrant.getLat(),
-              "longitude": hydrant.getLong()
-            },
-            "lastCheck": hydrant.getLastCheck(),
-            "notes": hydrant.getNotes(),
-            "streetNumber": hydrant.getNumber(),
-            "opening": hydrant.getOpening(),
-            "streetName": hydrant.getStreet(),
-            "type": hydrant.getType(),
-            "vehicle": hydrant.getVehicle(),
-          },
-          "request": {
-            "approved": request.getApproved(),
-            "approvedBy": request.getApprovedByUserId(),
-            "hydrant": request.getHydrantId(),
-            "open": request.isOpen(),
-            "requestedBy": request.getRequestedByUserId(),
-          },
-          "userMail": {
-            userMail,
-          }
-        }));
+      Hydrant hydrant, String requestId, String userId) async {
+    http.Response res =
+        await http.post(Uri.encodeFull("$_baseUrl/approve/$requestId&$userId"),
+            headers: _header,
+            body: json.encode({
+              "attacks": [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
+              "bar": hydrant.getPressure(),
+              "cap": hydrant.getCap(),
+              "city": hydrant.getCity(),
+              "color": hydrant.getColor(),
+              "geopoint": {
+                "latitude": hydrant.getLat(),
+                "longitude": hydrant.getLong()
+              },
+              "lastCheck": hydrant.getLastCheck(),
+              "notes": hydrant.getNotes(),
+              "streetNumber": hydrant.getNumber(),
+              "opening": hydrant.getOpening(),
+              "streetName": hydrant.getStreet(),
+              "type": hydrant.getType(),
+              "vehicle": hydrant.getVehicle(),
+            }));
     return res.body;
   }
 
-  Future<String> denyRequest(Request request) async {
-    http.Response res = await http.post(Uri.encodeFull("$_baseUrl/deny"),
-        headers: _header,
-        body: json.encode({
-          "approved": request.getApproved(),
-          "approvedBy": request.getApprovedByUserId(),
-          "hydrant": request.getHydrantId(),
-          "open": request.isOpen(),
-          "requestedBy": request.getRequestedByUserId(),
-        }));
+//bool
+  Future<String> denyRequest(String requestId, String userId) async {
+    http.Response res = await http.post(
+      Uri.encodeFull("$_baseUrl/deny/$requestId&$userId"),
+      headers: _header,
+    );
     return res.body;
   }
 
@@ -107,6 +89,7 @@ class RequestsApiController {
     return res.body;
   }
 
+//List<Request>
   Future<String> getPendingRequestsByDistance(
       double latitude, double longitude) async {
     http.Response res = await http.get(
@@ -116,6 +99,7 @@ class RequestsApiController {
     return res.body;
   }
 
+//List<Request>
   Future<String> getRequests() async {
     http.Response res = await http.get(
       "$_baseUrl/all",
@@ -124,6 +108,7 @@ class RequestsApiController {
     return res.body;
   }
 
+//List<Request>
   Future<String> getRequestsByDistance(
       double latitude, double longitude) async {
     http.Response res = await http.get(

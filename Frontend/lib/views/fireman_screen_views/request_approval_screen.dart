@@ -1,6 +1,9 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ignite/models/user.dart';
+import 'package:ignite/widgets/bottom_flushbar.dart';
+import 'package:ignite/widgets/top_flushbar.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../../models/hydrant.dart';
@@ -24,15 +27,37 @@ class RequestApprovalScreen extends StatefulWidget {
 }
 
 class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
+  Hydrant _hydrant;
+  String _userMail;
+  User _user;
+
+  Future initFuture() async {
+    await Future.wait([_getUserMail()]);
+    await Future.wait([_getUser(), _getHydrant()]);
+  }
+
+  Future _getUserMail() async {
+    _userMail = await AuthProvider().getUserMail();
+  }
+
+  Future _getUser() async {
+    _user =
+        await ServicesProvider().getUsersServices().getUserByMail(_userMail);
+  }
+
+  Future _getHydrant() async {
+    _hydrant = await ServicesProvider()
+        .getHydrantsServices()
+        .getHydrantById(widget.request.getHydrantId());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
         child: FutureBuilder<Hydrant>(
-          future: ServicesProvider()
-              .getHydrantsServices()
-              .getHydrantById(widget.request.getHydrantId()),
+          future: this.initFuture(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -43,10 +68,11 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
               case ConnectionState.done:
                 if (snapshot.hasError) return new LoadingShimmer();
                 return new RequestScreenRecap(
-                  hydrant: snapshot.data,
+                  hydrant: this._hydrant,
                   buttonBar: ButtonAppBarDeclineConfirm(
+                    user: this._user,
                     request: widget.request,
-                    hydrant: snapshot.data,
+                    hydrant: this._hydrant,
                   ),
                 );
             }
@@ -287,10 +313,11 @@ class RequestScreenRecap extends StatelessWidget {
 class ButtonAppBarDeclineConfirm extends StatelessWidget {
   final Request request;
   final Hydrant hydrant;
-
+  final User user;
   ButtonAppBarDeclineConfirm({
     @required this.request,
-    this.hydrant,
+    @required this.user,
+    @required this.hydrant,
   });
 
   @override
@@ -306,24 +333,22 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           text: "Declina",
           onPressed: () async {
             await AuthProvider().getUser();
-            ServicesProvider().getRequestsServices().denyRequest(this.request);
+            ServicesProvider()
+                .getRequestsServices()
+                .denyRequest(this.request.getId(), this.user.getId())
+                .then((status) {
+              if (status) {
+                new TopFlushbar(
+                        "Idrante non approvato",
+                        "La richiesta dell'idrante è stata eliminata con successo",
+                        true)
+                    .show(context);
+              } else {
+                new TopFlushbar("Errore", "Errore nella richiesta", false)
+                    .show(context);
+              }
+            });
             Navigator.pop(context);
-            Flushbar(
-              flushbarStyle: FlushbarStyle.GROUNDED,
-              flushbarPosition: FlushbarPosition.TOP,
-              title: "Idrante non approvato",
-              shouldIconPulse: true,
-              message:
-                  "La richiesta dell'idrante è stata eliminata con successo",
-              icon: Icon(
-                Icons.warning,
-                size: 28.0,
-                color: Colors.redAccent,
-              ),
-              duration: Duration(
-                seconds: 4,
-              ),
-            )..show(context);
           },
         ),
         ButtonDeclineConfirm(

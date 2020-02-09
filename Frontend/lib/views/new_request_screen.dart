@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ignite/widgets/bottom_flushbar.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import '../widgets/clipping_class.dart';
@@ -23,21 +24,15 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   Future<void> _getPosition() async {
     if (!this._getPositionCalled) {
       this._getPositionCalled = true;
-      Flushbar(
-        flushbarStyle: FlushbarStyle.GROUNDED,
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
-        icon: Icon(
+      new BottomFlushbar(
+        "Posizione attuale",
+        "Verrà impiegata la posizione attuale non appena sarà attivo il GPS",
+        Icon(
           Icons.gps_fixed,
           color: Colors.white,
         ),
-        title: "Posizione attuale",
-        message:
-            "Verrà impiegata la posizione attuale non appena sarà attivo il GPS",
-        duration: Duration(
-          seconds: 2,
-        ),
-      )..show(context);
+        context,
+      ).show();
       Position position = await Geolocator()
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       setState(() {
@@ -45,20 +40,15 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
       });
       this._getPositionCalled = false;
     } else {
-      Flushbar(
-        flushbarStyle: FlushbarStyle.GROUNDED,
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
-        icon: Icon(
+      new BottomFlushbar(
+        "Richiesta già effettuata",
+        "Il fix del GPS è già stato richiesto",
+        Icon(
           Icons.gps_fixed,
           color: Colors.white,
         ),
-        title: "Richiesta già effettuata",
-        message: "Il fix del GPS è già stato richiesto",
-        duration: Duration(
-          seconds: 2,
-        ),
-      )..show(context);
+        context,
+      ).show();
     }
   }
 

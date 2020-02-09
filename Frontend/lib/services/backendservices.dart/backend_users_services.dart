@@ -13,7 +13,7 @@ class BackendUsersServices implements UsersServices {
   @override
   Future<User> getUserById(String id) async {
     String controllerJson = await _controller.getUserById(id);
-    if (controllerJson == null) {
+    if (controllerJson == "") {
       return null;
     }
     var user = json.decode(controllerJson);
@@ -45,7 +45,7 @@ class BackendUsersServices implements UsersServices {
   @override
   Future<User> getUserByMail(String mail) async {
     String controllerJson = await _controller.getUserByMail(mail);
-    if (controllerJson == null) {
+    if (controllerJson == "") {
       return null;
     }
     var user = json.decode(controllerJson);
@@ -75,31 +75,29 @@ class BackendUsersServices implements UsersServices {
   }
 
   @override
-  Future<bool> isUserFiremanByMail(String mail) async {
-    String controllerJson = await _controller.isUserFiremanByMail(mail);
-    if (controllerJson == null) {
-      return false;
-    }
+  Future<bool> isUserFiremanById(String id) async {
+    String controllerJson = await _controller.isUserFiremanById(id);
     return controllerJson == 'true';
   }
 
   @override
-  Future<bool> isUserFirstAccessByMail(String mail) async {
-    String controllerJson = await _controller.isUserFirstAccessByMail(mail);
-    if (controllerJson == null) {
-      return false;
-    }
+  Future<bool> isUserFirstAccessById(String id) async {
+    String controllerJson = await _controller.isUserFirstAccessById(id);
     return controllerJson == 'true';
   }
 
   @override
-  Future<void> setFirstAccessToFalseByMail(String mail) async {
-    await _controller.setFirstAccessToFalseByMail(mail);
+  Future<bool> setFirstAccessToFalseById(String id) async {
+    String controllerJson = await _controller.setFirstAccessToFalseById(id);
+    return controllerJson == 'true';
   }
 
   @override
   Future<User> addUser(User newUser) async {
     String controllerJson = await _controller.addUser(newUser);
+    if (controllerJson == "") {
+      return null;
+    }
     var user = json.decode(controllerJson);
     if (user["fireman"] == 'true') {
       return new User.fireman(
@@ -129,6 +127,9 @@ class BackendUsersServices implements UsersServices {
   @override
   Future<User> updateUser(User updatedUser) async {
     String controllerJson = await _controller.updateUser(updatedUser);
+    if (controllerJson == "") {
+      return null;
+    }
     var user = json.decode(controllerJson);
     if (user["fireman"] == 'true') {
       return new User.fireman(

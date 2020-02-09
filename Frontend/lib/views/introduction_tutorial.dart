@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ignite/models/user.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -14,10 +15,12 @@ class IntroductionTutorial extends StatelessWidget {
   final bool isFireman;
 
   void _onIntroEnd(context) async {
-    FirebaseUser user = await AuthProvider().getUser();
+    String userMail = await AuthProvider().getUserMail();
+    User user =
+        await ServicesProvider().getUsersServices().getUserByMail(userMail);
     ServicesProvider()
         .getUsersServices()
-        .setFirstAccessToFalseByMail(user.email);
+        .setFirstAccessToFalseById(user.getId());
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => isFireman ? FiremanScreen() : CitizenScreen(),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:ignite/widgets/bottom_flushbar.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'dart:ui' as ui;
@@ -341,20 +342,15 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
 
   void _animateCameraOnMe(bool isFirstLoad) {
     if (!isFirstLoad) {
-      Flushbar(
-        flushbarStyle: FlushbarStyle.GROUNDED,
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        backgroundColor: ThemeProvider.themeOf(context).data.bottomAppBarColor,
-        icon: Icon(
+      new BottomFlushbar(
+        "Posizione attuale",
+        "Verrà visualizzata la posizione attuale",
+        Icon(
           Icons.gps_fixed,
           color: Colors.white,
         ),
-        title: "Posizione attuale",
-        message: "Verrà visualizzata la posizione attuale",
-        duration: Duration(
-          seconds: 2,
-        ),
-      )..show(context);
+        context,
+      ).show();
     }
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(

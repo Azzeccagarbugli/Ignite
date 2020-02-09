@@ -8,8 +8,7 @@ abstract class RequestsServices {
   Future<List<Request>> getPendingRequestsByDistance(
       double latitude, double longitude);
   Future<List<Request>> getApprovedRequests();
-  Future<void> approveRequest(
-      Hydrant hydrant, Request request, String userMail);
-  Future<void> denyRequest(Request request);
-  Future<Request> addRequest(Hydrant hydrant, bool isFireman, String userMail);
+  Future<bool> approveRequest(Hydrant hydrant, String requestId, String userId);
+  Future<bool> denyRequest(String requestId, String userId);
+  Future<Request> addRequest(Hydrant hydrant, String userId);
 }

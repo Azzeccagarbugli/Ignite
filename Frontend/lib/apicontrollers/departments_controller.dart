@@ -14,6 +14,7 @@ class DepartmentsApiController {
     };
   }
 
+//List<Department>
   Future<String> getDepartments() async {
     http.Response res = await http.get("$_baseUrl/all", headers: _header);
     return res.body;

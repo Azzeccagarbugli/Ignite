@@ -22,18 +22,18 @@ public class RequestController {
 	@Autowired
 	private RequestServices requestServices;
 
-	@PostMapping("/new/{userMail}")
-	public Request addRequest(@RequestBody Hydrant hydrant, @PathVariable("userMail") String userMail) {
-		return requestServices.addRequest(hydrant, userMail);
+	@PostMapping("/new/{userId}")
+	public Request addRequest(@RequestBody Hydrant hydrant, @PathVariable("userId") String userId) {
+		return requestServices.addRequest(hydrant, UUID.fromString(userId));
 	}
 
-	@PostMapping("/approve/{requestId}/{userId}")
+	@PostMapping("/approve/{requestId}&{userId}")
 	public boolean approveRequest(@RequestBody Hydrant hydrant, @PathVariable("userId") String userId,
 			@PathVariable("requestId") String requestId) {
 		return requestServices.approveRequest(hydrant, UUID.fromString(requestId), UUID.fromString(userId));
 	}
 
-	@PostMapping("/deny/{requestId}/{userId}")
+	@PostMapping("/deny/{requestId}&{userId}")
 	public boolean denyRequest(@PathVariable("userId") String userId, @PathVariable("requestId") String requestId) {
 		return requestServices.denyRequest(UUID.fromString(requestId), UUID.fromString(userId));
 	}

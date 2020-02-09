@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ignite/models/user.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/services_provider.dart';
@@ -73,18 +74,22 @@ class _LoadingViewState extends State<LoadingView> {
   }
 
   Future _getIsFireman() async {
-    FirebaseUser user = await AuthProvider().getUser();
+    String userMail = await AuthProvider().getUserMail();
+    User user =
+        await ServicesProvider().getUsersServices().getUserByMail(userMail);
     _isFireman = await ServicesProvider()
         .getUsersServices()
-        .isUserFiremanByMail(user.email);
-    print("L\'utente ${user.email} è un pompiere: $_isFireman");
+        .isUserFiremanById(user.getId());
+    print("L\'utente $userMail è un pompiere: $_isFireman");
   }
 
   Future _getIsFirstAccess() async {
-    FirebaseUser user = await AuthProvider().getUser();
+    String userMail = await AuthProvider().getUserMail();
+    User user =
+        await ServicesProvider().getUsersServices().getUserByMail(userMail);
     _isFirstAccess = await ServicesProvider()
         .getUsersServices()
-        .isUserFirstAccessByMail(user.email);
-    print("L\'utente ${user.email} è al primo accesso: $_isFirstAccess");
+        .isUserFiremanById(user.getId());
+    print("L\'utente $userMail è al primo accesso: $_isFirstAccess");
   }
 }

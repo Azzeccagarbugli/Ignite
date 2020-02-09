@@ -38,8 +38,8 @@ public class HydrantController {
 	}
 
 	@DeleteMapping("/delete/{id}")
-	public void deleteHydrant(@PathVariable("id") String id) {
-		hydrantServices.deleteHydrant(UUID.fromString(id));
+	public boolean deleteHydrant(@PathVariable("id") String id) {
+		return hydrantServices.deleteHydrant(UUID.fromString(id));
 	}
 
 	@GetMapping("/approved")

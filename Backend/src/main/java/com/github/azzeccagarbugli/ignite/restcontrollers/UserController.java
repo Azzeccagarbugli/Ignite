@@ -33,17 +33,17 @@ public class UserController {
 	}
 
 	@GetMapping("/isFireman/{id}")
-	public boolean isUserFiremanByMail(@PathVariable("id") String id) {
+	public boolean isUserFiremanById(@PathVariable("id") String id) {
 		return userServices.isUserFiremanById(UUID.fromString(id));
 	}
 
 	@GetMapping("/isFirstAccess/{id}")
-	public boolean isUserFirstAccessByMail(@PathVariable("id") String id) {
+	public boolean isUserFirstAccessById(@PathVariable("id") String id) {
 		return userServices.isUserFirstAccessById(UUID.fromString(id));
 	}
 
 	@PutMapping("/setFirstAccess/{id}")
-	public boolean setFirstAccessToFalseByMail(@PathVariable("id") String id) {
+	public boolean setFirstAccessToFalseById(@PathVariable("id") String id) {
 		return userServices.setFirstAccessToFalseById(UUID.fromString(id));
 	}
 

@@ -12,12 +12,16 @@ class BackendRequestsServices implements RequestsServices {
   }
 
   @override
-  Future<Request> addRequest(
-      Hydrant hydrant, bool isFireman, String userMail) async {
-    String controllerJson =
-        await _controller.addRequest(hydrant, isFireman, userMail);
+  Future<Request> addRequest(Hydrant hydrant, String userId) async {
+    String controllerJson = await _controller.addRequest(hydrant, userId);
+    if (controllerJson == "") {
+      return null;
+    }
     var parsedJson = json.decode(controllerJson);
-    String approvedBy = isFireman ? parsedJson["approvedBy"] : null;
+    parsedJson.keys.contains("approvedBy");
+    String approvedBy = parsedJson.keys.contains("approvedBy")
+        ? parsedJson["approvedBy"]
+        : null;
     return new Request.complete(
         parsedJson["id"],
         parsedJson["approved"],
@@ -28,14 +32,17 @@ class BackendRequestsServices implements RequestsServices {
   }
 
   @override
-  Future<void> approveRequest(
-      Hydrant hydrant, Request request, String userMail) async {
-    await _controller.approveRequest(hydrant, request, userMail);
+  Future<bool> approveRequest(
+      Hydrant hydrant, String requestId, String userId) async {
+    String controllerJson =
+        await _controller.approveRequest(hydrant, requestId, userId);
+    return controllerJson == 'true';
   }
 
   @override
-  Future<void> denyRequest(Request request) async {
-    await _controller.denyRequest(request);
+  Future<bool> denyRequest(String requestId, String userId) async {
+    String controllerJson = await _controller.denyRequest(requestId, userId);
+    return controllerJson == 'true';
   }
 
   @override

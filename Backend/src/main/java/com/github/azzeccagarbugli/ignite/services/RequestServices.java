@@ -28,8 +28,8 @@ public class RequestServices {
 	@Autowired
 	private UserServices userServices;
 
-	public Request addRequest(@NonNull Hydrant hydrant, @NonNull String userMail) {
-		User requestingUser = userServices.getUserByMail(userMail);
+	public Request addRequest(@NonNull Hydrant hydrant, @NonNull UUID userId) {
+		User requestingUser = userServices.getUserById(userId);
 		if (requestingUser == null) {
 			return null;
 		}

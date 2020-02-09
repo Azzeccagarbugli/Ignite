@@ -40,57 +40,9 @@ class BackendHydrantsServices implements HydrantsServices {
   @override
   Future<Hydrant> getHydrantById(String id) async {
     String controllerJson = await _controller.getHydrantById(id);
-    var hydrant = json.decode(controllerJson);
-    return new Hydrant(
-        hydrant["id"],
-        hydrant["attacks"][0],
-        hydrant["attacks"][1],
-        hydrant["bar"],
-        hydrant["cap"],
-        hydrant["city"],
-        hydrant["geopoint"]["latitude"],
-        hydrant["geopoint"]["longitude"],
-        hydrant["color"],
-        hydrant["lastCheck"],
-        hydrant["notes"],
-        hydrant["opening"],
-        hydrant["streetName"],
-        hydrant["streetNumber"],
-        hydrant["type"],
-        hydrant["vehicle"]);
-  }
-
-  @override
-  Future<Hydrant> addHydrant(Hydrant newHydrant) async {
-    String controllerJson = await _controller.addHydrant(newHydrant);
-    var hydrant = json.decode(controllerJson);
-    return new Hydrant(
-        hydrant["id"],
-        hydrant["attacks"][0],
-        hydrant["attacks"][1],
-        hydrant["bar"],
-        hydrant["cap"],
-        hydrant["city"],
-        hydrant["geopoint"]["latitude"],
-        hydrant["geopoint"]["longitude"],
-        hydrant["color"],
-        hydrant["lastCheck"],
-        hydrant["notes"],
-        hydrant["opening"],
-        hydrant["streetName"],
-        hydrant["streetNumber"],
-        hydrant["type"],
-        hydrant["vehicle"]);
-  }
-
-  @override
-  Future<void> deleteHydrant(String id) async {
-    await _controller.deleteHydrant(id);
-  }
-
-  @override
-  Future<Hydrant> updateHydrant(Hydrant updatedHydrant) async {
-    String controllerJson = await _controller.updateHydrant(updatedHydrant);
+    if (controllerJson == "") {
+      return null;
+    }
     var hydrant = json.decode(controllerJson);
     return new Hydrant(
         hydrant["id"],
