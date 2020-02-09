@@ -15,7 +15,7 @@
 <a href="https://it.wikipedia.org/wiki/Licenza_MIT">• Licenza</a>
 </b></p>
 
-# 📝 Tabella dei contenuti
+# Tabella dei contenuti
 
 - [Panoramica e funzionalità di base](#panoramica)
 - [Tecnologie di base](#tecno)
@@ -43,7 +43,9 @@ Per quanto concerne l'autenticazione degli utenti al servizio si è deciso di af
 
 La dashboard di amministrazione, raggiungibile tramite il seguente [indirizzo](https://ignitedashboard.netlify.com/), è stata sviluppata in **Vue.js**. Essa si interfaccia, al momento, con i dati a cui è possibile accedere tramite **Firestore** ed il suo funzionamento effettivo è quindi da riferirsi alla prima implementazione della logica dell'applicazione.
 
-# Autori <a name = "autori"></a>
+# Sito web completo e autori <a name = "autori"></a>
+
+  [Sito web](http://francescocoppola.me/Ignite-Homepage/)
 
 - [Francesco Coppola](https://github.com/azzeccagarbugli)
 - [Francesco Pio Stelluti](https://github.com/FrancisFire)
