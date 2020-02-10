@@ -53,7 +53,6 @@ class AuthProvider {
   }
 
   Future<void> authMailPassword(String mail, String pass) async {
-    print("Tentativo per $mail e $pass");
     try {
       await _auth.signInWithEmailAndPassword(email: mail, password: pass);
     } catch (e) {
@@ -168,7 +167,6 @@ class AuthProvider {
       await _usersServices
           .addUser(new User.citizen("", mail, true, isGoogle, isFacebook));
     } else {
-      print("ID: ${dbUser.getId()}");
       await _usersServices.updateUser(new User.citizen(
           dbUser.getId(), dbUser.getMail(), false, isGoogle, isFacebook));
     }
