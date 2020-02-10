@@ -16,6 +16,8 @@ import '../../widgets/remove_glow.dart';
 import '../loading_screen.dart';
 import 'request_approval_screen.dart';
 
+const double kSearchDistance = 20000;
+
 class FiremanScreenRequests extends StatefulWidget {
   @override
   _FiremanScreenRequestsState createState() => _FiremanScreenRequestsState();
@@ -34,7 +36,8 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
   Future _getRequests() async {
     _requests = await ServicesProvider()
         .getRequestsServices()
-        .getPendingRequestsByDistance(_curloc.latitude, _curloc.longitude);
+        .getPendingRequestsByDistance(
+            _curloc.latitude, _curloc.longitude, kSearchDistance);
   }
 
   Future initFuture() async {

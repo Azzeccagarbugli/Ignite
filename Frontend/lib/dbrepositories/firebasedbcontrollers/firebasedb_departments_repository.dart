@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ignite/dbrepositories/firebasedbrepository.dart';
 
 import '../../models/department.dart';
-import '../firebasecontroller.dart';
 
-class FirebaseDepartmentsController extends FirebaseController<Department> {
+class FirebaseDbDepartmentsRepository extends FirebaseDbRepository<Department> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('departments').document(id).delete();
@@ -22,6 +22,9 @@ class FirebaseDepartmentsController extends FirebaseController<Department> {
   Future<Department> get(String id) async {
     DocumentSnapshot ds =
         await this.db.collection('departments').document(id).get();
+    if (ds == null) {
+      return null;
+    }
     Map<String, dynamic> data = ds.data;
     GeoPoint geo = ds.data['geopoint'];
     return new Department(
@@ -51,6 +54,9 @@ class FirebaseDepartmentsController extends FirebaseController<Department> {
 
   @override
   Future<Department> insert(Department object) async {
+    if (object == null) {
+      return null;
+    }
     DocumentReference ref = await this.db.collection('departments').add({
       'cap': object.getCap(),
       'city': object.getCity(),
@@ -65,6 +71,9 @@ class FirebaseDepartmentsController extends FirebaseController<Department> {
 
   @override
   Future<Department> update(Department object) async {
+    if (object == null) {
+      return null;
+    }
     await this
         .db
         .collection('departments')
@@ -79,5 +88,12 @@ class FirebaseDepartmentsController extends FirebaseController<Department> {
       'number': object.getNumber(),
     });
     return this.get(object.getId());
+  }
+
+  @override
+  Future<bool> exists(String id) async {
+    DocumentSnapshot ds =
+        await this.db.collection('departments').document(id).get();
+    return (ds == null) ? false : true;
   }
 }

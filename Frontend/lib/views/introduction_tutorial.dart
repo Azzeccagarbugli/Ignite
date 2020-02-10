@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ignite/models/user.dart';
 import 'package:introduction_screen/introduction_screen.dart';

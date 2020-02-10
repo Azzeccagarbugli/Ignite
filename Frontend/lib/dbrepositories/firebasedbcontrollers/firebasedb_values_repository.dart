@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ignite/dbrepositories/firebasedbrepository.dart';
 
 import '../../models/values.dart';
-import '../firebasecontroller.dart';
 
-class FirebaseValuesController extends FirebaseController<Values> {
+class FirebaseDbValuesRepository extends FirebaseDbRepository<Values> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('enums').document(id).delete();
@@ -21,6 +21,9 @@ class FirebaseValuesController extends FirebaseController<Values> {
   @override
   Future<Values> get(String id) async {
     DocumentSnapshot ds = await this.db.collection('enums').document(id).get();
+    if (ds == null) {
+      return null;
+    }
     Map<String, dynamic> data = ds.data;
     List<String> values = List<String>();
     for (String val in data['values']) {
@@ -42,6 +45,9 @@ class FirebaseValuesController extends FirebaseController<Values> {
 
   @override
   Future<Values> insert(Values object) async {
+    if (object == null) {
+      return null;
+    }
     DocumentReference ref = await this.db.collection('enums').add({
       'name': object.getName(),
       'values': object.getValues(),
@@ -51,10 +57,19 @@ class FirebaseValuesController extends FirebaseController<Values> {
 
   @override
   Future<Values> update(Values object) async {
-    await this.db.collection('hydrants').document(object.getId()).updateData({
+    if (object == null) {
+      return null;
+    }
+    await this.db.collection('enums').document(object.getId()).updateData({
       'name': object.getName(),
       'values': object.getValues(),
     });
     return this.get(object.getId());
+  }
+
+  @override
+  Future<bool> exists(String id) async {
+    DocumentSnapshot ds = await this.db.collection('enums').document(id).get();
+    return (ds == null) ? false : true;
   }
 }

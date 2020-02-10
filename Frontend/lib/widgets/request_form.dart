@@ -1,6 +1,4 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ignite/models/user.dart';

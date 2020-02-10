@@ -18,7 +18,7 @@ class BackendUsersServices implements UsersServices {
       return null;
     }
     var user = json.decode(controllerJson);
-    if (user["fireman"] == true) {
+    if (user["fireman"]) {
       return new User.fireman(
         user["id"],
         user["mail"],
@@ -50,7 +50,7 @@ class BackendUsersServices implements UsersServices {
       return null;
     }
     var user = json.decode(controllerJson);
-    if (user["fireman"] == true) {
+    if (user["fireman"]) {
       return new User.fireman(
         user["id"],
         user["mail"],

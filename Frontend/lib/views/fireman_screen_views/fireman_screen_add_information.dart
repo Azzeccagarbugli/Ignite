@@ -1,4 +1,3 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:ignite/widgets/bottom_flushbar.dart';
 import 'package:theme_provider/theme_provider.dart';

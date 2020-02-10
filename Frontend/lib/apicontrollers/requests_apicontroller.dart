@@ -2,7 +2,6 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:ignite/models/hydrant.dart';
-import 'package:ignite/models/request.dart';
 
 class RequestsApiController {
   String _ip;
@@ -92,9 +91,9 @@ class RequestsApiController {
 
 //List<Request>
   Future<String> getPendingRequestsByDistance(
-      double latitude, double longitude) async {
+      double latitude, double longitude, double distance) async {
     http.Response res = await http.get(
-      "$_baseUrl/pending/$latitude&$longitude&10000.0",
+      "$_baseUrl/pending/$latitude&$longitude&$distance",
       headers: _header,
     );
     return res.body;
@@ -111,9 +110,9 @@ class RequestsApiController {
 
 //List<Request>
   Future<String> getRequestsByDistance(
-      double latitude, double longitude) async {
+      double latitude, double longitude, double distance) async {
     http.Response res = await http.get(
-      "$_baseUrl/all/$latitude&$longitude&10000.0",
+      "$_baseUrl/all/$latitude&$longitude&$distance",
       headers: _header,
     );
     return res.body;

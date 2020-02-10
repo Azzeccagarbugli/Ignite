@@ -1,8 +1,6 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/models/user.dart';
-import 'package:ignite/widgets/bottom_flushbar.dart';
 import 'package:ignite/widgets/top_flushbar.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:theme_provider/theme_provider.dart';

@@ -1,12 +1,14 @@
-import '../../dbcontrollers/firebasedbcontrollers/hydrants_firebasecontroller.dart';
+import 'package:ignite/dbrepositories/dbrepository.dart';
+import 'package:ignite/factories/repositoriesfactories/firebaserepositoriesfactory.dart';
+
 import '../../factories/servicesfactories/firebaseservicesfactory.dart';
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
 import '../hydrants_services.dart';
 
 class FirebaseHydrantsServices implements HydrantsServices {
-  FirebaseHydrantsController _hydrantsController =
-      new FirebaseHydrantsController();
+  DbRepository<Hydrant> _hydrantsController =
+      FirebaseRepositoriesFactory().getHydrantsRepository();
 
   @override
   Future<List<Hydrant>> getApprovedHydrants() async {
@@ -26,15 +28,21 @@ class FirebaseHydrantsServices implements HydrantsServices {
     return await _hydrantsController.get(id);
   }
 
-  Future<Hydrant> addHydrant(Hydrant newHydrant) {
-    return _hydrantsController.insert(newHydrant);
+  Future<Hydrant> addHydrant(Hydrant newHydrant) async {
+    return await _hydrantsController.insert(newHydrant);
   }
 
-  Future<bool> deleteHydrant(String id) {
-    return _hydrantsController.delete(id);
+  Future<bool> deleteHydrant(String id) async {
+    bool exists = await _hydrantsController.exists(id);
+    if (exists) {
+      await _hydrantsController.delete(id);
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  Future<Hydrant> updateHydrant(Hydrant updatedHydrant) {
-    return _hydrantsController.update(updatedHydrant);
+  Future<Hydrant> updateHydrant(Hydrant updatedHydrant) async {
+    return await _hydrantsController.update(updatedHydrant);
   }
 }

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ignite/dbrepositories/firebasedbrepository.dart';
 
 import '../../models/request.dart';
-import '../firebasecontroller.dart';
 
-class FirebaseRequestController extends FirebaseController<Request> {
+class FirebaseDbRequestRepository extends FirebaseDbRepository<Request> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('requests').document(id).delete();
@@ -22,6 +22,9 @@ class FirebaseRequestController extends FirebaseController<Request> {
   Future<Request> get(String id) async {
     DocumentSnapshot ds =
         await this.db.collection('requests').document(id).get();
+    if (ds == null) {
+      return null;
+    }
     Map<String, dynamic> data = ds.data;
     return new Request.complete(
       id,
@@ -47,6 +50,9 @@ class FirebaseRequestController extends FirebaseController<Request> {
 
   @override
   Future<Request> insert(Request object) async {
+    if (object == null) {
+      return null;
+    }
     DocumentReference userApBy = (object.getApprovedByUserId() == null)
         ? null
         : this.db.collection('users').document(object.getApprovedByUserId());
@@ -68,6 +74,9 @@ class FirebaseRequestController extends FirebaseController<Request> {
 
   @override
   Future<Request> update(Request object) async {
+    if (object == null) {
+      return null;
+    }
     DocumentReference userApBy = (object.getApprovedByUserId() == null)
         ? null
         : this.db.collection('users').document(object.getApprovedByUserId());
@@ -85,5 +94,12 @@ class FirebaseRequestController extends FirebaseController<Request> {
       'requested_by': userReqBy,
     });
     return this.get(object.getId());
+  }
+
+  @override
+  Future<bool> exists(String id) async {
+    DocumentSnapshot ds =
+        await this.db.collection('requests').document(id).get();
+    return (ds == null) ? false : true;
   }
 }

@@ -1,10 +1,12 @@
-import '../../dbcontrollers/firebasedbcontrollers/departments_firebasecontroller.dart';
+import 'package:ignite/dbrepositories/dbrepository.dart';
+import 'package:ignite/factories/repositoriesfactories/firebaserepositoriesfactory.dart';
+
 import '../../models/department.dart';
 import '../departments_services.dart';
 
 class FirebaseDepartmentsServices implements DepartmentsServices {
-  FirebaseDepartmentsController _departmentsController =
-      new FirebaseDepartmentsController();
+  DbRepository<Department> _departmentsController =
+      FirebaseRepositoriesFactory().getDepartmentsRepository();
   @override
   Future<List<Department>> getDepartments() async {
     return await _departmentsController.getAll();

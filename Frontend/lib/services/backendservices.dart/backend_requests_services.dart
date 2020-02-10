@@ -64,9 +64,9 @@ class BackendRequestsServices implements RequestsServices {
 
   @override
   Future<List<Request>> getPendingRequestsByDistance(
-      double latitude, double longitude) async {
-    String controllerJson =
-        await _controller.getPendingRequestsByDistance(latitude, longitude);
+      double latitude, double longitude, double distance) async {
+    String controllerJson = await _controller.getPendingRequestsByDistance(
+        latitude, longitude, distance);
     var parsedJson = json.decode(controllerJson);
     List<Request> requests = new List<Request>();
     for (var request in parsedJson) {
@@ -101,9 +101,9 @@ class BackendRequestsServices implements RequestsServices {
 
   @override
   Future<List<Request>> getRequestsByDistance(
-      double latitude, double longitude) async {
+      double latitude, double longitude, double distance) async {
     String controllerJson =
-        await _controller.getRequestsByDistance(latitude, longitude);
+        await _controller.getRequestsByDistance(latitude, longitude, distance);
     var parsedJson = json.decode(controllerJson);
     List<Request> requests = new List<Request>();
     for (var request in parsedJson) {

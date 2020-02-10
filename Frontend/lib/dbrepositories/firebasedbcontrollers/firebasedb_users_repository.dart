@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ignite/dbrepositories/firebasedbrepository.dart';
 
 import '../../models/user.dart';
-import '../firebasecontroller.dart';
 
-class FirebaseUsersController extends FirebaseController<User> {
+class FirebaseDbUsersRepository extends FirebaseDbRepository<User> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('users').document(id).delete();
@@ -21,9 +21,12 @@ class FirebaseUsersController extends FirebaseController<User> {
   @override
   Future<User> get(String id) async {
     DocumentSnapshot ds = await this.db.collection('users').document(id).get();
+    if (ds == null) {
+      return null;
+    }
     Map<String, dynamic> data = ds.data;
 
-    if (data['isFireman'] == true) {
+    if (data['isFireman']) {
       return new User.fireman(
         id,
         data['email'],
@@ -61,6 +64,9 @@ class FirebaseUsersController extends FirebaseController<User> {
 
   @override
   Future<User> insert(User object) async {
+    if (object == null) {
+      return null;
+    }
     DocumentReference department = object.getDepartmentId() == null
         ? null
         : this.db.collection('departments').document(object.getDepartmentId());
@@ -82,6 +88,9 @@ class FirebaseUsersController extends FirebaseController<User> {
 
   @override
   Future<User> update(User object) async {
+    if (object == null) {
+      return null;
+    }
     DocumentReference department = object.getDepartmentId() == null
         ? null
         : this.db.collection('departments').document(object.getDepartmentId());
@@ -99,5 +108,11 @@ class FirebaseUsersController extends FirebaseController<User> {
       'surname': object.getSurname(),
     });
     return this.get(object.getId());
+  }
+
+  @override
+  Future<bool> exists(String id) async {
+    DocumentSnapshot ds = await this.db.collection('users').document(id).get();
+    return (ds == null) ? false : true;
   }
 }
