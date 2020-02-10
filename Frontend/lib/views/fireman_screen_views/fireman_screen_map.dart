@@ -320,11 +320,11 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                     icon: Icons.not_listed_location,
                     function: _animateCameraOnNearestHydrant,
                   ),
-                  HomePageButton(
+                  /*  HomePageButton(
                     heroTag: 'NEARESTHYDRANTFILTERED',
                     icon: Icons.filter_list,
                     function: _setFilterAndSearch,
-                  ),
+                  ),*/
                 ],
               ),
             ],
