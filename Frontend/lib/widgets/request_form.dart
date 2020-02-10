@@ -601,8 +601,6 @@ class _RequestFormState extends State<RequestForm> {
               });
             } else {
               newHydrant.setId(widget.oldHydrant.getId());
-              print(
-                  "Richiesta: ${widget.oldRequest.getId()} - Utente: ${_user.getId()}");
               ServicesProvider()
                   .getRequestsServices()
                   .approveRequest(
@@ -623,8 +621,6 @@ class _RequestFormState extends State<RequestForm> {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             }
-            //???
-            //setState(() {});
           } else {
             new TopFlushbar(
                     "Compila tutti i campi!",

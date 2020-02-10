@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ignite/dbrepositories/firebasedbrepository.dart';
+import 'package:ignite/dbrepositories/firestoredbrepository.dart';
 
 import '../../models/hydrant.dart';
 
-class FirebaseDbHydrantsRepository extends FirebaseDbRepository<Hydrant> {
+class FirestoreDbHydrantsRepository extends FirestoreDbRepository<Hydrant> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('hydrants').document(id).delete();

@@ -1,23 +1,23 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:ignite/dbrepositories/dbrepository.dart';
-import 'package:ignite/factories/repositoriesfactories/firebaserepositoriesfactory.dart';
+import 'package:ignite/factories/repositoriesfactories/firestorerepositoriesfactory.dart';
+import 'package:ignite/factories/servicesfactories/firestoreservicesfactory.dart';
 
-import '../../factories/servicesfactories/firebaseservicesfactory.dart';
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
 import '../../models/user.dart';
 import '../requests_services.dart';
 
-class FirebaseRequestsServices implements RequestsServices {
+class FirestoreRequestsServices implements RequestsServices {
   DbRepository<Request> _requestsController =
-      FirebaseRepositoriesFactory().getRequestsRepository();
+      FirestoreRepositoriesFactory().getRequestsRepository();
   @override
   Future<Request> addRequest(Hydrant hydrant, String userId) async {
-    Hydrant addedHydrant = await FirebaseServicesFactory()
+    Hydrant addedHydrant = await FirestoreServicesFactory()
         .getHydrantsServices()
         .addHydrant(hydrant);
     User requestedBy =
-        await FirebaseServicesFactory().getUsersServices().getUserById(userId);
+        await FirestoreServicesFactory().getUsersServices().getUserById(userId);
     Request newRequest = new Request(requestedBy.isFireman(),
         !requestedBy.isFireman(), addedHydrant.getId(), requestedBy.getId());
     if (requestedBy.isFireman()) {
@@ -29,11 +29,11 @@ class FirebaseRequestsServices implements RequestsServices {
   @override
   Future<bool> approveRequest(
       Hydrant hydrant, String requestId, String userId) async {
-    await FirebaseServicesFactory()
+    await FirestoreServicesFactory()
         .getHydrantsServices()
         .updateHydrant(hydrant);
     User approvedBy =
-        await FirebaseServicesFactory().getUsersServices().getUserById(userId);
+        await FirestoreServicesFactory().getUsersServices().getUserById(userId);
     Request toApprove = await _requestsController.get(requestId);
     if (toApprove == null ||
         approvedBy == null ||
@@ -51,7 +51,7 @@ class FirebaseRequestsServices implements RequestsServices {
   @override
   Future<bool> denyRequest(String requestId, String userId) async {
     User approvedBy =
-        await FirebaseServicesFactory().getUsersServices().getUserById(userId);
+        await FirestoreServicesFactory().getUsersServices().getUserById(userId);
     if (approvedBy == null || !approvedBy.isFireman()) {
       return false;
     }
@@ -59,14 +59,14 @@ class FirebaseRequestsServices implements RequestsServices {
     if (toDeny == null) {
       return false;
     }
-    Hydrant hydrantToDeny = await FirebaseServicesFactory()
+    Hydrant hydrantToDeny = await FirestoreServicesFactory()
         .getHydrantsServices()
         .getHydrantById(toDeny.getHydrantId());
     if (hydrantToDeny == null) {
       return false;
     }
 
-    await FirebaseServicesFactory()
+    await FirestoreServicesFactory()
         .getHydrantsServices()
         .deleteHydrant(toDeny.getHydrantId());
     await _requestsController.delete(toDeny.getId());
@@ -110,7 +110,7 @@ class FirebaseRequestsServices implements RequestsServices {
     List<Request> filteredRequests = new List<Request>();
 
     for (Request request in allRequests) {
-      Hydrant hydrant = await FirebaseServicesFactory()
+      Hydrant hydrant = await FirestoreServicesFactory()
           .getHydrantsServices()
           .getHydrantById(request.getHydrantId());
       double distanceBetween = await Geolocator().distanceBetween(

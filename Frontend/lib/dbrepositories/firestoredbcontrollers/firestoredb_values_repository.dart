@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ignite/dbrepositories/firebasedbrepository.dart';
+import 'package:ignite/dbrepositories/firestoredbrepository.dart';
 
 import '../../models/values.dart';
 
-class FirebaseDbValuesRepository extends FirebaseDbRepository<Values> {
+class FirestoreDbValuesRepository extends FirestoreDbRepository<Values> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('enums').document(id).delete();

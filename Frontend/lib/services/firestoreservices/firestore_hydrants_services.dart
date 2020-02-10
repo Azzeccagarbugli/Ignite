@@ -1,19 +1,19 @@
 import 'package:ignite/dbrepositories/dbrepository.dart';
-import 'package:ignite/factories/repositoriesfactories/firebaserepositoriesfactory.dart';
+import 'package:ignite/factories/repositoriesfactories/firestorerepositoriesfactory.dart';
+import 'package:ignite/factories/servicesfactories/firestoreservicesfactory.dart';
 
-import '../../factories/servicesfactories/firebaseservicesfactory.dart';
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
 import '../hydrants_services.dart';
 
-class FirebaseHydrantsServices implements HydrantsServices {
+class FirestoreHydrantsServices implements HydrantsServices {
   DbRepository<Hydrant> _hydrantsController =
-      FirebaseRepositoriesFactory().getHydrantsRepository();
+      FirestoreRepositoriesFactory().getHydrantsRepository();
 
   @override
   Future<List<Hydrant>> getApprovedHydrants() async {
     List<Hydrant> approvedHydrants = new List<Hydrant>();
-    List<Request> approvedRequests = await FirebaseServicesFactory()
+    List<Request> approvedRequests = await FirestoreServicesFactory()
         .getRequestsServices()
         .getApprovedRequests();
     for (Request request in approvedRequests) {

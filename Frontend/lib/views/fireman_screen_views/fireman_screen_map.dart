@@ -281,25 +281,6 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
             backgroundColor: Colors.white,
           ),
         ),
-        // Padding(
-        //   padding: const EdgeInsets.only(
-        //     top: 30.0,
-        //     left: 15.0,
-        //   ),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.start,
-        //     children: <Widget>[
-        //       Column(
-        //         mainAxisAlignment: MainAxisAlignment.start,
-        //         children: <Widget>[
-        //           TopButtonRightMapChangeView(
-        //             mapType: mapType,
-        //           ),
-        //         ],
-        //       ),
-        //     ],
-        //   ),
-        // )
       ],
     );
   }

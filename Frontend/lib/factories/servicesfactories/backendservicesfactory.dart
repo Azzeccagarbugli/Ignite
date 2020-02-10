@@ -1,8 +1,9 @@
-import '../../services/backendservices.dart/backend_departments_services.dart';
-import '../../services/backendservices.dart/backend_hydrants_services.dart';
-import '../../services/backendservices.dart/backend_requests_services.dart';
-import '../../services/backendservices.dart/backend_users_services.dart';
-import '../../services/backendservices.dart/backend_values_services.dart';
+import 'package:ignite/services/backendservices/backend_requests_services.dart';
+
+import '../../services/backendservices/backend_departments_services.dart';
+import '../../services/backendservices/backend_hydrants_services.dart';
+import '../../services/backendservices/backend_users_services.dart';
+import '../../services/backendservices/backend_values_services.dart';
 import '../../services/departments_services.dart';
 import '../../services/hydrants_services.dart';
 import '../../services/requests_services.dart';

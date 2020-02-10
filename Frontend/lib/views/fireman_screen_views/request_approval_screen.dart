@@ -32,7 +32,6 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
   Future initFuture() async {
     await Future.wait([_getUserMail()]);
     await Future.wait([_getUser(), _getHydrant()]);
-    print("USER: ${_user.getId()}");
   }
 
   Future _getUserMail() async {

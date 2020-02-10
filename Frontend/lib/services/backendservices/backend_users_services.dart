@@ -12,7 +12,6 @@ class BackendUsersServices implements UsersServices {
 
   @override
   Future<User> getUserById(String id) async {
-    print("UTENTE $id");
     String controllerJson = await _controller.getUserById(id);
     if (controllerJson == "") {
       return null;

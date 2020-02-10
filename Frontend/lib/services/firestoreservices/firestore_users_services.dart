@@ -1,13 +1,12 @@
 import 'package:ignite/dbrepositories/dbrepository.dart';
-import 'package:ignite/dbrepositories/firebasedbcontrollers/firebasedb_users_repository.dart';
-import 'package:ignite/factories/repositoriesfactories/firebaserepositoriesfactory.dart';
+import 'package:ignite/factories/repositoriesfactories/firestorerepositoriesfactory.dart';
 
 import '../../models/user.dart';
 import '../users_services.dart';
 
-class FirebaseUsersServices implements UsersServices {
+class FirestoreUsersServices implements UsersServices {
   DbRepository<User> _usersController =
-      FirebaseRepositoriesFactory().getUsersRepository();
+      FirestoreRepositoriesFactory().getUsersRepository();
   @override
   Future<User> getUserById(String id) async {
     return await _usersController.get(id);

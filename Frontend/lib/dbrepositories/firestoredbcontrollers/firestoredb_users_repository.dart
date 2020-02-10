@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ignite/dbrepositories/firebasedbrepository.dart';
+import 'package:ignite/dbrepositories/firestoredbrepository.dart';
 
 import '../../models/user.dart';
 
-class FirebaseDbUsersRepository extends FirebaseDbRepository<User> {
+class FirestoreDbUsersRepository extends FirestoreDbRepository<User> {
   @override
   Future<void> delete(String id) async {
     await this.db.collection('users').document(id).delete();

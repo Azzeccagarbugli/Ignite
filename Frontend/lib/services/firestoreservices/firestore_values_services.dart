@@ -1,13 +1,12 @@
 import 'package:ignite/dbrepositories/dbrepository.dart';
-import 'package:ignite/dbrepositories/firebasedbcontrollers/firebasedb_values_repository.dart';
-import 'package:ignite/factories/repositoriesfactories/firebaserepositoriesfactory.dart';
+import 'package:ignite/factories/repositoriesfactories/firestorerepositoriesfactory.dart';
 
 import '../../models/values.dart';
 import '../values_services.dart';
 
-class FirebaseValuesServices implements ValuesServices {
+class FirestoreValuesServices implements ValuesServices {
   DbRepository<Values> _valuesController =
-      FirebaseRepositoriesFactory().getValuesRepository();
+      FirestoreRepositoriesFactory().getValuesRepository();
 
   Future<List<String>> _getEnumByName(String name) async {
     List<Values> valueList = await _valuesController.getAll();
