@@ -39,7 +39,11 @@ La prima implementazione della logica dell'implementazione è stata effettuata a
 
 Una seconda implementazione della logica si basata su un backend scritto in linguaggio **Java**. L'interazione tra frontend e backend è stata resa possibile grazie alla creazione di **API Rest**, la cui scrittura e gestione, anche sotto l'ottica della sicurezza, sono state rese possibili grazie al framework **Spring Boot**. Per la persistenza dei dati del servizio ci si è affidati al database NoSQL **MongoDB**. Per poter rendere più agevole la scrittura del codice tramite l'uso di annotazioni, si è deciso di impiegare la libreria Java **Lombok**.
 
+[Qui](https://docs.google.com/document/d/1IBhf9xksPD4AwHsbAoBzN1ue7LrSgzB2EBK0UFNTidI/edit?usp=sharing) è possibile trovare tutte le chiamate API Rest sviluppate con Java.
+
+
 Per quanto concerne l'autenticazione degli utenti al servizio si è deciso di affidarsi ai servizi di **Google Firebase**, non correlati a quella che è la logica di backend dell'applicativo.
+Basandosi su Firebase per quanto riguarda l'autenticazione, abbiamo deciso di impiegare il sistema **Basic Auth** per aggiungere un essenziale strato di sicurezza alle chiamate del backend Java tramite **Spring Security**. Ogni chiamata alle Api è filtrata secondo il ruolo assegnato alla mail passata tramite Basic Auth (la password è comune per ogni ruolo). I ruoli sono in totale tre: Admin (**ADMIN**), Cittadino (**CITIZEN**), Dipendente VVF (**Fireman**).
 
 La dashboard di amministrazione, raggiungibile tramite il seguente [indirizzo](https://ignitedashboard.netlify.com/), è stata sviluppata in **Vue.js**. Essa si interfaccia, al momento, con i dati a cui è possibile accedere tramite **Firestore** ed il suo funzionamento effettivo è quindi da riferirsi alla prima implementazione della logica dell'applicazione.
 
