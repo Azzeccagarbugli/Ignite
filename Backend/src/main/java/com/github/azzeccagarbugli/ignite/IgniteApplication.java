@@ -1,7 +1,6 @@
 package com.github.azzeccagarbugli.ignite;
 
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
@@ -14,11 +13,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.github.azzeccagarbugli.ignite.models.Department;
 import com.github.azzeccagarbugli.ignite.models.GeoLocation;
 import com.github.azzeccagarbugli.ignite.models.Hydrant;
-import com.github.azzeccagarbugli.ignite.models.Request;
 import com.github.azzeccagarbugli.ignite.models.User;
 import com.github.azzeccagarbugli.ignite.models.ValueEnum;
+import com.github.azzeccagarbugli.ignite.models.User.Role;
 import com.github.azzeccagarbugli.ignite.services.DepartmentServices;
-import com.github.azzeccagarbugli.ignite.services.HydrantServices;
 import com.github.azzeccagarbugli.ignite.services.RequestServices;
 import com.github.azzeccagarbugli.ignite.services.UserServices;
 import com.github.azzeccagarbugli.ignite.services.ValueEnumServices;
@@ -28,8 +26,6 @@ public class IgniteApplication implements CommandLineRunner {
 
 	@Autowired
 	private DepartmentServices departmentServices;
-	@Autowired
-	private HydrantServices hydrantServices;
 	@Autowired
 	private RequestServices requestServices;
 	@Autowired
@@ -86,7 +82,7 @@ public class IgniteApplication implements CommandLineRunner {
 		pompiere.setFacebook(false);
 		pompiere.setGoogle(false);
 		pompiere.setFirstAccess(false);
-		pompiere.setFireman(true);
+		pompiere.setRole(Role.FIREMAN);
 		pompiere.setName("Francesco");
 		pompiere.setSurname("Stelluti");
 		pompiere.setStreetNameNumber("Via Coppi 30");
@@ -95,11 +91,16 @@ public class IgniteApplication implements CommandLineRunner {
 		User cittadino = new User();
 		cittadino.setMail("cittadino@mail.com");
 		cittadino.setFacebook(false);
-		cittadino.setFireman(false);
+		cittadino.setRole(Role.CITIZEN);
 		cittadino.setFirstAccess(false);
 		cittadino.setGoogle(false);
 		UUID cittadinoId = userServices.addUser(cittadino).getId();
 
+		User admin = new User();
+		admin.setMail("admin@mail.com");
+		admin.setRole(Role.ADMIN);
+		userServices.addUser(admin);
+		
 		Hydrant idranteUno = new Hydrant();
 		idranteUno.setAttacks(Arrays.asList("2x45", "2x45"));
 		idranteUno.setBar("1 bar");

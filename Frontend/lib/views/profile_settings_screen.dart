@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
+import 'package:ignite/widgets/loading_screen.dart';
 import 'package:simple_gravatar/simple_gravatar.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -12,7 +13,6 @@ import '../providers/services_provider.dart';
 import '../widgets/remove_glow.dart';
 import '../widgets/settings_button.dart';
 import 'faq.dart';
-import 'loading_screen.dart';
 import 'loading_view.dart';
 import 'login_screen.dart';
 

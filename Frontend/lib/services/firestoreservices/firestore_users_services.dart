@@ -61,4 +61,10 @@ class FirestoreUsersServices implements UsersServices {
   Future<User> updateUser(User updatedUser) async {
     return await _usersController.update(updatedUser);
   }
+
+  @override
+  Future<bool> userExistsByMail(String mail) async {
+    User user = await this.getUserByMail(mail);
+    return (user == null) ? false : true;
+  }
 }

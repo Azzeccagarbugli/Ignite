@@ -1,3 +1,5 @@
+import 'package:ignite/models/userrole.dart';
+
 class User {
   User.fireman(
       String id,
@@ -13,7 +15,7 @@ class User {
       bool isFacebook) {
     this._id = id;
     this._mail = mail;
-    this._isFireman = true;
+    this._role = UserRole.FIREMAN;
     this._isFirstAccess = isFirstAccess;
     this._birthday = birthday;
     this._name = name;
@@ -29,7 +31,7 @@ class User {
       bool isFacebook) {
     this._id = id;
     this._mail = mail;
-    this._isFireman = false;
+    this._role = UserRole.CITIZEN;
     this._isFirstAccess = isFirstAccess;
     this._birthday = null;
     this._name = null;
@@ -43,7 +45,7 @@ class User {
 
   String _id;
   String _mail;
-  bool _isFireman;
+  UserRole _role;
   bool _isFirstAccess;
   String _birthday;
   String _name;
@@ -59,7 +61,7 @@ class User {
   }
 
   bool isFireman() {
-    return _isFireman;
+    return _role == UserRole.FIREMAN;
   }
 
   bool isFacebook() {

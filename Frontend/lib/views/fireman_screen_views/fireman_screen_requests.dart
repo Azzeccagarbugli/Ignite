@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ignite/widgets/loading_screen.dart';
 
 import 'package:theme_provider/theme_provider.dart';
 
@@ -13,7 +14,6 @@ import '../../providers/services_provider.dart';
 import '../../widgets/loading_shimmer.dart';
 import '../../widgets/painter.dart';
 import '../../widgets/remove_glow.dart';
-import '../loading_screen.dart';
 import 'request_approval_screen.dart';
 
 const double kSearchDistance = 20000;

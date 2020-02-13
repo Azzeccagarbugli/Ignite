@@ -3,6 +3,7 @@ package com.github.azzeccagarbugli.ignite.services;
 import org.springframework.stereotype.Service;
 
 import com.github.azzeccagarbugli.ignite.models.User;
+import com.github.azzeccagarbugli.ignite.models.User.Role;
 import com.github.azzeccagarbugli.ignite.repositories.UserRepository;
 
 import lombok.NonNull;
@@ -11,9 +12,12 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Service
-public class UserServices {
+public class UserServices implements UserDetailsService {
 
 	@Autowired
 	private UserRepository repository;
@@ -55,6 +59,7 @@ public class UserServices {
 	public User addUser(@NonNull User newUser) {
 		newUser.setId(UUID.randomUUID());
 		return repository.insert(newUser);
+
 	}
 
 	public User updateUser(@NonNull User newUser) {
@@ -81,8 +86,26 @@ public class UserServices {
 		if (user == null) {
 			return false;
 		}
-		user.setFireman(!user.isFireman());
+		switch (user.getRole()) {
+		case ADMIN:
+			return false;
+		case CITIZEN:
+			user.setRole(Role.FIREMAN);
+			break;
+		case FIREMAN:
+			user.setRole(Role.CITIZEN);
+			break;
+		}
 		this.updateUser(user);
 		return true;
+	}
+
+	public boolean userExistsByMail(@NonNull String mail) {
+		return (this.getUserByMail(mail) == null ) ? false : true;
+	}
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return this.getUserByMail(username);
 	}
 }

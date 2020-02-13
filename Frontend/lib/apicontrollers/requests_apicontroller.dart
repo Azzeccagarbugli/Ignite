@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:ignite/apicontrollers/basic_auth_config.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:ignite/models/hydrant.dart';
@@ -6,20 +7,16 @@ import 'package:ignite/models/hydrant.dart';
 class RequestsApiController {
   String _ip;
   String _baseUrl;
-  Map<String, String> _header;
   RequestsApiController(String ip) {
     _ip = ip;
     _baseUrl = "http://$_ip:8080/ignite/api/request";
-    _header = {
-      "content-type": "application/json",
-      "accept": "application/json"
-    };
   }
 
 //Request - body = "" -> null
   Future<String> addRequest(Hydrant newHydrant, String userId) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.post(Uri.encodeFull("$_baseUrl/new/$userId"),
-        headers: _header,
+        headers: header,
         body: json.encode({
           "attacks": [
             newHydrant.getFirstAttack(),
@@ -47,9 +44,10 @@ class RequestsApiController {
 //bool
   Future<String> approveRequest(
       Hydrant hydrant, String requestId, String userId) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res =
         await http.post(Uri.encodeFull("$_baseUrl/approve/$requestId&$userId"),
-            headers: _header,
+            headers: header,
             body: json.encode({
               "id": hydrant.getId(),
               "attacks": [hydrant.getFirstAttack(), hydrant.getSecondAttack()],
@@ -74,17 +72,19 @@ class RequestsApiController {
 
 //bool
   Future<String> denyRequest(String requestId, String userId) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.post(
       Uri.encodeFull("$_baseUrl/deny/$requestId&$userId"),
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
   Future<String> getApprovedRequests() async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/approved",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
@@ -92,18 +92,20 @@ class RequestsApiController {
 //List<Request>
   Future<String> getPendingRequestsByDistance(
       double latitude, double longitude, double distance) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/pending/$latitude&$longitude&$distance",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
 //List<Request>
   Future<String> getRequests() async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/all",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
@@ -111,9 +113,10 @@ class RequestsApiController {
 //List<Request>
   Future<String> getRequestsByDistance(
       double latitude, double longitude, double distance) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/all/$latitude&$longitude&$distance",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }

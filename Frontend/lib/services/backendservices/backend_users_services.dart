@@ -17,7 +17,8 @@ class BackendUsersServices implements UsersServices {
       return null;
     }
     var user = json.decode(controllerJson);
-    if (user["fireman"]) {
+    bool isFireman = (user["role"] == "FIREMAN");
+    if (isFireman) {
       return new User.fireman(
         user["id"],
         user["mail"],
@@ -49,7 +50,8 @@ class BackendUsersServices implements UsersServices {
       return null;
     }
     var user = json.decode(controllerJson);
-    if (user["fireman"]) {
+    bool isFireman = (user["role"] == "FIREMAN");
+    if (isFireman) {
       return new User.fireman(
         user["id"],
         user["mail"],
@@ -99,7 +101,8 @@ class BackendUsersServices implements UsersServices {
       return null;
     }
     var user = json.decode(controllerJson);
-    if (user["fireman"] == 'true') {
+    bool isFireman = (user["role"] == "FIREMAN");
+    if (isFireman) {
       return new User.fireman(
         user["id"],
         user["mail"],
@@ -131,7 +134,8 @@ class BackendUsersServices implements UsersServices {
       return null;
     }
     var user = json.decode(controllerJson);
-    if (user["fireman"] == 'true') {
+    bool isFireman = (user["role"] == "FIREMAN");
+    if (isFireman) {
       return new User.fireman(
         user["id"],
         user["mail"],
@@ -154,5 +158,11 @@ class BackendUsersServices implements UsersServices {
         user["facebook"],
       );
     }
+  }
+
+  @override
+  Future<bool> userExistsByMail(String mail) async {
+    String controllerJson = await _controller.userExistsByMail(mail);
+    return controllerJson == 'true';
   }
 }

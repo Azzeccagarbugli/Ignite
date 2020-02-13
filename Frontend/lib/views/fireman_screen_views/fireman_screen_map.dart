@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ignite/widgets/bottom_flushbar.dart';
+import 'package:ignite/widgets/loading_screen.dart';
 import 'package:ignite/widgets/top_right_button_change_map.dart';
 
 import 'dart:ui' as ui;
@@ -22,7 +23,6 @@ import '../../providers/services_provider.dart';
 import '../../widgets/custom_dialog_search.dart';
 import '../../widgets/homepage_button.dart';
 import '../department_screen.dart';
-import '../loading_screen.dart';
 import 'request_approval_screen.dart';
 
 const double kStartupLat = 41.9038243;

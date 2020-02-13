@@ -34,6 +34,7 @@ public class HydrantServices {
 	public Hydrant addHydrant(@NonNull Hydrant newHydrant) {
 		newHydrant.setId(UUID.randomUUID());
 		return repository.insert(newHydrant);
+
 	}
 
 	public boolean deleteHydrant(@NonNull UUID id) {

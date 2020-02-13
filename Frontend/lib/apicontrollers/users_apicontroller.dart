@@ -1,3 +1,4 @@
+import 'package:ignite/apicontrollers/basic_auth_config.dart';
 import 'package:ignite/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -6,66 +7,70 @@ import 'dart:convert';
 class UsersApiController {
   String _ip;
   String _baseUrl;
-  Map<String, String> _header;
   UsersApiController(String ip) {
     _ip = ip;
     _baseUrl = "http://$_ip:8080/ignite/api/user";
-    _header = {
-      "content-type": "application/json",
-      "accept": "application/json"
-    };
   }
 
 //User - body = "" -> null
   Future<String> getUserById(String id) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/id/$id",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
 //User - body = "" -> null
   Future<String> getUserByMail(String mail) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/mail/$mail",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
 //bool
   Future<String> isUserFiremanById(String id) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/isFireman/$id",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
 //bool
   Future<String> isUserFirstAccessById(String id) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/isFirstAccess/$id",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
 //bool
   Future<String> setFirstAccessToFalseById(String id) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.put(
       Uri.encodeFull("$_baseUrl/setFirstAccess/$id"),
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
 //User - body = "" -> null
   Future<String> addUser(User newUser) async {
+    String role = newUser.isFireman() ? "FIREMAN" : "CITIZEN";
     http.Response res = await http.post(
       Uri.encodeFull("$_baseUrl/new"),
-      headers: _header,
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json"
+      },
       body: json.encode({
         "department": newUser.getDepartmentId(),
         "birthday": newUser.getBirthday(),
@@ -74,9 +79,9 @@ class UsersApiController {
         "name": newUser.getName(),
         "surname": newUser.getSurname(),
         "streetNameNumber": newUser.getStreetNumber(),
+        "role": role,
         "firstAccess": newUser.isFirstAccess(),
         "google": newUser.isGoogle(),
-        "fireman": newUser.isFireman(),
         "facebook": newUser.isFacebook(),
       }),
     );
@@ -85,9 +90,11 @@ class UsersApiController {
 
 //User - body = "" -> null
   Future<String> updateUser(User updatedUser) async {
+    String role = updatedUser.isFireman() ? "FIREMAN" : "CITIZEN";
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.post(
       Uri.encodeFull("$_baseUrl/update"),
-      headers: _header,
+      headers: header,
       body: json.encode({
         "id": updatedUser.getId(),
         "department": updatedUser.getDepartmentId(),
@@ -97,11 +104,24 @@ class UsersApiController {
         "name": updatedUser.getName(),
         "surname": updatedUser.getSurname(),
         "streetNameNumber": updatedUser.getStreetNumber(),
+        "role": role,
         "firstAccess": updatedUser.isFirstAccess(),
         "google": updatedUser.isGoogle(),
         "fireman": updatedUser.isFireman(),
         "facebook": updatedUser.isFacebook(),
       }),
+    );
+    return res.body;
+  }
+
+  Future<String> userExistsByMail(String mail) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    http.Response res = await http.get(
+      "$_baseUrl/exists/$mail",
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json"
+      },
     );
     return res.body;
   }

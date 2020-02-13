@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:ignite/apicontrollers/basic_auth_config.dart';
 import 'dart:async';
 
 import 'package:ignite/models/hydrant.dart';
@@ -8,36 +9,34 @@ import 'package:ignite/models/hydrant.dart';
 class HydrantsApiController {
   String _ip;
   String _baseUrl;
-  Map<String, String> _header;
   HydrantsApiController(String ip) {
     _ip = ip;
     _baseUrl = "http://$_ip:8080/ignite/api/hydrant";
-    _header = {
-      "content-type": "application/json",
-      "accept": "application/json"
-    };
   }
 
 //List<Hydrant>
   Future<String> getApprovedHydrants() async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/approved",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
 //Hydrant - body = "" -> null
   Future<String> getHydrantById(String id) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.get(
       "$_baseUrl/id/$id",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
 //Hydrant - body = "" -> null
   Future<String> addHydrant(Hydrant newHydrant) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.post(Uri.encodeFull("$_baseUrl/new"),
         body: json.encode({
           "attacks": [
@@ -60,21 +59,23 @@ class HydrantsApiController {
           "type": newHydrant.getType(),
           "vehicle": newHydrant.getVehicle(),
         }),
-        headers: _header);
+        headers: header);
     return res.body;
   }
 
 //bool
   Future<String> deleteHydrant(String id) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.delete(
       "$_baseUrl/delete/$id",
-      headers: _header,
+      headers: header,
     );
     return res.body;
   }
 
 //Hydrant - body = "" -> null
   Future<String> updateHydrant(Hydrant updatedHydrant) async {
+    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
     http.Response res = await http.post(Uri.encodeFull("$_baseUrl/update"),
         body: json.encode({
           "attacks": [
@@ -97,7 +98,7 @@ class HydrantsApiController {
           "type": updatedHydrant.getType(),
           "vehicle": updatedHydrant.getVehicle(),
         }),
-        headers: _header);
+        headers: header);
     return res.body;
   }
 }

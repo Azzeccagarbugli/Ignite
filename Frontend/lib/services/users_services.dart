@@ -8,4 +8,5 @@ abstract class UsersServices {
   Future<User> getUserByMail(String mail);
   Future<User> addUser(User newUser);
   Future<User> updateUser(User updatedUser);
+  Future<bool> userExistsByMail(String mail);
 }

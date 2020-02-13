@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/models/user.dart';
+import 'package:ignite/widgets/loading_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/services_provider.dart';
 import 'citizen_screen_views/citizen_screen.dart';
 import 'fireman_screen_views/fireman_screen.dart';
 import 'introduction_tutorial.dart';
-import 'loading_screen.dart';
 
 class LoadingView extends StatefulWidget {
   @override

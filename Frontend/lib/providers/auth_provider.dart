@@ -162,11 +162,13 @@ class AuthProvider {
 
   Future updateUsersCollection(
       String mail, bool isFireman, bool isGoogle, bool isFacebook) async {
-    User dbUser = await _usersServices.getUserByMail(mail);
-    if (dbUser == null) {
+    bool userExists = await _usersServices.userExistsByMail(mail);
+    print("Esiste: $userExists");
+    if (!userExists) {
       await _usersServices
           .addUser(new User.citizen("", mail, true, isGoogle, isFacebook));
     } else {
+      User dbUser = await _usersServices.getUserByMail(mail);
       await _usersServices.updateUser(new User.citizen(
           dbUser.getId(), dbUser.getMail(), false, isGoogle, isFacebook));
     }
