@@ -13,7 +13,7 @@ class ValuesApiController {
   }
 
   Future<String> getAttacks() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/attacks",
       headers: header,
@@ -22,7 +22,7 @@ class ValuesApiController {
   }
 
   Future<String> getColors() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/colors",
       headers: header,
@@ -31,7 +31,7 @@ class ValuesApiController {
   }
 
   Future<String> getOpenings() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/openings",
       headers: header,
@@ -40,7 +40,7 @@ class ValuesApiController {
   }
 
   Future<String> getPressures() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/pressures",
       headers: header,
@@ -49,7 +49,7 @@ class ValuesApiController {
   }
 
   Future<String> getTypes() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/types",
       headers: header,
@@ -58,7 +58,7 @@ class ValuesApiController {
   }
 
   Future<String> getVehicles() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/vehicles",
       headers: header,

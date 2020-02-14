@@ -13,8 +13,20 @@ class BasicAuthConfig {
 
   BasicAuthConfig._internal();
 
-  Future<Map<String, String>> getIgniteHeader() async {
+  Future<Map<String, String>> getUserHeader() async {
     String userMail = await AuthProvider().getUserMail();
+    var bytes = utf8.encode("$userMail:$kPass");
+    var credentials = base64.encode(bytes);
+    var headers = {
+      "content-type": "application/json",
+      "accept": "application/json",
+      "authorization": "Basic $credentials"
+    };
+    return headers;
+  }
+
+  Future<Map<String, String>> getAdminHeader() async {
+    String userMail = "admin@mail.com";
     var bytes = utf8.encode("$userMail:$kPass");
     var credentials = base64.encode(bytes);
     var headers = {
