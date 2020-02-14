@@ -320,11 +320,25 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
                     icon: Icons.not_listed_location,
                     function: _animateCameraOnNearestHydrant,
                   ),
-                  /*  HomePageButton(
+                  HomePageButton(
                     heroTag: 'NEARESTHYDRANTFILTERED',
                     icon: Icons.filter_list,
-                    function: _setFilterAndSearch,
-                  ),*/
+                    function: () {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          opaque: false,
+                          pageBuilder: (BuildContext context, _, __) =>
+                              CustomDialog(
+                            searchFunction:
+                                _animateCameraOnNearestHydrantUsingFilter,
+                            attacksList: _attackValues,
+                            vehiclesList: _vehicleValues,
+                            openingsList: _openingValues,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ],
@@ -355,19 +369,25 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     ));
   }
 
-  void _setFilterAndSearch() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return CustomDialog(
-          searchFunction: _animateCameraOnNearestHydrantUsingFilter,
-          attacksList: _attackValues,
-          vehiclesList: _vehicleValues,
-          openingsList: _openingValues,
-        );
-      },
-    );
-  }
+  // void _setFilterAndSearch() {
+  //   showGeneralDialog(
+  //     context: context,
+  //     pageBuilder: (
+  //       _,
+  //       __,
+  //       ___,
+  //     ) {
+  //       return SizedBox.expand(
+  //         child: CustomDialog(
+  // searchFunction: _animateCameraOnNearestHydrantUsingFilter,
+  // attacksList: _attackValues,
+  // vehiclesList: _vehicleValues,
+  // openingsList: _openingValues,
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   List<Hydrant> _buildHydrantsFilteredForSearch(
       String attack, String vehicle, String opening) {

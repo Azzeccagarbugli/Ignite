@@ -63,7 +63,7 @@ class _TopButtonRightMapChangeViewState
               });
             });
           },
-          icon: Icons.filter_hdr,
+          icon: Icons.layers,
           heroTag: 'SATELLITE',
         ),
         SizedBox(
@@ -102,7 +102,7 @@ class _TopButtonRightMapChangeViewState
                     });
                   },
                   child: Icon(
-                    Icons.layers,
+                    Icons.map,
                     color: ThemeProvider.themeOf(context).id == "main"
                         ? Colors.red[600]
                         : Colors.white,

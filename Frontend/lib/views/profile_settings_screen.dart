@@ -64,6 +64,17 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   Widget getRoleChip() {
     return Chip(
       elevation: 4,
+      avatar: CircleAvatar(
+        child: (_user.isFireman())
+            ? Icon(
+                Icons.work,
+                size: 15,
+              )
+            : Icon(
+                Icons.person_outline,
+                size: 15,
+              ),
+      ),
       label: Text(
         (_user.isFireman()) ? "Dipendente VVF" : "Cittadino",
         style: TextStyle(fontSize: 15.0),
