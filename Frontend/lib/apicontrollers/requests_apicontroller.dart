@@ -14,7 +14,7 @@ class RequestsApiController {
 
 //Request - body = "" -> null
   Future<String> addRequest(Hydrant newHydrant, String userId) async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.post(Uri.encodeFull("$_baseUrl/new/$userId"),
         headers: header,
         body: json.encode({
@@ -44,7 +44,7 @@ class RequestsApiController {
 //bool
   Future<String> approveRequest(
       Hydrant hydrant, String requestId, String userId) async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res =
         await http.post(Uri.encodeFull("$_baseUrl/approve/$requestId&$userId"),
             headers: header,
@@ -72,7 +72,7 @@ class RequestsApiController {
 
 //bool
   Future<String> denyRequest(String requestId, String userId) async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.post(
       Uri.encodeFull("$_baseUrl/deny/$requestId&$userId"),
       headers: header,
@@ -81,7 +81,7 @@ class RequestsApiController {
   }
 
   Future<String> getApprovedRequests() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/approved",
       headers: header,
@@ -92,7 +92,7 @@ class RequestsApiController {
 //List<Request>
   Future<String> getPendingRequestsByDistance(
       double latitude, double longitude, double distance) async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/pending/$latitude&$longitude&$distance",
       headers: header,
@@ -102,7 +102,7 @@ class RequestsApiController {
 
 //List<Request>
   Future<String> getRequests() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/all",
       headers: header,
@@ -113,7 +113,7 @@ class RequestsApiController {
 //List<Request>
   Future<String> getRequestsByDistance(
       double latitude, double longitude, double distance) async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/all/$latitude&$longitude&$distance",
       headers: header,

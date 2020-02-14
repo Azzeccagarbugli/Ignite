@@ -53,7 +53,7 @@ public class UserController {
 		return userServices.setFirstAccessToFalseById(UUID.fromString(id));
 	}
 
-	@PreAuthorize("permitAll")
+	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('FIREMAN') or hasAuthority('CITIZEN')")
 	@PostMapping("/new")
 	public User addUser(@RequestBody User newUser) {
 		return userServices.addUser(newUser);
@@ -77,7 +77,7 @@ public class UserController {
 		return userServices.toggleFireman(UUID.fromString(id));
 	}
 	
-	@PreAuthorize("permitAll")
+	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('FIREMAN') or hasAuthority('CITIZEN')")
 	@GetMapping("/exists/{mail}")
 	public boolean userExistsByMail(@PathVariable("mail") String mail) {
 		return userServices.userExistsByMail(mail);

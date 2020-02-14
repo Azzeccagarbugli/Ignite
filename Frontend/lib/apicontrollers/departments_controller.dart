@@ -14,7 +14,7 @@ class DepartmentsApiController {
 
 //List<Department>
   Future<String> getDepartments() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get("$_baseUrl/all", headers: header);
     return res.body;
   }

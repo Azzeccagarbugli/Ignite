@@ -16,7 +16,7 @@ class HydrantsApiController {
 
 //List<Hydrant>
   Future<String> getApprovedHydrants() async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/approved",
       headers: header,
@@ -26,7 +26,7 @@ class HydrantsApiController {
 
 //Hydrant - body = "" -> null
   Future<String> getHydrantById(String id) async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.get(
       "$_baseUrl/id/$id",
       headers: header,
@@ -36,7 +36,7 @@ class HydrantsApiController {
 
 //Hydrant - body = "" -> null
   Future<String> addHydrant(Hydrant newHydrant) async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.post(Uri.encodeFull("$_baseUrl/new"),
         body: json.encode({
           "attacks": [
@@ -65,7 +65,7 @@ class HydrantsApiController {
 
 //bool
   Future<String> deleteHydrant(String id) async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.delete(
       "$_baseUrl/delete/$id",
       headers: header,
@@ -75,7 +75,7 @@ class HydrantsApiController {
 
 //Hydrant - body = "" -> null
   Future<String> updateHydrant(Hydrant updatedHydrant) async {
-    Map<String, String> header = await BasicAuthConfig().getIgniteHeader();
+    Map<String, String> header = await BasicAuthConfig().getUserHeader();
     http.Response res = await http.post(Uri.encodeFull("$_baseUrl/update"),
         body: json.encode({
           "attacks": [
