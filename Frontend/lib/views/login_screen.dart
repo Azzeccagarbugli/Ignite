@@ -17,6 +17,44 @@ class _LoginScreenState extends State<LoginScreen> {
   double _width = 0;
   double _opacity = 0;
 
+  // _launch_URL_WEB() async {
+  //   const url = 'http://francescocoppola.me/Ignite-Homepage/';
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
+
+  // _launch_URL_DASH() async {
+  //   const url = 'https://ignitedashboard.netlify.com/';
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
+
+  // final QuickActions quickActions = new QuickActions();
+  //   quickActions.initialize((String shortcutType) {
+  //     if (shortcutType == 'action_web') {
+  //       _launch_URL_WEB();
+  //     } else {
+  //       _launch_URL_DASH();
+  //     }
+  //   });
+
+  //   quickActions.setShortcutItems(<ShortcutItem>[
+  //     const ShortcutItem(
+  //       type: 'action_web',
+  //       localizedTitle: 'web',
+  //     ),
+  //     const ShortcutItem(
+  //       type: 'action_dashboard',
+  //       localizedTitle: 'dashboard',
+  //     ),
+  //   ]);
+
   @override
   void initState() {
     super.initState();

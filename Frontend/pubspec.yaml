@@ -34,6 +34,7 @@ dependencies:
   url_launcher: ^5.4.1
   flushbar: ^1.9.1
   flare_flutter: ^2.0.1
+  # quick_actions: ^0.4.0+1
 
 dev_dependencies:
   flutter_test:
