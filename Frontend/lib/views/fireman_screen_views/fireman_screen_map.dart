@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ignite/widgets/bottom_flushbar.dart';
 import 'package:ignite/widgets/loading_screen.dart';
@@ -34,17 +35,100 @@ class FiremanScreenMap extends StatefulWidget {
 }
 
 class _FiremanScreenMapState extends State<FiremanScreenMap> {
+  //key che ho aggiunto per la loaded map
+  final key = GlobalKey();
+
   StreamSubscription<Position> _positionStream;
   GoogleMapController _mapController;
   LatLng _curloc;
   String _mapStyle;
-  List<Marker> _markerSet;
+  Set<Marker> _markerSet;
   List<Hydrant> _approvedHydrants;
   List<Department> _departments;
   List<String> _attackValues;
   List<String> _vehicleValues;
   List<String> _openingValues;
   MapType mapType;
+  Completer<GoogleMapController> _controller = Completer();
+  ClusterManager _manager;
+  List<ClusterItem<Hydrant>> _clusterHydrants = List<ClusterItem<Hydrant>>();
+
+  void _generateClustersHydrants() {
+    for (Hydrant hydrant in _approvedHydrants) {
+      _clusterHydrants.add(ClusterItem<Hydrant>(
+        LatLng(hydrant.getLat(), hydrant.getLong()),
+        item: hydrant,
+      ));
+    }
+  }
+
+  void _updateMarkers(Set<Marker> markers) {
+    print('Updated ${markers.length} markers');
+    key.currentState.setState(() {
+      _markerSet = markers;
+    });
+  }
+
+  ClusterManager _initClusterManagerOnLoading() {
+    return ClusterManager<Hydrant>(_clusterHydrants, _updateMarkers,
+        markerBuilder: _markerBuilder,
+        initialZoom: CameraPosition(
+          target: LatLng(kStartupLat, kStartupLong),
+          zoom: 5.0,
+        ).zoom);
+  }
+
+  ClusterManager _initClusterManagerOnLoaded() {
+    return ClusterManager<Hydrant>(_clusterHydrants, _updateMarkers,
+        markerBuilder: _markerBuilder,
+        initialZoom: CameraPosition(
+          target: LatLng(_curloc.latitude, _curloc.longitude),
+          zoom: 5.0,
+        ).zoom);
+  }
+
+  Future<Marker> Function(Cluster<Hydrant>) get _markerBuilder =>
+      (cluster) async {
+        return Marker(
+          markerId: MarkerId(cluster.getId()),
+          position: cluster.location,
+          onTap: () {
+            print('---- $cluster');
+            cluster.items.forEach((p) => print(p));
+          },
+          icon: await _getMarkerBitmap(cluster.isMultiple ? 125 : 75,
+              text: cluster.isMultiple ? cluster.count.toString() : null),
+        );
+      };
+
+  Future<BitmapDescriptor> _getMarkerBitmap(int size, {String text}) async {
+    assert(size != null);
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint1 = Paint()..color = Colors.red;
+    final Paint paint2 = Paint()..color = Colors.white;
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2.0, paint1);
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2.2, paint2);
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2.8, paint1);
+    if (text != null) {
+      TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+      painter.text = TextSpan(
+        text: text,
+        style: TextStyle(
+            fontSize: size / 3,
+            color: Colors.white,
+            fontWeight: FontWeight.normal),
+      );
+      painter.layout();
+      painter.paint(
+        canvas,
+        Offset(size / 2 - painter.width / 2, size / 2 - painter.height / 2),
+      );
+    }
+    final img = await pictureRecorder.endRecording().toImage(size, size);
+    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+    return BitmapDescriptor.fromBytes(data.buffer.asUint8List());
+  }
 
   void setupPositionStream() {
     _positionStream = Geolocator()
@@ -76,6 +160,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       this._buildDepartmentsMarkers(),
       this._loadJson(),
     ]);
+    _manager = _initClusterManagerOnLoading();
   }
 
   Future<void> secondFutureInit() async {
@@ -84,6 +169,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       this._getPosition(),
     ]);
     this.setupPositionStream();
+    _manager = _initClusterManagerOnLoaded();
   }
 
   Future<void> _buildValues() async {
@@ -164,6 +250,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
         ),
       );
     }
+    _generateClustersHydrants();
   }
 
   Future<void> _buildDepartmentsMarkers() async {
@@ -214,7 +301,14 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
     }
   }
 
-  void _onMapCreated(GoogleMapController controller) {
+  void _onMapCreatedOnLoading(GoogleMapController controller) {
+    _mapController = controller;
+    _mapController.setMapStyle(_mapStyle);
+  }
+
+  void _onMapCreatedOnLoaded(GoogleMapController controller) {
+    _controller.complete(controller);
+    _manager.setMapController(controller);
     _mapController = controller;
     _mapController.setMapStyle(_mapStyle);
   }
@@ -226,9 +320,9 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
       zoomGesturesEnabled: true,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
-      onMapCreated: _onMapCreated,
+      onMapCreated: _onMapCreatedOnLoading,
       mapType: mapType,
-      markers: _markerSet.toSet(),
+      markers: _markerSet,
       initialCameraPosition: CameraPosition(
         target: LatLng(kStartupLat, kStartupLong),
         zoom: 5.0,
@@ -239,14 +333,17 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   GoogleMap _buildLoadedGoogleMap() {
     this._animateCameraOnMe(true);
     return GoogleMap(
+      key: key,
       mapToolbarEnabled: false,
       indoorViewEnabled: true,
       zoomGesturesEnabled: true,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
       mapType: mapType,
-      onMapCreated: _onMapCreated,
-      markers: _markerSet.toSet(),
+      onMapCreated: _onMapCreatedOnLoaded,
+      onCameraMove: _manager.onCameraMove,
+      onCameraIdle: _manager.updateMap,
+      markers: _markerSet,
       initialCameraPosition: CameraPosition(
         target: _curloc,
         zoom: 16.0,
@@ -497,7 +594,7 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   @override
   void initState() {
     super.initState();
-    _markerSet = List<Marker>();
+    _markerSet = Set<Marker>();
     _curloc = LatLng(kStartupLat, kStartupLong);
     mapType = MapType.normal;
   }
