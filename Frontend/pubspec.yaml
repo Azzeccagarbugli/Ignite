@@ -1,6 +1,6 @@
 name: ignite
 description: Tocca il futuro concretamente oggi e aiuta un intera comunità con un gesto che può fare la differenza.
-version: 1.0.0+2
+version: 1.0.0+3
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
