@@ -250,67 +250,67 @@ class _LoginScreenState extends State<LoginScreen> {
               this._loadingScreen();
             },
           ),
-          Align(
-            alignment: FractionalOffset.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                bottom: 24.0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  AnimatedOpacity(
-                    duration: Duration(
-                      milliseconds: 1200,
-                    ),
-                    curve: Curves.easeInOutCubic,
-                    opacity: _opacity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                            'Altrimenti effettua l\'accesso con',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SocialChip(
-                        label: 'Google',
-                        icon: FontAwesomeIcons.google,
-                        function: () {
-                          _googleLogin();
-                        },
-                        width: _width,
-                        opacity: _opacity,
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      SocialChip(
-                        label: 'Facebook',
-                        icon: FontAwesomeIcons.facebookF,
-                        function: () {
-                          _fbLogin();
-                        },
-                        width: _width,
-                        opacity: _opacity,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: FractionalOffset.bottomCenter,
+          //   child: Padding(
+          //     padding: const EdgeInsets.only(
+          //       bottom: 24.0,
+          //     ),
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.end,
+          //       mainAxisAlignment: MainAxisAlignment.end,
+          //       children: <Widget>[
+          //         AnimatedOpacity(
+          //           duration: Duration(
+          //             milliseconds: 1200,
+          //           ),
+          //           curve: Curves.easeInOutCubic,
+          //           opacity: _opacity,
+          //           child: Row(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             children: <Widget>[
+          //               Padding(
+          //                 padding: const EdgeInsets.all(12.0),
+          //                 child: Text(
+          //                   'Altrimenti effettua l\'accesso con',
+          //                   style: TextStyle(
+          //                     color: Colors.white,
+          //                   ),
+          //                 ),
+          //               )
+          //             ],
+          //           ),
+          //         ),
+          //         Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: <Widget>[
+          //             SocialChip(
+          //               label: 'Google',
+          //               icon: FontAwesomeIcons.google,
+          //               function: () {
+          //                 _googleLogin();
+          //               },
+          //               width: _width,
+          //               opacity: _opacity,
+          //             ),
+          //             SizedBox(
+          //               width: 8.0,
+          //             ),
+          //             SocialChip(
+          //               label: 'Facebook',
+          //               icon: FontAwesomeIcons.facebookF,
+          //               function: () {
+          //                 _fbLogin();
+          //               },
+          //               width: _width,
+          //               opacity: _opacity,
+          //             ),
+          //           ],
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

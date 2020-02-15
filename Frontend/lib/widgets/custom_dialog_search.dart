@@ -195,33 +195,40 @@ class _CustomDialogState extends State<CustomDialog> {
                               SizedBox(
                                 height: 12,
                               ),
-                              Container(
-                                color: Colors.red[600],
-                                width: MediaQuery.of(context).size.width,
-                                child: FlatButton.icon(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    widget.searchFunction(
-                                      _attackFilter,
-                                      _vehicleFilter,
-                                      _openingFilter,
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.search,
-                                    color: Colors.white,
-                                  ),
-                                  label: Text(
-                                    "Cerca l'idrante",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                         ),
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            color: ThemeProvider.themeOf(context).id == "main"
+                                ? Colors.red[600]
+                                : Colors.black,
+                            width: MediaQuery.of(context).size.width,
+                            child: FlatButton.icon(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                widget.searchFunction(
+                                  _attackFilter,
+                                  _vehicleFilter,
+                                  _openingFilter,
+                                );
+                              },
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              ),
+                              label: Text(
+                                "Cerca l'idrante",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
