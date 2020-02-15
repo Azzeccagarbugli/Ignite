@@ -38,7 +38,7 @@ Per quanto concerne la registrazione di nuovi utenti, si è deciso di rendere la
 
 # 🧰 Tecnologie di base <a name = "tecno"></a>
 
-<img align="left" src="https://i.imgur.com/zDNvJ4R.png" height="250">
+<img align="left" src="https://i.imgur.com/zDNvJ4R.png" height="300">
 
 Il lato frontend dell’applicativo si rivolge al mondo Android ed è stato sviluppato in un linguaggio di programmazione chiamato **Dart** mediante il framework Open Source **Flutter**.
 
@@ -46,12 +46,12 @@ La prima implementazione della logica dell'implementazione è stata effettuata a
 
 Una seconda implementazione della logica si basata su un backend scritto in linguaggio **Java**. L'interazione tra frontend e backend è stata resa possibile grazie alla creazione di **API Rest**, la cui scrittura e gestione, anche sotto l'ottica della sicurezza, sono state rese possibili grazie al framework **Spring Boot**. Per la persistenza dei dati del servizio ci si è affidati al database NoSQL **MongoDB**. Per poter rendere più agevole la scrittura del codice tramite l'uso di annotazioni, si è deciso di impiegare la libreria Java **Lombok**.
 
-<img align="right" src="https://i.imgur.com/3L3jkAR.png" height="250">
+<img align="right" src="https://i.imgur.com/3L3jkAR.png" height="300">
 
 All'interno del segunte [**file**](https://docs.google.com/document/d/1IBhf9xksPD4AwHsbAoBzN1ue7LrSgzB2EBK0UFNTidI/edit?usp=sharing) è possibile trovare tutte le chiamate **API Rest** sviluppate con **Java**.
 
 Per quanto concerne l'autenticazione degli utenti al servizio si è deciso di affidarsi ai servizi di **Google Firebase**, non correlati a quella che è la logica di backend dell'applicativo.
-Basandosi su Firebase per quanto riguarda l'autenticazione, abbiamo deciso di impiegare il sistema **Basic Auth** per aggiungere un essenziale strato di sicurezza alle chiamate del backend Java tramite **Spring Security**. Ogni chiamata alle **API** è filtrata secondo il ruolo assegnato alla mail passata tramite Basic Auth (la password è comune per ogni ruolo). I **ruoli** sono in totale tre: Admin (**ADMIN**), Cittadino (**CITIZEN**), Dipendente VVF (**Fireman**).
+Basandosi su Firebase per quanto riguarda l'autenticazione, abbiamo deciso di impiegare il sistema **Basic Auth** per aggiungere un essenziale strato di sicurezza alle chiamate del backend Java tramite **Spring Security**. Ogni chiamata alle **API** è filtrata secondo il ruolo assegnato alla mail passata tramite Basic Auth _(la quale è comune per ogni ruolo)_. I **ruoli** sono in totale tre: Admin (**ADMIN**), Cittadino (**CITIZEN**), Dipendente VVF (**Fireman**).
 
 # 🎯 Dashboard <a name = "dash"></a>
 
