@@ -19,7 +19,7 @@ import '../../helper/map_launcher.dart';
 import '../../main.dart';
 import '../../models/department.dart';
 import '../../models/hydrant.dart';
-import '../../providers/services_provider.dart';
+import '../../providers/controllers_provider.dart';
 import '../../widgets/custom_dialog_search.dart';
 import '../../widgets/homepage_button.dart';
 import '../department_screen.dart';
@@ -58,12 +58,12 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
 
   Future<void> getApprovedHydrants() async {
     _approvedHydrants =
-        await ServicesProvider().getHydrantsServices().getApprovedHydrants();
+        await ControllersProvider().getHydrantsController().getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
     _departments =
-        await ServicesProvider().getDepartmentsServices().getDepartments();
+        await ControllersProvider().getDepartmentsController().getDepartments();
   }
 
   Future<void> firstFutureInit() async {
@@ -87,9 +87,9 @@ class _FiremanScreenMapState extends State<FiremanScreenMap> {
   }
 
   Future<void> _buildValues() async {
-    _attackValues = await ServicesProvider().getValuesServices().getAttacks();
-    _vehicleValues = await ServicesProvider().getValuesServices().getVehicles();
-    _openingValues = await ServicesProvider().getValuesServices().getOpenings();
+    _attackValues = await ControllersProvider().getValuesController().getAttacks();
+    _vehicleValues = await ControllersProvider().getValuesController().getVehicles();
+    _openingValues = await ControllersProvider().getValuesController().getOpenings();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

@@ -1,6 +1,6 @@
 import '../models/user.dart';
 
-abstract class UsersServices {
+abstract class UsersController {
   Future<bool> isUserFiremanById(String id);
   Future<bool> isUserFirstAccessById(String id);
   Future<bool> setFirstAccessToFalseById(String id);

@@ -1,17 +1,17 @@
 import 'dart:convert';
-import '../../apicontrollers/values_controller.dart';
-import '../values_services.dart';
+import 'package:ignite/backendservices/backend_values_services.dart';
+import '../values_controller.dart';
 
-class BackendValuesServices implements ValuesServices {
-  ValuesApiController _controller;
+class ValuesApiController implements ValuesController {
+  BackendValuesServices _services;
 
-  BackendValuesServices(String ip) {
-    _controller = new ValuesApiController(ip);
+  ValuesApiController(String ip) {
+    _services = new BackendValuesServices(ip);
   }
 
   @override
   Future<List<String>> getAttacks() async {
-    String controllerJson = await _controller.getAttacks();
+    String controllerJson = await _services.getAttacks();
     var parsedJson = json.decode(controllerJson);
     List<String> attacks = new List<String>();
     for (String val in parsedJson) {
@@ -22,7 +22,7 @@ class BackendValuesServices implements ValuesServices {
 
   @override
   Future<List<String>> getColors() async {
-    String controllerJson = await _controller.getColors();
+    String controllerJson = await _services.getColors();
     var parsedJson = json.decode(controllerJson);
     List<String> colors = new List<String>();
     for (String val in parsedJson) {
@@ -33,7 +33,7 @@ class BackendValuesServices implements ValuesServices {
 
   @override
   Future<List<String>> getOpenings() async {
-    String controllerJson = await _controller.getOpenings();
+    String controllerJson = await _services.getOpenings();
     var parsedJson = json.decode(controllerJson);
     List<String> openings = new List<String>();
     for (String val in parsedJson) {
@@ -44,7 +44,7 @@ class BackendValuesServices implements ValuesServices {
 
   @override
   Future<List<String>> getPressures() async {
-    String controllerJson = await _controller.getPressures();
+    String controllerJson = await _services.getPressures();
     var parsedJson = json.decode(controllerJson);
     List<String> pressures = new List<String>();
     for (String val in parsedJson) {
@@ -55,7 +55,7 @@ class BackendValuesServices implements ValuesServices {
 
   @override
   Future<List<String>> getTypes() async {
-    String controllerJson = await _controller.getTypes();
+    String controllerJson = await _services.getTypes();
     var parsedJson = json.decode(controllerJson);
     List<String> types = new List<String>();
     for (String val in parsedJson) {
@@ -66,7 +66,7 @@ class BackendValuesServices implements ValuesServices {
 
   @override
   Future<List<String>> getVehicles() async {
-    String controllerJson = await _controller.getVehicles();
+    String controllerJson = await _services.getVehicles();
     var parsedJson = json.decode(controllerJson);
     List<String> vehicles = new List<String>();
     for (String val in parsedJson) {

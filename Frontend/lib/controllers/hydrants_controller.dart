@@ -1,6 +1,6 @@
 import '../models/hydrant.dart';
 
-abstract class HydrantsServices {
+abstract class HydrantsController {
   Future<List<Hydrant>> getApprovedHydrants();
   Future<Hydrant> getHydrantById(String id);
   Future<Hydrant> addHydrant(Hydrant newHydrant);

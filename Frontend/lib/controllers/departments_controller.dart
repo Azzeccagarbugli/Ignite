@@ -1,5 +1,5 @@
 import '../models/department.dart';
 
-abstract class DepartmentsServices {
+abstract class DepartmentsController {
   Future<List<Department>> getDepartments();
 }

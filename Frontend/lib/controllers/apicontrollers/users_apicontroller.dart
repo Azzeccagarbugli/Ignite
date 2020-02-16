@@ -1,18 +1,18 @@
 import 'dart:convert';
-import '../../apicontrollers/users_apicontroller.dart';
+import 'package:ignite/backendservices/backend_users_services.dart';
+import 'package:ignite/controllers/users_controller.dart';
 import '../../models/user.dart';
-import '../users_services.dart';
 
-class BackendUsersServices implements UsersServices {
-  UsersApiController _controller;
+class UsersApiController implements UsersController {
+  BackendUsersServices _services;
 
-  BackendUsersServices(String ip) {
-    _controller = new UsersApiController(ip);
+  UsersApiController(String ip) {
+    _services = new BackendUsersServices(ip);
   }
 
   @override
   Future<User> getUserById(String id) async {
-    String controllerJson = await _controller.getUserById(id);
+    String controllerJson = await _services.getUserById(id);
     if (controllerJson == "") {
       return null;
     }
@@ -45,7 +45,7 @@ class BackendUsersServices implements UsersServices {
 
   @override
   Future<User> getUserByMail(String mail) async {
-    String controllerJson = await _controller.getUserByMail(mail);
+    String controllerJson = await _services.getUserByMail(mail);
     if (controllerJson == "") {
       return null;
     }
@@ -78,25 +78,25 @@ class BackendUsersServices implements UsersServices {
 
   @override
   Future<bool> isUserFiremanById(String id) async {
-    String controllerJson = await _controller.isUserFiremanById(id);
+    String controllerJson = await _services.isUserFiremanById(id);
     return controllerJson == 'true';
   }
 
   @override
   Future<bool> isUserFirstAccessById(String id) async {
-    String controllerJson = await _controller.isUserFirstAccessById(id);
+    String controllerJson = await _services.isUserFirstAccessById(id);
     return controllerJson == 'true';
   }
 
   @override
   Future<bool> setFirstAccessToFalseById(String id) async {
-    String controllerJson = await _controller.setFirstAccessToFalseById(id);
+    String controllerJson = await _services.setFirstAccessToFalseById(id);
     return controllerJson == 'true';
   }
 
   @override
   Future<User> addUser(User newUser) async {
-    String controllerJson = await _controller.addUser(newUser);
+    String controllerJson = await _services.addUser(newUser);
     if (controllerJson == "") {
       return null;
     }
@@ -129,7 +129,7 @@ class BackendUsersServices implements UsersServices {
 
   @override
   Future<User> updateUser(User updatedUser) async {
-    String controllerJson = await _controller.updateUser(updatedUser);
+    String controllerJson = await _services.updateUser(updatedUser);
     if (controllerJson == "") {
       return null;
     }
@@ -162,7 +162,7 @@ class BackendUsersServices implements UsersServices {
 
   @override
   Future<bool> userExistsByMail(String mail) async {
-    String controllerJson = await _controller.userExistsByMail(mail);
+    String controllerJson = await _services.userExistsByMail(mail);
     return controllerJson == 'true';
   }
 }

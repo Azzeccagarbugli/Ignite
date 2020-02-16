@@ -1,13 +1,13 @@
 import 'package:http/http.dart' as http;
-import 'package:ignite/apicontrollers/basic_auth_config.dart';
+import 'package:ignite/backendservices/basic_auth_config.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:ignite/models/hydrant.dart';
 
-class RequestsApiController {
+class BackendRequestsServices {
   String _ip;
   String _baseUrl;
-  RequestsApiController(String ip) {
+  BackendRequestsServices(String ip) {
     _ip = ip;
     _baseUrl = "http://$_ip:8080/ignite/api/request";
   }

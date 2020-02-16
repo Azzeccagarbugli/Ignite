@@ -1,18 +1,19 @@
-import 'package:ignite/apicontrollers/departments_controller.dart';
+
 import 'dart:convert';
+import 'package:ignite/backendservices/backend_departments_service.dart';
 import '../../models/department.dart';
-import '../departments_services.dart';
+import '../departments_controller.dart';
 
-class BackendDepartmentsServices implements DepartmentsServices {
-  DepartmentsApiController _controller;
+class DepartmentsApiController implements DepartmentsController {
+  BackendDepartmentsServices _services;
 
-  BackendDepartmentsServices(String ip) {
-    _controller = new DepartmentsApiController(ip);
+  DepartmentsApiController(String ip) {
+    _services = new BackendDepartmentsServices(ip);
   }
 
   @override
   Future<List<Department>> getDepartments() async {
-    String controllerJson = await _controller.getDepartments();
+    String controllerJson = await _services.getDepartments();
     var parsedJson = json.decode(controllerJson);
     List<Department> departments = new List<Department>();
     for (var department in parsedJson) {

@@ -10,7 +10,7 @@ import 'package:theme_provider/theme_provider.dart';
 
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
-import '../../providers/services_provider.dart';
+import '../../providers/controllers_provider.dart';
 import '../../widgets/loading_shimmer.dart';
 import '../../widgets/painter.dart';
 import '../../widgets/remove_glow.dart';
@@ -34,8 +34,8 @@ class _FiremanScreenRequestsState extends State<FiremanScreenRequests> {
   }
 
   Future _getRequests() async {
-    _requests = await ServicesProvider()
-        .getRequestsServices()
+    _requests = await ControllersProvider()
+        .getRequestsController()
         .getPendingRequestsByDistance(
             _curloc.latitude, _curloc.longitude, kSearchDistance);
   }
@@ -222,8 +222,8 @@ class _RequestCardState extends State<RequestCard> {
           vertical: 6,
         ),
         child: FutureBuilder<Hydrant>(
-          future: ServicesProvider()
-              .getHydrantsServices()
+          future: ControllersProvider()
+              .getHydrantsController()
               .getHydrantById(widget.request.getHydrantId()),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {

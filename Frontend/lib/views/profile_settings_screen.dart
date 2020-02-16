@@ -9,7 +9,7 @@ import 'package:theme_provider/theme_provider.dart';
 
 import '../models/user.dart';
 import '../providers/auth_provider.dart';
-import '../providers/services_provider.dart';
+import '../providers/controllers_provider.dart';
 import '../widgets/remove_glow.dart';
 import '../widgets/settings_button.dart';
 import 'faq.dart';
@@ -36,8 +36,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   }
 
   Future<void> getDBUser() async {
-    this._user = await ServicesProvider()
-        .getUsersServices()
+    this._user = await ControllersProvider()
+        .getUsersController()
         .getUserByMail(this._fireUser.email);
   }
 

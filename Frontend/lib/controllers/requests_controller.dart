@@ -1,7 +1,7 @@
 import '../models/hydrant.dart';
 import '../models/request.dart';
 
-abstract class RequestsServices {
+abstract class RequestsController {
   Future<List<Request>> getRequests();
   Future<List<Request>> getRequestsByDistance(
       double latitude, double longitude, double distance);

@@ -16,7 +16,7 @@ import '../../helper/map_launcher.dart';
 import '../../main.dart';
 import '../../models/department.dart';
 import '../../models/hydrant.dart';
-import '../../providers/services_provider.dart';
+import '../../providers/controllers_provider.dart';
 import '../../widgets/homepage_button.dart';
 import '../department_screen.dart';
 import '../fireman_screen_views/request_approval_screen.dart';
@@ -51,12 +51,12 @@ class _CitizenScreenMapState extends State<CitizenScreenMap> {
 
   Future<void> getApprovedHydrants() async {
     _approvedHydrants =
-        await ServicesProvider().getHydrantsServices().getApprovedHydrants();
+        await ControllersProvider().getHydrantsController().getApprovedHydrants();
   }
 
   Future<void> getDepartments() async {
     _departments =
-        await ServicesProvider().getDepartmentsServices().getDepartments();
+        await ControllersProvider().getDepartmentsController().getDepartments();
   }
 
   Future<void> firstFutureInit() async {

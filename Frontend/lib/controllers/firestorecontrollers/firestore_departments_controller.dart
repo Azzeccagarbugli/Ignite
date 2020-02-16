@@ -2,13 +2,13 @@ import 'package:ignite/dbrepositories/dbrepository.dart';
 import 'package:ignite/factories/repositoriesfactories/firestorerepositoriesfactory.dart';
 
 import '../../models/department.dart';
-import '../departments_services.dart';
+import '../departments_controller.dart';
 
-class FirestoreDepartmentsServices implements DepartmentsServices {
-  DbRepository<Department> _departmentsController =
+class FirestoreDepartmentsController implements DepartmentsController {
+  DbRepository<Department> _departmentsServices =
       FirestoreRepositoriesFactory().getDepartmentsRepository();
   @override
   Future<List<Department>> getDepartments() async {
-    return await _departmentsController.getAll();
+    return await _departmentsServices.getAll();
   }
 }

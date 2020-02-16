@@ -7,7 +7,7 @@ import 'package:theme_provider/theme_provider.dart';
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/services_provider.dart';
+import '../../providers/controllers_provider.dart';
 import '../../widgets/button_decline_approve.dart';
 import '../../widgets/loading_shimmer.dart';
 import '../../widgets/remove_glow.dart';
@@ -40,12 +40,12 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
 
   Future _getUser() async {
     _user =
-        await ServicesProvider().getUsersServices().getUserByMail(_userMail);
+        await ControllersProvider().getUsersController().getUserByMail(_userMail);
   }
 
   Future _getHydrant() async {
-    _hydrant = await ServicesProvider()
-        .getHydrantsServices()
+    _hydrant = await ControllersProvider()
+        .getHydrantsController()
         .getHydrantById(widget.request.getHydrantId());
   }
 
@@ -331,8 +331,8 @@ class ButtonAppBarDeclineConfirm extends StatelessWidget {
           text: "Declina",
           onPressed: () async {
             await AuthProvider().getUser();
-            ServicesProvider()
-                .getRequestsServices()
+            ControllersProvider()
+                .getRequestsController()
                 .denyRequest(this.request.getId(), this.user.getId())
                 .then((status) {
               if (status) {

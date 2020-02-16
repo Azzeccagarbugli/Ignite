@@ -1,20 +1,19 @@
 import 'package:ignite/dbrepositories/dbrepository.dart';
+import 'package:ignite/factories/controllersfactories/firestorecontrollersfactory.dart';
 import 'package:ignite/factories/repositoriesfactories/firestorerepositoriesfactory.dart';
-import 'package:ignite/factories/servicesfactories/firestoreservicesfactory.dart';
-
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
-import '../hydrants_services.dart';
+import '../hydrants_controller.dart';
 
-class FirestoreHydrantsServices implements HydrantsServices {
-  DbRepository<Hydrant> _hydrantsController =
+class FirestoreHydrantsController implements HydrantsController {
+  DbRepository<Hydrant> _hydrantsServices =
       FirestoreRepositoriesFactory().getHydrantsRepository();
 
   @override
   Future<List<Hydrant>> getApprovedHydrants() async {
     List<Hydrant> approvedHydrants = new List<Hydrant>();
-    List<Request> approvedRequests = await FirestoreServicesFactory()
-        .getRequestsServices()
+    List<Request> approvedRequests = await FirestoreControllersFactory()
+        .getRequestsController()
         .getApprovedRequests();
     for (Request request in approvedRequests) {
       Hydrant hydrant = await getHydrantById(request.getHydrantId());
@@ -25,17 +24,17 @@ class FirestoreHydrantsServices implements HydrantsServices {
 
   @override
   Future<Hydrant> getHydrantById(String id) async {
-    return await _hydrantsController.get(id);
+    return await _hydrantsServices.get(id);
   }
 
   Future<Hydrant> addHydrant(Hydrant newHydrant) async {
-    return await _hydrantsController.insert(newHydrant);
+    return await _hydrantsServices.insert(newHydrant);
   }
 
   Future<bool> deleteHydrant(String id) async {
-    bool exists = await _hydrantsController.exists(id);
+    bool exists = await _hydrantsServices.exists(id);
     if (exists) {
-      await _hydrantsController.delete(id);
+      await _hydrantsServices.delete(id);
       return true;
     } else {
       return false;
@@ -43,6 +42,6 @@ class FirestoreHydrantsServices implements HydrantsServices {
   }
 
   Future<Hydrant> updateHydrant(Hydrant updatedHydrant) async {
-    return await _hydrantsController.update(updatedHydrant);
+    return await _hydrantsServices.update(updatedHydrant);
   }
 }

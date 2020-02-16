@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import '../models/hydrant.dart';
 import '../models/request.dart';
 import '../providers/auth_provider.dart';
-import '../providers/services_provider.dart';
+import '../providers/controllers_provider.dart';
 import 'loading_shimmer.dart';
 import 'remove_glow.dart';
 import 'request_form_dropdownlisttile.dart';
@@ -72,8 +72,8 @@ class _RequestFormState extends State<RequestForm> {
   }
 
   Future getIsFireman() async {
-    _isFireman = await ServicesProvider()
-        .getUsersServices()
+    _isFireman = await ControllersProvider()
+        .getUsersController()
         .isUserFiremanById(_user.getId());
   }
 
@@ -83,7 +83,7 @@ class _RequestFormState extends State<RequestForm> {
 
   Future getUser() async {
     _user =
-        await ServicesProvider().getUsersServices().getUserByMail(_userMail);
+        await ControllersProvider().getUsersController().getUserByMail(_userMail);
   }
 
   Future initFuture() async {
@@ -102,17 +102,17 @@ class _RequestFormState extends State<RequestForm> {
 
   Future<void> buildValues() async {
     widget._attackValues =
-        await ServicesProvider().getValuesServices().getAttacks();
+        await ControllersProvider().getValuesController().getAttacks();
     widget._colorValues =
-        await ServicesProvider().getValuesServices().getColors();
+        await ControllersProvider().getValuesController().getColors();
     widget._typeValues =
-        await ServicesProvider().getValuesServices().getTypes();
+        await ControllersProvider().getValuesController().getTypes();
     widget._vehicleValues =
-        await ServicesProvider().getValuesServices().getVehicles();
+        await ControllersProvider().getValuesController().getVehicles();
     widget._openingValues =
-        await ServicesProvider().getValuesServices().getOpenings();
+        await ControllersProvider().getValuesController().getOpenings();
     widget._pressureValues =
-        await ServicesProvider().getValuesServices().getPressures();
+        await ControllersProvider().getValuesController().getPressures();
   }
 
   List<Widget> buildListTileList(List<Placemark> placemark) {
@@ -578,8 +578,8 @@ class _RequestFormState extends State<RequestForm> {
                     widget._number,
                   );
             if (widget.isNewRequest) {
-              ServicesProvider()
-                  .getRequestsServices()
+              ControllersProvider()
+                  .getRequestsController()
                   .addRequest(
                     newHydrant,
                     _user.getId(),
@@ -601,8 +601,8 @@ class _RequestFormState extends State<RequestForm> {
               });
             } else {
               newHydrant.setId(widget.oldHydrant.getId());
-              ServicesProvider()
-                  .getRequestsServices()
+              ControllersProvider()
+                  .getRequestsController()
                   .approveRequest(
                       newHydrant, widget.oldRequest.getId(), _user.getId())
                   .then((status) {

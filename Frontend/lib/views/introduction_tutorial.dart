@@ -4,7 +4,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../providers/auth_provider.dart';
-import '../providers/services_provider.dart';
+import '../providers/controllers_provider.dart';
 import 'citizen_screen_views/citizen_screen.dart';
 import 'fireman_screen_views/fireman_screen.dart';
 
@@ -16,9 +16,9 @@ class IntroductionTutorial extends StatelessWidget {
   void _onIntroEnd(context) async {
     String userMail = await AuthProvider().getUserMail();
     User user =
-        await ServicesProvider().getUsersServices().getUserByMail(userMail);
-    ServicesProvider()
-        .getUsersServices()
+        await ControllersProvider().getUsersController().getUserByMail(userMail);
+    ControllersProvider()
+        .getUsersController()
         .setFirstAccessToFalseById(user.getId());
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(

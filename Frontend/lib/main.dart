@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ignite/providers/controllers_provider.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'factories/servicesfactories/firestoreservicesfactory.dart';
+import 'factories/controllersfactories/firestorecontrollersfactory.dart';
 import 'providers/auth_provider.dart';
-import 'providers/services_provider.dart';
 import 'views/login_screen.dart';
 
 const String kIp = "192.168.1.92";
@@ -15,8 +15,8 @@ void main() {
 class Ignite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AuthProvider().setFactory(FirestoreServicesFactory());
-    ServicesProvider().setFactory(FirestoreServicesFactory());
+    AuthProvider().setFactory(FirestoreControllersFactory());
+    ControllersProvider().setFactory(FirestoreControllersFactory());
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

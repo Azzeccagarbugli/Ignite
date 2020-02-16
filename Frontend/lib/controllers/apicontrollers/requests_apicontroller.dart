@@ -1,19 +1,19 @@
 import 'dart:convert';
-import '../../apicontrollers/requests_apicontroller.dart';
+import 'package:ignite/backendservices/backend_requests_services.dart';
 import '../../models/hydrant.dart';
 import '../../models/request.dart';
-import '../requests_services.dart';
+import '../requests_controller.dart';
 
-class BackendRequestsServices implements RequestsServices {
-  RequestsApiController _controller;
+class RequestsApiController implements RequestsController {
+  BackendRequestsServices _services;
 
-  BackendRequestsServices(String ip) {
-    _controller = new RequestsApiController(ip);
+  RequestsApiController(String ip) {
+    _services = new BackendRequestsServices(ip);
   }
 
   @override
   Future<Request> addRequest(Hydrant hydrant, String userId) async {
-    String controllerJson = await _controller.addRequest(hydrant, userId);
+    String controllerJson = await _services.addRequest(hydrant, userId);
     if (controllerJson == "") {
       return null;
     }
@@ -35,19 +35,19 @@ class BackendRequestsServices implements RequestsServices {
   Future<bool> approveRequest(
       Hydrant hydrant, String requestId, String userId) async {
     String controllerJson =
-        await _controller.approveRequest(hydrant, requestId, userId);
+        await _services.approveRequest(hydrant, requestId, userId);
     return controllerJson == 'true';
   }
 
   @override
   Future<bool> denyRequest(String requestId, String userId) async {
-    String controllerJson = await _controller.denyRequest(requestId, userId);
+    String controllerJson = await _services.denyRequest(requestId, userId);
     return controllerJson == 'true';
   }
 
   @override
   Future<List<Request>> getApprovedRequests() async {
-    String controllerJson = await _controller.getApprovedRequests();
+    String controllerJson = await _services.getApprovedRequests();
     var parsedJson = json.decode(controllerJson);
     List<Request> requests = new List<Request>();
     for (var request in parsedJson) {
@@ -65,7 +65,7 @@ class BackendRequestsServices implements RequestsServices {
   @override
   Future<List<Request>> getPendingRequestsByDistance(
       double latitude, double longitude, double distance) async {
-    String controllerJson = await _controller.getPendingRequestsByDistance(
+    String controllerJson = await _services.getPendingRequestsByDistance(
         latitude, longitude, distance);
     var parsedJson = json.decode(controllerJson);
     List<Request> requests = new List<Request>();
@@ -84,7 +84,7 @@ class BackendRequestsServices implements RequestsServices {
 
   @override
   Future<List<Request>> getRequests() async {
-    String controllerJson = await _controller.getRequests();
+    String controllerJson = await _services.getRequests();
     var parsedJson = json.decode(controllerJson);
     List<Request> requests = new List<Request>();
     for (var request in parsedJson) {
@@ -103,7 +103,7 @@ class BackendRequestsServices implements RequestsServices {
   Future<List<Request>> getRequestsByDistance(
       double latitude, double longitude, double distance) async {
     String controllerJson =
-        await _controller.getRequestsByDistance(latitude, longitude, distance);
+        await _services.getRequestsByDistance(latitude, longitude, distance);
     var parsedJson = json.decode(controllerJson);
     List<Request> requests = new List<Request>();
     for (var request in parsedJson) {

@@ -2,22 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-
-import '../factories/servicesfactories/servicesfactory.dart';
+import 'package:ignite/controllers/users_controller.dart';
+import 'package:ignite/factories/controllersfactories/controllersfactory.dart';
 import '../models/user.dart';
-import '../services/users_services.dart';
 
 class AuthProvider {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
   final facebookLogin = FacebookLogin();
 
-  ServicesFactory _factory;
-  UsersServices _usersServices;
+  ControllersFactory _factory;
+  UsersController _usersServices;
 
-  void setFactory(ServicesFactory factory) {
+  void setFactory(ControllersFactory factory) {
     this._factory = factory;
-    this._usersServices = this._factory.getUsersServices();
+    this._usersServices = this._factory.getUsersController();
   }
 
   static final AuthProvider _singleton = AuthProvider._internal();

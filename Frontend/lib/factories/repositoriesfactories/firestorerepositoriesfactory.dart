@@ -1,9 +1,9 @@
 import 'package:ignite/dbrepositories/dbrepository.dart';
-import 'package:ignite/dbrepositories/firestoredbcontrollers/firestoredb_departments_repository.dart';
-import 'package:ignite/dbrepositories/firestoredbcontrollers/firestoredb_hydrants_repository.dart';
-import 'package:ignite/dbrepositories/firestoredbcontrollers/firestoredb_requests_repository.dart';
-import 'package:ignite/dbrepositories/firestoredbcontrollers/firestoredb_users_repository.dart';
-import 'package:ignite/dbrepositories/firestoredbcontrollers/firestoredb_values_repository.dart';
+import 'package:ignite/dbrepositories/firestoredbservices/firestoredb_departments_repository.dart';
+import 'package:ignite/dbrepositories/firestoredbservices/firestoredb_hydrants_repository.dart';
+import 'package:ignite/dbrepositories/firestoredbservices/firestoredb_requests_repository.dart';
+import 'package:ignite/dbrepositories/firestoredbservices/firestoredb_users_repository.dart';
+import 'package:ignite/dbrepositories/firestoredbservices/firestoredb_values_repository.dart';
 import 'package:ignite/factories/repositoriesfactories/repositoriesfactory.dart';
 import 'package:ignite/models/department.dart';
 import 'package:ignite/models/hydrant.dart';

@@ -4,7 +4,7 @@ import 'package:ignite/models/user.dart';
 import 'package:ignite/widgets/loading_screen.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../providers/auth_provider.dart';
-import '../providers/services_provider.dart';
+import '../providers/controllers_provider.dart';
 import 'citizen_screen_views/citizen_screen.dart';
 import 'fireman_screen_views/fireman_screen.dart';
 import 'introduction_tutorial.dart';
@@ -75,9 +75,9 @@ class _LoadingViewState extends State<LoadingView> {
   Future _getIsFireman() async {
     String userMail = await AuthProvider().getUserMail();
     User user =
-        await ServicesProvider().getUsersServices().getUserByMail(userMail);
-    _isFireman = await ServicesProvider()
-        .getUsersServices()
+        await ControllersProvider().getUsersController().getUserByMail(userMail);
+    _isFireman = await ControllersProvider()
+        .getUsersController()
         .isUserFiremanById(user.getId());
     print(
         "L\'utente $userMail - id: ${user.getId()} - è un pompiere: $_isFireman");
@@ -86,9 +86,9 @@ class _LoadingViewState extends State<LoadingView> {
   Future _getIsFirstAccess() async {
     String userMail = await AuthProvider().getUserMail();
     User user =
-        await ServicesProvider().getUsersServices().getUserByMail(userMail);
-    _isFirstAccess = await ServicesProvider()
-        .getUsersServices()
+        await ControllersProvider().getUsersController().getUserByMail(userMail);
+    _isFirstAccess = await ControllersProvider()
+        .getUsersController()
         .isUserFirstAccessById(user.getId());
     print(
         "L\'utente $userMail - id: ${user.getId()} - è al primo accesso: $_isFirstAccess");

@@ -1,4 +1,4 @@
-abstract class ValuesServices {
+abstract class ValuesController {
   Future<List<String>> getColors();
 
   Future<List<String>> getAttacks();
